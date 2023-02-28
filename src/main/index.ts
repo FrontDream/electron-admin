@@ -1,8 +1,6 @@
 import { app, BrowserWindow, protocol, Menu } from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
-import installExtension, {
-  REACT_DEVELOPER_TOOLS,
-} from 'electron-devtools-installer';
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
@@ -29,8 +27,7 @@ function createWindow() {
     mainWindow.loadURL('app://./index.html');
   }
 }
-
-app.on('ready', async () => {
+app.whenReady().then(async () => {
   if (isDevelopment) {
     // Install React Devtools
     try {
@@ -40,16 +37,16 @@ app.on('ready', async () => {
     }
   }
   createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0 || mainWindow === null) {
+      createWindow();
+    }
+  });
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
   }
 });
