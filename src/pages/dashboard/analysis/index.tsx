@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { Suspense, useState } from 'react';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { Col, Dropdown, Menu, Row } from 'antd';
+import { Col, Dropdown, Menu, Row, Button } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import type { RadioChangeEvent } from 'antd/es/radio';
 import type { RangePickerProps } from 'antd/es/date-picker/generatePicker';
@@ -95,6 +95,9 @@ const Analysis: FC<AnalysisProps> = () => {
   const handleTabChange = (key: string) => {
     setCurrentTabKey(key);
   };
+  const handleClick = async () => {
+    await window.Bridge?.createNotebook('钱鼎伟自传');
+  };
 
   const activeKey = currentTabKey || (data?.offlineData[0] && data?.offlineData[0].name) || '';
 
@@ -106,6 +109,7 @@ const Analysis: FC<AnalysisProps> = () => {
         </Suspense>
 
         <Suspense fallback={null}>
+          <Button onClick={handleClick}>测试</Button>
           <SalesCard
             rangePickerValue={rangePickerValue}
             salesData={data?.salesData || []}

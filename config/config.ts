@@ -7,6 +7,11 @@ import proxy from './proxy';
 const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
+  electronBuilder: {
+    preloadEntry: {
+      'index.ts': 'preload.js',
+    },
+  },
   hash: true,
   antd: {},
   dva: {
