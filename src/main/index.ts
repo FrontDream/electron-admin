@@ -7,6 +7,7 @@ import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-insta
 import { ioc } from './ioc';
 import { LocalDB } from './db/db';
 import { NotebooksController } from './db/controllers/notebooks.controller';
+import logger from './utils/log';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
@@ -63,6 +64,13 @@ app.on('window-all-closed', () => {
   }
 });
 
+ipcMain.handle('log', async (event, arg) => {
+  //与渲染进程通信
+  return new Promise((resolve, reject) => {
+    logger.info(arg);
+  });
+});
+
 ipcMain.handle('showMessage', (e, options: MessageBoxOptions) => {
   const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
   if (!win) return;
@@ -70,6 +78,7 @@ ipcMain.handle('showMessage', (e, options: MessageBoxOptions) => {
 });
 
 ipcMain.handle('createNotebook', async (e, name: string) => {
+  logger.info(['main中测试一下']);
   return await ioc.get(NotebooksController).create(name);
 });
 

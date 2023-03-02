@@ -55,3 +55,11 @@ npm test
 ## More
 
 You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
+
+本地 log 地址：/Users/bytedance/Library/'Application Support'/Electron/electron_log
+
+本地 DB 地址: /Users/bytedance/Library/'Application Support'/Electron/local.db
+
+生成 log 地址： /Users/bytedance/Library/'Application Support'/ant-design-pro/electron_log
+
+生产 DB 地址: /Users/bytedance/Library/'Application Support'/ant-design-pro/local.db
