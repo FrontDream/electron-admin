@@ -8,9 +8,13 @@ const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
   electronBuilder: {
+    buildType: 'webpack',
+    mainSrc: 'src/main',
+    externals: ['knex', 'sqlite3'],
     preloadEntry: {
       'index.ts': 'preload.js',
     },
+    rendererTarget: 'web',
   },
   hash: true,
   antd: {},
