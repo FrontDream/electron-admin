@@ -1,17 +1,18 @@
-import { inject, injectable } from "inversify";
-import { NotebooksService } from "../services/notebooks.service";
-import { NotesService } from "../services/notes.service";
+import { inject, injectable } from 'inversify';
+import { NotebooksService } from '../services/notebooks.service';
+import { NotesService } from '../services/notes.service';
 
 @injectable()
 export class NotebooksController {
   constructor(
     @inject(NotebooksService) public service: NotebooksService,
-    @inject(NotesService) public notesService: NotesService
+    @inject(NotesService) public notesService: NotesService,
   ) {}
 
-  async create(name: string) {
+  async create(name: string, blob: Blob) {
     await this.service.create({
       name,
+      blob: Buffer.from(blob),
     });
   }
 
@@ -19,7 +20,7 @@ export class NotebooksController {
     const row = await this.service.get(id);
     if (row) {
       const notes = await this.notesService.getByNotebookId(id);
-      if (notes.length) throw Error("delete failed");
+      if (notes.length) throw Error('delete failed');
       await this.service.delete(id);
     }
   }

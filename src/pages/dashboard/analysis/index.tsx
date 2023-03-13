@@ -19,6 +19,9 @@ import type { TimeType } from './components/SalesCard';
 import { getTimeDistance } from './utils/utils';
 import type { AnalysisData } from './data.d';
 import styles from './style.less';
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadProps } from 'antd';
+import { message, Upload } from 'antd';
 
 type RangePickerValue = RangePickerProps<moment.Moment>['value'];
 
@@ -97,14 +100,28 @@ const Analysis: FC<AnalysisProps> = () => {
     setCurrentTabKey(key);
   };
   const handleClick = async () => {
-    await window.Bridge?.createNotebook('钱鼎伟自333');
-    window.Bridge?.log('UI：测试一下');
-    window.Bridge?.log({ name: 'test' });
-    const res = (await window.Bridge?.getNotebooks()) || [];
-    console.log('res:', res);
-    if (res.length) {
-      setName(res[0].name);
-    }
+    // await window.Bridge?.createNotebook('钱鼎伟自333');
+    // window.Bridge?.log('UI：测试一下');
+    // window.Bridge?.log({ name: 'test' });
+    // const res = (await window.Bridge?.getNotebooks()) || [];
+    // console.log('res:', res);
+    // if (res.length) {
+    //   setName(res[5].blob);
+    // }
+    await window.Bridge?.saveFile();
+  };
+  const uploadProps: UploadProps = {
+    name: 'file',
+    customRequest: async ({ file }: { file: File }) => {
+      console.log('file:', file);
+      const fileArray = await file.arrayBuffer();
+      console.log('fileArray:', fileArray.buffer);
+      await window.Bridge?.createNotebook('测试上传10', fileArray);
+      return;
+    },
+    maxCount: 1,
+    accept: '.xlsx',
+    showUploadList: false,
   };
 
   const activeKey = currentTabKey || (data?.offlineData[0] && data?.offlineData[0].name) || '';
@@ -118,6 +135,9 @@ const Analysis: FC<AnalysisProps> = () => {
 
         <Suspense fallback={null}>
           <Button onClick={handleClick}>测试</Button>
+          <Upload {...uploadProps}>
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>
           <div>{name}</div>
           <SalesCard
             rangePickerValue={rangePickerValue}

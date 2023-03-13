@@ -31,6 +31,7 @@ export class LocalDB {
         table.bigIncrements('id', { primaryKey: true });
 
         table.string('name');
+        table.binary('blob');
         table.timestamps(true, true);
       });
     });
@@ -43,6 +44,7 @@ export class LocalDB {
         table.text('content');
         table.bigInteger('notebook_id');
         table.timestamps(true, true);
+        table.binary('blob');
       });
     });
     // media

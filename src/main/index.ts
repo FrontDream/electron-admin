@@ -8,6 +8,8 @@ import { ioc } from './ioc';
 import { LocalDB } from './db/db';
 import { NotebooksController } from './db/controllers/notebooks.controller';
 import logger from './utils/log';
+const fs = require('fs');
+const { Blob } = require('buffer');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
@@ -77,11 +79,30 @@ ipcMain.handle('showMessage', (e, options: MessageBoxOptions) => {
   dialog.showMessageBox(win, options);
 });
 
-ipcMain.handle('createNotebook', async (e, name: string) => {
+ipcMain.handle('createNotebook', async (e, name: string, blob: Blob) => {
   logger.info(['main中测试一下']);
-  return await ioc.get(NotebooksController).create(name);
+  return await ioc.get(NotebooksController).create(name, blob);
 });
 
 ipcMain.handle('getNotebooks', async () => {
   return await ioc.get(NotebooksController).getAll();
+});
+ipcMain.handle('saveFile', async () => {
+  const books = await ioc.get(NotebooksController).getAll();
+  logger.info(books);
+  const arrFile = books[15];
+  console.log('arrFile:', arrFile);
+
+  dialog
+    .showSaveDialog({
+      title: '请选择要保存的文件名',
+      buttonLabel: '保存',
+      filters: [{ name: 'Custom File Type', extensions: ['xlsx'] }],
+    })
+    .then((result) => {
+      fs.writeFileSync(result.filePath, arrFile.blob);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
