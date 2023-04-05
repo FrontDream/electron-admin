@@ -96,16 +96,6 @@ const Analysis: FC<AnalysisProps> = () => {
   const handleTabChange = (key: string) => {
     setCurrentTabKey(key);
   };
-  const handleClick = async () => {
-    await window.Bridge?.createNotebook('钱鼎伟自333');
-    window.Bridge?.log('UI：测试一下');
-    window.Bridge?.log({ name: 'test' });
-    const res = (await window.Bridge?.getNotebooks()) || [];
-    console.log('res:', res);
-    if (res.length) {
-      setName(res[0].name);
-    }
-  };
 
   const activeKey = currentTabKey || (data?.offlineData[0] && data?.offlineData[0].name) || '';
 
@@ -117,8 +107,6 @@ const Analysis: FC<AnalysisProps> = () => {
         </Suspense>
 
         <Suspense fallback={null}>
-          <Button onClick={handleClick}>数据库&log测试</Button>
-          <div>{name}</div>
           <SalesCard
             rangePickerValue={rangePickerValue}
             salesData={data?.salesData || []}
