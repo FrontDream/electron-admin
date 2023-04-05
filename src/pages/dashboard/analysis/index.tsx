@@ -117,7 +117,7 @@ const Analysis: FC<AnalysisProps> = () => {
         </Suspense>
 
         <Suspense fallback={null}>
-          <Button onClick={handleClick}>测试</Button>
+          <Button onClick={handleClick}>数据库&log测试</Button>
           <div>{name}</div>
           <SalesCard
             rangePickerValue={rangePickerValue}
