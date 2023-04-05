@@ -15,6 +15,22 @@ export default defineConfig({
       'index.ts': 'preload.js',
     },
     rendererTarget: 'web',
+    builderOptions: {
+      appId: 'com.nanxu.desktop-oa',
+      productName: '管理系统',
+      nsis: {
+        oneClick: false, // 是否一键安装
+        allowToChangeInstallationDirectory: true, //是否允许修改安装目录
+        // allowElevation: true, // 允许请求提升。若为false，则用户必须使用提升的权限重新启动安装程序。
+        installerIcon: './build/icons/icon.ico', // 安装时图标
+        uninstallerIcon: './build/icons/icon.ico', //卸载时图标
+        installerHeaderIcon: './build/icons/icon.ico', // 安装时头部图标
+        createDesktopShortcut: true, // 是否创建桌面图标
+        createStartMenuShortcut: true, // 是否创建开始菜单图标
+        shortcutName: '管理系统快捷方式', // 快捷方式名称
+        runAfterFinish: true, //是否安装完成后运行
+      },
+    },
   },
   hash: true,
   antd: {},
