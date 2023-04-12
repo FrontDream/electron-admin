@@ -8,6 +8,7 @@ module.exports = {
     es6: true,
   },
   rules: {
+    'react/react-in-jsx-scope': 'off',
     quotes: ['error', 'single'],
     // semi: ['error', 'never'],
     camelcase: 0,
