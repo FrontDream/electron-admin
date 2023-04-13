@@ -97,6 +97,12 @@ export default defineConfig({
       component: './department',
     },
     {
+      name: '角色类型管理',
+      icon: 'smile',
+      path: '/roleType',
+      component: './roleType',
+    },
+    {
       path: '/form',
       icon: 'form',
       name: 'form',

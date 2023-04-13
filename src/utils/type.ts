@@ -26,6 +26,15 @@ export interface DepartmentListItem {
   name?: string;
   sort_order?: number;
 }
+export interface RoleTypeListItem {
+  id?: number;
+  ctime?: string;
+  mtime?: string;
+  create_by?: string;
+  update_by?: string;
+  name?: string;
+  sort_order?: number;
+}
 export interface DepartmentData {
   name: string;
 }

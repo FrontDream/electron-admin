@@ -3,26 +3,21 @@ import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, FormInstance } from '@ant-design/pro-form';
-import { DepartmentListItem, isSuccess, DepartmentData, TableListPagination } from '@/utils';
-import {
-  getDepartmentListApi,
-  addDepartmentApi,
-  deleteDepartmentApi,
-  updateDepartmentApi,
-} from '@/services/department';
+import { RoleTypeListItem, isSuccess, DepartmentData, TableListPagination } from '@/utils';
+import { getRoleTypeListApi, addRoleTypeApi, deleteRoleTypeApi, updateRoleTypeApi } from '@/services';
 import moment from 'moment';
 
-const DepartmentList: React.FC = () => {
+const RoleTypeList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<DepartmentListItem>();
+  const [currentRow, setCurrentRow] = useState<RoleTypeListItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
 
-  const columns: ProColumns<DepartmentListItem>[] = [
+  const columns: ProColumns<RoleTypeListItem>[] = [
     {
-      title: '部门名称',
+      title: '角色类型名称',
       dataIndex: 'name',
     },
     {
@@ -53,7 +48,7 @@ const DepartmentList: React.FC = () => {
           修改
         </a>,
         <Popconfirm
-          title="确定删除该部门吗?"
+          title="确定删除该角色类型吗?"
           okText="确定"
           cancelText="取消"
           key="del"
@@ -73,19 +68,19 @@ const DepartmentList: React.FC = () => {
       let res = {};
 
       if (isDdd) {
-        res = await addDepartmentApi({ name });
+        res = await addRoleTypeApi({ name });
       } else {
-        res = await updateDepartmentApi({ name, id: currentRow?.id || 0 });
+        res = await updateRoleTypeApi({ name, id: currentRow?.id || 0 });
       }
 
       if (isSuccess(res)) {
-        message.success(`${isDdd ? '新增' : '修改'}部门成功`);
+        message.success(`${isDdd ? '新增' : '修改'}角色类型成功`);
         setModalVisible(false);
         if (actionRef.current) {
           actionRef.current.reload();
         }
       } else {
-        message.error(`${isDdd ? '新增' : '修改'}部门失败，请重试！`);
+        message.error(`${isDdd ? '新增' : '修改'}角色类型失败，请重试！`);
       }
     } catch (error) {
       console.error('error:', error);
@@ -93,12 +88,12 @@ const DepartmentList: React.FC = () => {
       setConfirmLoading(false);
     }
   };
-  const handleRemove = async (record: DepartmentListItem) => {
+  const handleRemove = async (record: RoleTypeListItem) => {
     const hide = message.loading('正在删除');
     const { id = 0 } = record;
 
     try {
-      const res = await deleteDepartmentApi(id);
+      const res = await deleteRoleTypeApi(id);
 
       if (isSuccess(res)) {
         message.success('删除成功');
@@ -117,8 +112,8 @@ const DepartmentList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<DepartmentListItem, TableListPagination>
-        headerTitle="部门列表"
+      <ProTable<RoleTypeListItem, TableListPagination>
+        headerTitle="角色类型列表"
         actionRef={actionRef}
         rowKey="key"
         search={{
@@ -136,14 +131,14 @@ const DepartmentList: React.FC = () => {
             新建
           </Button>,
         ]}
-        request={getDepartmentListApi}
+        request={getRoleTypeListApi}
         columns={columns}
       />
       {modalVisible && (
         <ModalForm<DepartmentData>
           formRef={modalFormRef}
           modalProps={{ centered: true, confirmLoading }}
-          title={isDdd ? '新建部门' : '修改部门'}
+          title={isDdd ? '新建角色类型' : '修改角色类型'}
           width="400px"
           visible={modalVisible}
           onVisibleChange={setModalVisible}
@@ -151,11 +146,11 @@ const DepartmentList: React.FC = () => {
           initialValues={isDdd ? {} : { ...currentRow }}
         >
           <ProFormText
-            label={'部门名称'}
+            label={'角色类型名称'}
             rules={[
               {
                 required: true,
-                message: '部门名称不能为空',
+                message: '角色类型名称不能为空',
               },
             ]}
             width="md"
@@ -167,4 +162,4 @@ const DepartmentList: React.FC = () => {
   );
 };
 
-export default DepartmentList;
+export default RoleTypeList;
