@@ -2,9 +2,11 @@ import { SettingDrawer, PageLoading, Settings as LayoutSettings } from '@ant-des
 import { history, Link, RunTimeLayoutConfig, RequestConfig } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
+import { getItem } from '@/utils';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
+import { message } from 'antd';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -24,13 +26,13 @@ export async function getInitialState(): Promise<{
   fetchUserInfo?: () => Promise<any | undefined>;
 }> {
   const fetchUserInfo = async () => {
-    try {
-      const msg = await queryCurrentUser();
-
-      return msg.data;
-    } catch (error) {
-      history.push(loginPath);
-    }
+    // try {
+    //   const msg = await queryCurrentUser();
+    //
+    //   return msg.data;
+    // } catch (error) {
+    //   history.push(loginPath);
+    // }
     return undefined;
   };
   // 如果不是登录页面，执行
@@ -64,7 +66,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // 如果没有登录，重定向到 login
 
       if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+        // history.push(loginPath);
       }
     },
     links: isDev
@@ -109,17 +111,37 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 };
 // src/app.tsx
 const authHeaderInterceptor = (url: string, options: RequestConfig) => {
-  const authHeader = { Authorization: 'Bearer xxxxxx' };
-
   console.log('url:', url);
   console.log('options:', options);
-  return {
-    url: `${url}`,
-    options: { ...options, interceptors: true, headers: authHeader },
-  };
+  const jwt = getItem('jwt');
+  const authHeader = { Authorization: `JWT ${jwt}` };
+
+  // 非登录
+  if (url !== '/api/users/login') {
+    return {
+      url,
+      options: { ...options, interceptors: true, headers: authHeader },
+    };
+  }
+  return { url, options };
+};
+
+const responseInterceptors = async (response: Response) => {
+  try {
+    console.log('response:', response);
+    const res = await response.clone().json();
+
+    console.log('res:', res);
+    const { code, msg, data } = res;
+
+    return res;
+  } catch (e) {
+    console.error('3error:', e);
+  }
 };
 
 export const request: RequestConfig = {
   // 新增自动添加AccessToken的请求前拦截器
   requestInterceptors: [authHeaderInterceptor],
+  responseInterceptors: [responseInterceptors],
 };

@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
 import Footer from '@/components/Footer';
-import { login } from '@/services/user';
+import { loginApi } from '@/services/user';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import { setItem, isSuccess, LoginResData } from '@/utils';
 
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
       // 登录
       console.log('values:', values);
       const { username, password } = values;
-      const res = await login({ username, password });
+      const res = await loginApi({ username, password });
 
       console.log('====:', res);
 

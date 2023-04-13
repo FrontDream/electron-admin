@@ -1,13 +1,13 @@
 export default {
   'pages.layouts.userLayout.title':
     'Ant Design adalah spesifikasi desain Web yang paling berpengaruh di Kabupaten Xihu',
-  'pages.login.accountLogin.tab': 'Login dengan akun',
+  'pages.login.accountLogin.tab': 'login dengan akun',
   'pages.login.accountLogin.errorMessage': 'Nama pengguna dan kata sandi salah(admin/ant.design)',
   'pages.login.username.placeholder': 'nama pengguna: admin atau user',
   'pages.login.username.required': 'Nama pengguna harus diisi!',
   'pages.login.password.placeholder': 'kata sandi: ant.design',
   'pages.login.password.required': 'Kata sandi harus diisi!',
-  'pages.login.phoneLogin.tab': 'Login dengan ponsel',
+  'pages.login.phoneLogin.tab': 'login dengan ponsel',
   'pages.login.phoneLogin.errorMessage': 'Kesalahan kode verifikasi',
   'pages.login.phoneNumber.placeholder': 'masukkan nomor telepon',
   'pages.login.phoneNumber.required': 'Nomor ponsel harus diisi!',

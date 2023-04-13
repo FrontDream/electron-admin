@@ -67,7 +67,7 @@ export default defineConfig({
           path: '/user/login',
           layout: false,
           name: 'login',
-          component: './user/Login',
+          component: './login',
         },
         {
           path: '/user',
@@ -89,6 +89,12 @@ export default defineConfig({
           component: '404',
         },
       ],
+    },
+    {
+      name: '部门管理',
+      icon: 'smile',
+      path: '/department',
+      component: './department',
     },
     {
       path: '/form',
