@@ -8,8 +8,14 @@ export type TableListPagination = {
   pageSize: number;
   current: number;
 };
-export interface LoginResData {
+export interface Result {
+  id: number;
+  role: number;
   token: string;
+  user: string;
+}
+export interface LoginResData {
+  results: Result;
 }
 export interface DepartmentListItem {
   id?: number;

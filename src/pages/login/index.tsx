@@ -13,7 +13,7 @@ import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
 import Footer from '@/components/Footer';
 import { loginApi } from '@/services/user';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import { setItem, isSuccess, LoginResData } from '@/utils';
+import { setItem, isSuccess, LoginResData, Result } from '@/utils';
 
 import styles from './index.less';
 
@@ -59,8 +59,9 @@ const Login: React.FC = () => {
 
       if (isSuccess(res)) {
         const { data = {} as LoginResData } = res;
+        const { results = {} as Result } = data;
 
-        setItem('jwt', data.token);
+        setItem('jwt', results.token);
         message.success('登录成功');
         // await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */

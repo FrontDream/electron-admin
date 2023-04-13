@@ -4,7 +4,7 @@ export const setItem = (key: string, value: string) => {
 };
 
 export const getItem = (key: string) => {
-  localStorage.getItem(key);
+  return localStorage.getItem(key);
 };
 
 export const removeItem = (key: string) => {
