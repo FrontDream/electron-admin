@@ -31,22 +31,15 @@ export type NoticeIconProps = {
 
 const NoticeIcon: React.FC<NoticeIconProps> & {
   Tab: typeof NoticeList;
-} = (props) => {
+} = props => {
   const getNotificationBox = (): React.ReactNode => {
-    const {
-      children,
-      loading,
-      onClear,
-      onTabChange,
-      onItemClick,
-      onViewMore,
-      clearText,
-      viewMoreText,
-    } = props;
+    const { children, loading, onClear, onTabChange, onItemClick, onViewMore, clearText, viewMoreText } = props;
+
     if (!children) {
       return null;
     }
     const panes: React.ReactNode[] = [];
+
     React.Children.forEach(children, (child: React.ReactElement<NoticeIconTabProps>): void => {
       if (!child) {
         return;
@@ -55,6 +48,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
       const tabTitle: string = msgCount > 0 ? `${title} (${msgCount})` : title;
+
       panes.push(
         <TabPane tab={tabTitle} key={tabKey}>
           <NoticeList
@@ -99,6 +93,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
       </Badge>
     </span>
   );
+
   if (!notificationBox) {
     return trigger;
   }
@@ -109,8 +104,8 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
       overlay={notificationBox}
       overlayClassName={styles.popover}
       trigger={['click']}
-      visible={visible}
-      onVisibleChange={setVisible}
+      open={visible}
+      onOpenChange={setVisible}
     >
       {trigger}
     </HeaderDropdown>

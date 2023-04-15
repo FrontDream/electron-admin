@@ -5,6 +5,7 @@
   "description": "An out-of-box UI solution for enterprise applications",
   "scripts": {
     "start": "umi dev",
+    "i18n-remove": "pro i18n-remove --locale=zh-CN --write",
     "start:no-mock": "cross-env MOCK=none umi dev",
     "build": "umi build",
     "postinstall": "umi generate tmp && electron-builder install-app-deps",
