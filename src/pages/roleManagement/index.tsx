@@ -144,7 +144,7 @@ const RoleManagementList: React.FC = () => {
       <ProTable<RoleManagementListItem, TableListPagination>
         headerTitle="角色列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}

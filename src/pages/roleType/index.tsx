@@ -120,7 +120,7 @@ const RoleTypeList: React.FC = () => {
       <ProTable<RoleTypeListItem, TableListPagination>
         headerTitle="角色类型列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}

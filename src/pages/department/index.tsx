@@ -125,7 +125,7 @@ const DepartmentList: React.FC = () => {
       <ProTable<DepartmentListItem, TableListPagination>
         headerTitle="部门列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}
