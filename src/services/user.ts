@@ -12,3 +12,11 @@ export async function loginApi(data: any, options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+// 获取用户信息
+export async function getUserInfoApi(params?: any, options?: { [key: string]: any }) {
+  return request<Resp<LoginResData>>('/api/users/userInfo', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

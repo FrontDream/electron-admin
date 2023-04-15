@@ -2,8 +2,8 @@ import { SettingDrawer, PageLoading, Settings as LayoutSettings } from '@ant-des
 import { history, Link, RunTimeLayoutConfig, RequestConfig } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { getItem } from '@/utils';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { getItem, removeItem } from '@/utils';
+import { getUserInfoApi as queryCurrentUser } from '@/services';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
 import { message } from 'antd';
@@ -26,19 +26,21 @@ export async function getInitialState(): Promise<{
   fetchUserInfo?: () => Promise<any | undefined>;
 }> {
   const fetchUserInfo = async () => {
-    // try {
-    //   const msg = await queryCurrentUser();
-    //
-    //   return msg.data;
-    // } catch (error) {
-    //   history.push(loginPath);
-    // }
+    try {
+      const res = await queryCurrentUser();
+
+      return res.data;
+    } catch (error) {
+      history.push(loginPath);
+    }
     return undefined;
   };
   // 如果不是登录页面，执行
 
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
+
+    console.log('currentUser:', currentUser);
 
     return {
       fetchUserInfo,
@@ -66,7 +68,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // 如果没有登录，重定向到 login
 
       if (!initialState?.currentUser && location.pathname !== loginPath) {
-        // history.push(loginPath);
+        history.push(loginPath);
       }
     },
     links: isDev
@@ -133,6 +135,14 @@ const responseInterceptors = async (response: Response) => {
 
     console.log('res:', res);
     const { code, msg, data } = res;
+    const loginCodes = [410, 411, 412, 413];
+
+    if (loginCodes.includes(code)) {
+      removeItem('jwt');
+      history.push(loginPath);
+      message.warning('登录已过期,请重新登录！');
+      return {};
+    }
 
     return res;
   } catch (e) {

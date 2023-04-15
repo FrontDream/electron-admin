@@ -12,6 +12,6 @@ export const removeItem = (key: string) => {
 };
 
 export const isSuccess = (res: any) => {
-  if (res.code === 0) return true;
+  if (res.code === 200) return true;
   return false;
 };

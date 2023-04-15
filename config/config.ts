@@ -103,6 +103,12 @@ export default defineConfig({
       component: './roleType',
     },
     {
+      name: '角色管理',
+      icon: 'smile',
+      path: '/role',
+      component: './roleManagement',
+    },
+    {
       path: '/form',
       icon: 'form',
       name: 'form',

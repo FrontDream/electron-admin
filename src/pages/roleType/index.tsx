@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, FormInstance } from '@ant-design/pro-form';
-import { RoleTypeListItem, isSuccess, DepartmentData, TableListPagination } from '@/utils';
+import { RoleTypeListItem, isSuccess, TableListPagination, RoleTypeData } from '@/utils';
 import { getRoleTypeListApi, addRoleTypeApi, deleteRoleTypeApi, updateRoleTypeApi } from '@/services';
 import moment from 'moment';
 
@@ -19,6 +19,11 @@ const RoleTypeList: React.FC = () => {
     {
       title: '角色类型名称',
       dataIndex: 'name',
+    },
+    {
+      title: '创建人',
+      dataIndex: 'create_user',
+      hideInSearch: true,
     },
     {
       title: '创建时间',
@@ -60,7 +65,7 @@ const RoleTypeList: React.FC = () => {
     },
   ];
 
-  const onFinish = async (value: DepartmentData) => {
+  const onFinish = async (value: RoleTypeData) => {
     const { name } = value;
 
     try {
@@ -135,7 +140,7 @@ const RoleTypeList: React.FC = () => {
         columns={columns}
       />
       {modalVisible && (
-        <ModalForm<DepartmentData>
+        <ModalForm<RoleTypeData>
           formRef={modalFormRef}
           modalProps={{ centered: true, confirmLoading }}
           title={isDdd ? '新建角色类型' : '修改角色类型'}

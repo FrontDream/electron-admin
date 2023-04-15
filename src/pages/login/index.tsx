@@ -13,7 +13,7 @@ import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
 import Footer from '@/components/Footer';
 import { loginApi } from '@/services/user';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import { setItem, isSuccess, LoginResData, Result } from '@/utils';
+import { setItem, isSuccess, LoginResData } from '@/utils';
 
 import styles from './index.less';
 
@@ -34,7 +34,6 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-
   const intl = useIntl();
 
   const fetchUserInfo = async () => {
@@ -59,11 +58,10 @@ const Login: React.FC = () => {
 
       if (isSuccess(res)) {
         const { data = {} as LoginResData } = res;
-        const { results = {} as Result } = data;
 
-        setItem('jwt', results.token);
+        setItem('jwt', data.token);
         message.success('登录成功');
-        // await fetchUserInfo();
+        await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
         if (!history) return;
         const { query } = history.location;

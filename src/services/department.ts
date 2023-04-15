@@ -1,16 +1,16 @@
 import { request } from 'umi';
-import { Resp, DepartmentListItem, DepartmentData } from '@/utils/type';
+import { Resp, DepartmentListItem, DepartmentData, DepartmentListRes } from '@/utils/type';
 
 // 部门列表
 export async function getDepartmentListApi(params: any, options?: { [key: string]: any }) {
-  const res = await request<Resp<Array<DepartmentListItem>>>('/api/users/department', {
+  const res = await request<Resp<DepartmentListRes>>('/api/users/department', {
     method: 'GET',
     params,
     ...(options || {}),
   });
   const { data = [] } = res;
 
-  return { data, total: data.length, success: true };
+  return data;
 }
 
 // 新建部门
