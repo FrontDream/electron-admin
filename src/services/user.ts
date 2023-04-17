@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { Resp, LoginResData } from '@/utils/type';
+import { Resp, LoginResData, UserListRes, UserListItem, UserData } from '@/utils/type';
 
 // 登录
 export async function loginApi(data: any, options?: { [key: string]: any }) {
@@ -17,6 +17,49 @@ export async function loginApi(data: any, options?: { [key: string]: any }) {
 export async function getUserInfoApi(params?: any, options?: { [key: string]: any }) {
   return request<Resp<LoginResData>>('/api/users/userInfo', {
     method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 用户列表
+export async function getUserListApi(params: any, options?: { [key: string]: any }) {
+  const res = await request<Resp<UserListRes>>('/api/users/user', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+  const { data = [] } = res;
+
+  return data;
+}
+
+// 新建用户
+export async function addUserApi(data: UserData, options?: { [key: string]: any }) {
+  return request<Resp<UserListItem>>('/api/users/user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data,
+    ...(options || {}),
+  });
+}
+
+// 删除用户
+export async function deleteUserApi(id: number, options?: { [key: string]: any }) {
+  return request<Resp<UserListItem>>(`/api/users/user/${id}`, {
+    method: 'DELETE',
+    ...(options || {}),
+  });
+}
+
+// 修改用户
+export async function updateUserApi(data: UserData, options?: { [key: string]: any }) {
+  const { id, ...rest } = data;
+
+  return request<Resp<UserListItem>>(`/api/users/department/${id}`, {
+    method: 'PUT',
+    data: rest,
     ...(options || {}),
   });
 }

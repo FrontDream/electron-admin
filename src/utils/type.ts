@@ -20,11 +20,12 @@ export interface LoginResData {
   token: string;
   user: string;
 }
+
 export interface DepartmentListRes extends TableListPagination {
   data: Array<DepartmentListItem>;
 }
 export interface DepartmentListItem {
-  id?: number;
+  id: number;
   ctime?: string;
   mtime?: string;
   create_by?: string;
@@ -72,4 +73,46 @@ export interface RoleTypeData {
 export interface RoleData {
   name: string;
   role_type: number;
+}
+
+export interface UserListRes extends TableListPagination {
+  data: Array<UserListItem>;
+}
+export interface UserListItem {
+  id: number;
+  last_login: string;
+  is_superuser: boolean;
+  first_name: string;
+  last_name: string;
+  is_staff: boolean;
+  is_active: boolean;
+  date_joined: string;
+  ctime: number;
+  mtime: number;
+  create_by: string;
+  update_by: string;
+  job_number: string;
+  username: string;
+  password: string;
+  mobile: number;
+  email: string;
+  department_id: number;
+  role_id: number;
+  is_delete: number;
+  groups: Array<string>;
+  user_permissions: Array<string>;
+  is_self: number;
+  create_user: string;
+  update_user: string;
+}
+
+export interface UserData {
+  username: string;
+  job_number: string;
+  password: string;
+  mobile: number;
+  email: string;
+  department_id: number;
+  role_id: number;
+  id?: number;
 }

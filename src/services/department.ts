@@ -8,7 +8,7 @@ export async function getDepartmentListApi(params: any, options?: { [key: string
     params,
     ...(options || {}),
   });
-  const { data = [] } = res;
+  const { data } = res;
 
   return data;
 }

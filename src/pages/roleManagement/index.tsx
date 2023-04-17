@@ -50,6 +50,11 @@ const RoleManagementList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '修改人',
+      dataIndex: 'update_user',
+      hideInSearch: true,
+    },
+    {
       title: '创建时间',
       dataIndex: 'ctime',
       hideInSearch: true,
@@ -182,12 +187,10 @@ const RoleManagementList: React.FC = () => {
                 message: '角色名称不能为空',
               },
             ]}
-            width="md"
             name="name"
           />
           <ProFormSelect
             options={data.map(item => ({ value: item.id, label: item.name }))}
-            width="md"
             name="role_type"
             label="角色类型"
             rules={[

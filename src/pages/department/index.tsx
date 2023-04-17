@@ -31,6 +31,11 @@ const DepartmentList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '修改人',
+      dataIndex: 'update_user',
+      hideInSearch: true,
+    },
+    {
       title: '创建时间',
       dataIndex: 'ctime',
       hideInSearch: true,
@@ -163,7 +168,6 @@ const DepartmentList: React.FC = () => {
                 message: '部门名称不能为空',
               },
             ]}
-            width="md"
             name="name"
           />
         </ModalForm>

@@ -8,7 +8,7 @@ export async function getRoleManagementListApi(params: any, options?: { [key: st
     params,
     ...(options || {}),
   });
-  const { data = [] } = res;
+  const { data } = res;
 
   return data;
 }
