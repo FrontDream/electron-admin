@@ -1,4 +1,4 @@
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Switch } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -104,8 +104,16 @@ const userManagement: React.FC = () => {
       renderText: (val: number) => moment.unix(val).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
+      title: '状态',
+      dataIndex: 'is_active',
+      valueType: 'option',
+      render: (_, record) => {
+        return <Switch checked={record.is_active} />;
+      },
+    },
+    {
       title: '操作',
-      dataIndex: 'option',
+      dataIndex: 'id',
       valueType: 'option',
       render: (_, record) => [
         <a
