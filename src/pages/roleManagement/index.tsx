@@ -167,6 +167,7 @@ const RoleManagementList: React.FC = () => {
         ]}
         request={getRoleManagementListApi}
         columns={columns}
+        pagination={{ pageSize: 10 }}
       />
       {modalVisible && (
         <ModalForm<RoleData>

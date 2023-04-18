@@ -143,6 +143,7 @@ const RoleTypeList: React.FC = () => {
         ]}
         request={getRoleTypeListApi}
         columns={columns}
+        pagination={{ pageSize: 10 }}
       />
       {modalVisible && (
         <ModalForm<RoleTypeData>

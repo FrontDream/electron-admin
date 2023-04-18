@@ -210,6 +210,7 @@ const userManagement: React.FC = () => {
         ]}
         request={getUserListApi}
         columns={columns}
+        pagination={{ pageSize: 10 }}
       />
       {modalVisible && (
         <ModalForm<UserData>

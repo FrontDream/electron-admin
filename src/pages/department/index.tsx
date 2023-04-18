@@ -148,6 +148,7 @@ const DepartmentList: React.FC = () => {
         ]}
         request={getDepartmentListApi}
         columns={columns}
+        pagination={{ pageSize: 10 }}
       />
       {modalVisible && (
         <ModalForm<DepartmentData>
