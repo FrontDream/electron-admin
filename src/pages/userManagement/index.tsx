@@ -1,8 +1,9 @@
-import { Button, message, Popconfirm, Switch } from 'antd';
+import { Button, message, Switch, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, FormInstance, ProFormSelect, ProFormDigit } from '@ant-design/pro-form';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 import {
   UserListItem,
   isSuccess,
@@ -18,9 +19,12 @@ import {
   updateUserApi,
   getDepartmentListApi,
   getRoleManagementListApi,
+  updateUserStatusApi,
 } from '@/services';
 import moment from 'moment';
 import { useRequest } from 'umi';
+
+const { confirm } = Modal;
 
 const userManagement: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -59,6 +63,43 @@ const userManagement: React.FC = () => {
     };
     return pre;
   }, {});
+
+  const handleChangeStatus = (record: UserListItem) => {
+    const { id = 0, status } = record;
+    const txt = status ? '禁用' : '启用';
+    const updateUser = async () => {
+      const hide = message.loading(`正在${txt}`);
+
+      try {
+        const res = await updateUserStatusApi({ id, status: !status });
+
+        if (isSuccess(res)) {
+          message.success(`${txt}成功`);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } else {
+          message.error(`${txt}失败，请重试`);
+        }
+      } catch (error) {
+        console.error('error:', error);
+      } finally {
+        hide();
+      }
+    };
+
+    confirm({
+      title: `确定${txt}该用户吗?`,
+      icon: <ExclamationCircleFilled />,
+      content: status ? '禁用后该用户无法登录！' : '启用后该用户可以登录!',
+      async onOk() {
+        updateUser();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
 
   const columns: ProColumns<UserListItem>[] = [
     {
@@ -105,10 +146,10 @@ const userManagement: React.FC = () => {
     },
     {
       title: '状态',
-      dataIndex: 'is_active',
+      dataIndex: 'status',
       valueType: 'option',
       render: (_, record) => {
-        return <Switch checked={record.is_active} />;
+        return <Switch checked={record.status} onChange={() => handleChangeStatus(record)} />;
       },
     },
     {
@@ -126,15 +167,9 @@ const userManagement: React.FC = () => {
         >
           修改
         </a>,
-        <Popconfirm
-          title="确定删除该用户吗?"
-          okText="确定"
-          cancelText="取消"
-          key="del"
-          onConfirm={() => handleRemove(record)}
-        >
-          <a key="del">删除</a>
-        </Popconfirm>,
+        <a key="del" onClick={() => handleRemove(record)}>
+          删除
+        </a>,
       ],
     },
   ];
@@ -166,25 +201,39 @@ const userManagement: React.FC = () => {
     }
   };
   const handleRemove = async (record: UserListItem) => {
-    const hide = message.loading('正在删除');
-    const { id = 0 } = record;
+    const delUser = async () => {
+      const hide = message.loading('正在删除');
+      const { id = 0 } = record;
 
-    try {
-      const res = await deleteUserApi(id);
+      try {
+        const res = await deleteUserApi(id);
 
-      if (isSuccess(res)) {
-        message.success('删除成功');
-        if (actionRef.current) {
-          actionRef.current.reload();
+        if (isSuccess(res)) {
+          message.success('删除成功');
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } else {
+          message.error('删除失败，请重试');
         }
-      } else {
-        message.error('删除失败，请重试');
+      } catch (error) {
+        console.error('error:', error);
+      } finally {
+        hide();
       }
-    } catch (error) {
-      console.error('error:', error);
-    } finally {
-      hide();
-    }
+    };
+
+    confirm({
+      title: '确定删除该用户吗?',
+      icon: <ExclamationCircleFilled />,
+      content: '删除后无法恢复！',
+      async onOk() {
+        await delUser();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   return (

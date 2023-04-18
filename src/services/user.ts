@@ -53,6 +53,17 @@ export async function deleteUserApi(id: number, options?: { [key: string]: any }
   });
 }
 
+// 修改用户状态
+export async function updateUserStatusApi(data: { id: number; status: boolean }, options?: { [key: string]: any }) {
+  const { id, status } = data;
+
+  return request<Resp<UserListItem>>(`/api/users/user/${id}`, {
+    method: 'PATCH',
+    data: { status },
+    ...(options || {}),
+  });
+}
+
 // 修改用户
 export async function updateUserApi(data: UserData, options?: { [key: string]: any }) {
   const { id, ...rest } = data;

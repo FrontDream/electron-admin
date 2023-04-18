@@ -1,4 +1,4 @@
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -7,6 +7,9 @@ import { RoleManagementListItem, isSuccess, RoleData, TableListPagination, RoleT
 import { getRoleManagementListApi, addRoleApi, deleteRoleApi, updateRoleApi, getRoleTypeListApi } from '@/services';
 import moment from 'moment';
 import { useRequest } from 'umi';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
+const { warning, confirm } = Modal;
 
 const RoleManagementList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -81,15 +84,9 @@ const RoleManagementList: React.FC = () => {
         >
           修改
         </a>,
-        <Popconfirm
-          title="确定删除该角色吗?"
-          okText="确定"
-          cancelText="取消"
-          key="del"
-          onConfirm={() => handleRemove(record)}
-        >
-          <a key="del">删除</a>
-        </Popconfirm>,
+        <a key="del" onClick={() => handleRemove(record)}>
+          删除
+        </a>,
       ],
     },
   ];
@@ -123,25 +120,49 @@ const RoleManagementList: React.FC = () => {
     }
   };
   const handleRemove = async (record: RoleManagementListItem) => {
-    const hide = message.loading('正在删除');
-    const { id = 0 } = record;
+    const { id = 0, is_exists_user, rel_user_list } = record;
 
-    try {
-      const res = await deleteRoleApi(id);
+    console.log('record:', record);
+    const delRole = async () => {
+      const hide = message.loading('正在删除');
 
-      if (isSuccess(res)) {
-        message.success('删除成功');
-        if (actionRef.current) {
-          actionRef.current.reload();
+      try {
+        const res = await deleteRoleApi(id);
+
+        if (isSuccess(res)) {
+          message.success('删除成功');
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } else {
+          message.error('删除失败，请重试');
         }
-      } else {
-        message.error('删除失败，请重试');
+      } catch (error) {
+        console.error('error:', error);
+      } finally {
+        hide();
       }
-    } catch (error) {
-      console.error('error:', error);
-    } finally {
-      hide();
+    };
+
+    if (is_exists_user) {
+      warning({
+        title: '禁止删除',
+        icon: <ExclamationCircleFilled />,
+        content: `该角色正在使用中，请先删除 ${rel_user_list.join(',')} 后重试!`,
+      });
+      return;
     }
+    confirm({
+      title: '确定删除该角色吗?',
+      icon: <ExclamationCircleFilled />,
+      content: '角色删除后，无法恢复需要重新新建！',
+      async onOk() {
+        delRole();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   return (
