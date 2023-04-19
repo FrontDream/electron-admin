@@ -42,8 +42,8 @@ const userManagement: React.FC = () => {
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
   const passwordModalFormRef = useRef<FormInstance>();
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
+  // const { initialState } = useModel('@@initialState');
+  // const { currentUser } = initialState || {};
 
   const { data: departments = [] } = useRequest(async () => {
     const { data = [] } = await getDepartmentListApi({
@@ -183,6 +183,8 @@ const userManagement: React.FC = () => {
           key="updatePassword"
           onClick={() => {
             setPasswordModalVisible(true);
+            setCurrentRow(record);
+            setIsDdd(false);
           }}
         >
           修改密码
@@ -221,7 +223,7 @@ const userManagement: React.FC = () => {
   const onRePasswordFinish = async (values: PasswordData) => {
     try {
       setPasswordConfirmLoading(true);
-      const res = await updatePassword({ ...values, user_id: currentUser.user_id });
+      const res = await updatePassword({ ...values, user_id: currentRow!.id });
 
       if (isSuccess(res, '修改用户密码失败，请重试')) {
         message.success('修改密码成功');

@@ -123,7 +123,7 @@ export interface UserData {
 }
 
 export interface PasswordData {
-  user_id: string;
+  user_id: number;
   old_password: string;
   new_password: string;
 }
