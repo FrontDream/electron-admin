@@ -68,7 +68,7 @@ export async function updateUserStatusApi(data: { id: number; status: boolean },
 export async function updateUserApi(data: UserData, options?: { [key: string]: any }) {
   const { id, ...rest } = data;
 
-  return request<Resp<UserListItem>>(`/api/users/department/${id}`, {
+  return request<Resp<UserListItem>>(`/api/users/user/${id}`, {
     method: 'PUT',
     data: rest,
     ...(options || {}),

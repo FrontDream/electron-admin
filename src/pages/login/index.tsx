@@ -56,7 +56,7 @@ const Login: React.FC = () => {
 
       console.log('====:', res);
 
-      if (isSuccess(res)) {
+      if (isSuccess(res, '登录失败，请重试')) {
         const { data = {} as LoginResData } = res;
 
         setItem('jwt', data.token);
@@ -70,7 +70,6 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
-      message.error('登录失败，请重试');
     } catch (error) {
       console.error('error:', error);
     }
