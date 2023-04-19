@@ -185,14 +185,12 @@ const userManagement: React.FC = () => {
         res = await updateUserApi({ ...values, id: currentRow?.id || 0 });
       }
 
-      if (isSuccess(res)) {
+      if (isSuccess(res, `${isDdd ? '新增' : '修改'}用户失败，请重试！`)) {
         message.success(`${isDdd ? '新增' : '修改'}用户成功`);
         setModalVisible(false);
         if (actionRef.current) {
           actionRef.current.reload();
         }
-      } else {
-        message.error(`${isDdd ? '新增' : '修改'}用户失败，请重试！`);
       }
     } catch (error) {
       console.error('error:', error);
@@ -226,7 +224,7 @@ const userManagement: React.FC = () => {
     confirm({
       title: '确定删除该用户吗?',
       icon: <ExclamationCircleFilled />,
-      content: '删除后无法恢复！',
+      content: '用户删除后，无法恢复！请谨慎删除！',
       async onOk() {
         await delUser();
       },

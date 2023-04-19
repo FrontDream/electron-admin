@@ -1,4 +1,4 @@
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -11,6 +11,9 @@ import {
   updateDepartmentApi,
 } from '@/services/department';
 import moment from 'moment';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
+const { warning, confirm } = Modal;
 
 const DepartmentList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -62,15 +65,10 @@ const DepartmentList: React.FC = () => {
         >
           修改
         </a>,
-        <Popconfirm
-          title="确定删除该部门吗?"
-          okText="确定"
-          cancelText="取消"
-          key="del"
-          onConfirm={() => handleRemove(record)}
-        >
-          <a key="del">删除</a>
-        </Popconfirm>,
+
+        <a key="del" onClick={() => handleRemove(record)}>
+          删除
+        </a>,
       ],
     },
   ];
@@ -104,25 +102,47 @@ const DepartmentList: React.FC = () => {
     }
   };
   const handleRemove = async (record: DepartmentListItem) => {
-    const hide = message.loading('正在删除');
-    const { id = 0 } = record;
+    const { id = 0, is_exists_user, rel_user_list } = record;
+    const delDepartment = async () => {
+      const hide = message.loading('正在删除');
 
-    try {
-      const res = await deleteDepartmentApi(id);
+      try {
+        const res = await deleteDepartmentApi(id);
 
-      if (isSuccess(res)) {
-        message.success('删除成功');
-        if (actionRef.current) {
-          actionRef.current.reload();
+        if (isSuccess(res)) {
+          message.success('删除成功');
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } else {
+          message.error('删除失败，请重试');
         }
-      } else {
-        message.error('删除失败，请重试');
+      } catch (error) {
+        console.error('error:', error);
+      } finally {
+        hide();
       }
-    } catch (error) {
-      console.error('error:', error);
-    } finally {
-      hide();
+    };
+
+    if (is_exists_user) {
+      warning({
+        title: '禁止删除',
+        icon: <ExclamationCircleFilled />,
+        content: `该部门正在使用中，请先删除 ${rel_user_list.join(',')} 等用户或修改这些用户的所属部门后重试!`,
+      });
+      return;
     }
+    confirm({
+      title: '确定删除该部门吗?',
+      icon: <ExclamationCircleFilled />,
+      content: '部门删除后，无法恢复！请谨慎删除！',
+      async onOk() {
+        delDepartment();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   return (

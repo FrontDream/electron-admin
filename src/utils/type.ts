@@ -34,6 +34,8 @@ export interface DepartmentListItem {
   sort_order?: number;
   create_user: string;
   update_user: string;
+  is_exists_user: boolean;
+  rel_user_list: Array<string>;
 }
 export interface RoleTypeListRes extends TableListPagination {
   data: Array<RoleTypeListItem>;

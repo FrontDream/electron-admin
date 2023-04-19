@@ -155,7 +155,7 @@ const RoleManagementList: React.FC = () => {
     confirm({
       title: '确定删除该角色吗?',
       icon: <ExclamationCircleFilled />,
-      content: '角色删除后，无法恢复需要重新新建！',
+      content: '角色删除后，无法恢复！请谨慎删除！',
       async onOk() {
         delRole();
       },
