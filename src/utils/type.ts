@@ -121,3 +121,9 @@ export interface UserData {
   role_id: number;
   id?: number;
 }
+
+export interface PasswordData {
+  user_id: string;
+  old_password: string;
+  new_password: string;
+}

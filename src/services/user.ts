@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { Resp, LoginResData, UserListRes, UserListItem, UserData } from '@/utils/type';
+import { Resp, LoginResData, UserListRes, UserListItem, UserData, PasswordData } from '@/utils/type';
 
 // 登录
 export async function loginApi(data: any, options?: { [key: string]: any }) {
@@ -71,6 +71,15 @@ export async function updateUserApi(data: UserData, options?: { [key: string]: a
   return request<Resp<UserListItem>>(`/api/users/department/${id}`, {
     method: 'PUT',
     data: rest,
+    ...(options || {}),
+  });
+}
+
+// 修改密码
+export async function updatePassword(data: PasswordData, options?: { [key: string]: any }) {
+  return request<Resp<UserListItem>>('/api/users/changePassword', {
+    method: 'POST',
+    data,
     ...(options || {}),
   });
 }

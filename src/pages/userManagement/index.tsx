@@ -11,6 +11,7 @@ import {
   TableListPagination,
   RoleManagementListItem,
   DepartmentListItem,
+  PasswordData,
 } from '@/utils';
 import {
   getUserListApi,
@@ -20,19 +21,30 @@ import {
   getDepartmentListApi,
   getRoleManagementListApi,
   updateUserStatusApi,
+  updatePassword,
 } from '@/services';
 import moment from 'moment';
-import { useRequest } from 'umi';
+import { useRequest, useModel } from 'umi';
 
 const { confirm } = Modal;
 
+interface PasswordFormData extends PasswordData {
+  password: string;
+}
+
 const userManagement: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [passwordModalVisible, setPasswordModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<UserListItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [passwordConfirmLoading, setPasswordConfirmLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
+  const passwordModalFormRef = useRef<FormInstance>();
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
+
   const { data: departments = [] } = useRequest(async () => {
     const { data = [] } = await getDepartmentListApi({
       current: 1,
@@ -167,6 +179,14 @@ const userManagement: React.FC = () => {
         >
           修改
         </a>,
+        <a
+          key="updatePassword"
+          onClick={() => {
+            setPasswordModalVisible(true);
+          }}
+        >
+          修改密码
+        </a>,
         <a key="del" onClick={() => handleRemove(record)}>
           删除
         </a>,
@@ -196,6 +216,24 @@ const userManagement: React.FC = () => {
       console.error('error:', error);
     } finally {
       setConfirmLoading(false);
+    }
+  };
+  const onRePasswordFinish = async (values: PasswordData) => {
+    try {
+      setPasswordConfirmLoading(true);
+      const res = await updatePassword({ ...values, user_id: currentUser.user_id });
+
+      if (isSuccess(res, '修改用户密码失败，请重试')) {
+        message.success('修改密码成功');
+        setPasswordModalVisible(false);
+        if (actionRef.current) {
+          actionRef.current.reload();
+        }
+      }
+    } catch (error) {
+      console.error('error:', error);
+    } finally {
+      setPasswordConfirmLoading(false);
     }
   };
   const handleRemove = async (record: UserListItem) => {
@@ -335,12 +373,6 @@ const userManagement: React.FC = () => {
             ]}
             fieldProps={{ controls: false }}
           />
-          <ProFormText.Password
-            label="密码"
-            name="password"
-            rules={[{ required: true, message: '请输入用户登录密码' }]}
-            placeholder={'请输入用户登录密码'}
-          />
           <ProFormText
             label={'工号'}
             name="job_number"
@@ -351,6 +383,86 @@ const userManagement: React.FC = () => {
               },
             ]}
             placeholder={'请输入工号'}
+          />
+          {isDdd && (
+            <>
+              <ProFormText.Password
+                label="密码"
+                name="password"
+                placeholder={'请输入用户登录密码'}
+                rules={[
+                  { required: true, message: '请输入用户登录密码' },
+                  {
+                    pattern: /^(?![^a-zA-Z]+$)(?!\\D+$).{8,16}$/,
+                    message: '8-16位字符，必须包括字母和数字',
+                  },
+                ]}
+              />
+              <ProFormText.Password
+                label="确认密码"
+                name="rePassword"
+                dependencies={['password']}
+                placeholder={'请输入用户登录密码'}
+                rules={[
+                  { required: true, message: '请输入用户登录密码' },
+                  ({ getFieldValue }) => ({
+                    validator(rule, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject('密码与确认新密码不同！');
+                    },
+                  }),
+                ]}
+              />
+            </>
+          )}
+        </ModalForm>
+      )}
+      {passwordModalVisible && (
+        <ModalForm<PasswordFormData>
+          formRef={passwordModalFormRef}
+          modalProps={{ centered: true, confirmLoading: passwordConfirmLoading }}
+          title={'修改密码'}
+          width="400px"
+          visible={passwordModalVisible}
+          onVisibleChange={setPasswordModalVisible}
+          onFinish={onRePasswordFinish}
+        >
+          <ProFormText.Password
+            label="旧密码"
+            name="old_password"
+            placeholder={'请输入用户旧密码'}
+            rules={[
+              { required: true, message: '请输入用户旧密码' },
+              {
+                pattern: /^(?![^a-zA-Z]+$)(?!\\D+$).{8,16}$/,
+                message: '8-16位字符，必须包括字母和数字',
+              },
+            ]}
+          />
+          <ProFormText.Password
+            label="新密码"
+            name="password"
+            placeholder={'请输入用户新密码'}
+            rules={[{ required: true, message: '请输入用户新密码' }]}
+          />
+          <ProFormText.Password
+            label="确认新密码"
+            name="new_password"
+            dependencies={['password']}
+            placeholder={'请输入用户新密码'}
+            rules={[
+              { required: true, message: '请输入用户新密码' },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('新密码与确认新密码不同！');
+                },
+              }),
+            ]}
           />
         </ModalForm>
       )}
