@@ -127,3 +127,42 @@ export interface PasswordData {
   old_password: string;
   new_password: string;
 }
+
+export interface DocumentDetail {
+  create_by: number;
+  create_user: string;
+  ctime: number;
+  file_path: string;
+  id: number;
+  mtime: number;
+  name: string;
+  parent_id: number;
+  size: string;
+  type: number;
+  update_by: number;
+  update_user: string;
+  url: string;
+}
+export interface DocumentListItem {
+  create_by: string;
+  create_user: string;
+  ctime: number;
+  file_path: string;
+  id: number;
+  mtime: number;
+  name: string;
+  parent_id: number;
+  size: string;
+  type: number;
+  update_by: string;
+  update_user: string;
+  url: string;
+}
+
+export interface DocumentData {
+  file_path: string;
+  name: string;
+  parent_id: number;
+  size: string;
+  type: number;
+}

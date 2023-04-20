@@ -115,6 +115,12 @@ export default defineConfig({
       component: './userManagement',
     },
     {
+      name: '文件管理',
+      icon: 'smile',
+      path: '/fileManagement',
+      component: './documentManagement',
+    },
+    {
       path: '/form',
       icon: 'form',
       name: 'form',
