@@ -166,3 +166,22 @@ export interface DocumentData {
   size: string;
   type: number;
 }
+
+export interface CertificateListRes extends TableListPagination {
+  data: Array<CertificatetItem>;
+}
+export interface CertificatetItem {
+  create_by: number;
+  create_user: string;
+  ctime: number;
+  id: number;
+  mtime: number;
+  name: string;
+  sort_order: number;
+  update_by: number;
+  update_user: string;
+}
+
+export interface CertificateData {
+  name: string;
+}

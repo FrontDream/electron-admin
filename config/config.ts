@@ -115,6 +115,12 @@ export default defineConfig({
       component: './userManagement',
     },
     {
+      name: '证书类型管理',
+      icon: 'smile',
+      path: '/certificateType',
+      component: './certificateType',
+    },
+    {
       name: '文件管理',
       icon: 'smile',
       path: '/fileManagement',
