@@ -185,3 +185,84 @@ export interface CertificatetItem {
 export interface CertificateData {
   name: string;
 }
+
+export interface CertificatePersonListRes extends TableListPagination {
+  data: Array<CertificatetPersonItem>;
+}
+
+/**
+ * 学历枚举id， (1, "初中"),         (2, "高中"),         (3, "中专"),         (4, "大专"),         (5,
+ * "本科"),         (6, "研究生"),
+ */
+export enum EducationType {
+  MiddleSchool = 1,
+  HightSchool = 2,
+  SecondarySchool = 3,
+  JuniorCollege = 4,
+  Undergraduate = 5,
+  Master = 6,
+}
+export interface CertificatetPersonItem {
+  /**
+   * 公司
+   */
+  company: string;
+  create_by?: number;
+  create_user?: string;
+  ctime?: number;
+
+  edu_background: EducationType;
+  /**
+   * 学历名
+   */
+  edu_background_name?: string;
+  /**
+   * 入职时间
+   */
+  entry_time: string;
+  /**
+   * 证件失效时间
+   */
+  expire_time: string;
+  /**
+   * 性别id
+   */
+  gender?: number;
+  /**
+   * 性别名
+   */
+  gender_name?: string;
+  id?: number;
+  /**
+   * 证件号
+   */
+  id_number?: string;
+  mtime?: number;
+  /**
+   * 证书人名称
+   */
+  name?: string;
+  /**
+   * 电话号码
+   */
+  phone?: string;
+  /**
+   * 离职时间
+   */
+  resign_time?: string;
+  update_by?: number;
+  update_user?: string;
+}
+
+export interface CertificatetPersonData {
+  company: string;
+  edu_background: EducationType;
+  entry_time: string;
+  expire_time: string;
+  gender: number;
+  id_number: string;
+  name: string;
+  phone: string;
+  resign_time: string;
+  id?: number;
+}

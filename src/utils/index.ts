@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { EducationType } from './type';
 export * from './type';
 export const setItem = (key: string, value: string) => {
   localStorage.setItem(key, value);
@@ -24,3 +25,30 @@ export const isSuccess = (res: any, msg?: string) => {
   }
   return false;
 };
+
+export const educationOptions = [
+  {
+    label: '初中',
+    value: EducationType.MiddleSchool,
+  },
+  {
+    label: '高中',
+    value: EducationType.HightSchool,
+  },
+  {
+    label: '中专',
+    value: EducationType.SecondarySchool,
+  },
+  {
+    label: '大专',
+    value: EducationType.JuniorCollege,
+  },
+  {
+    label: '本科',
+    value: EducationType.Undergraduate,
+  },
+  {
+    label: '硕士',
+    value: EducationType.Master,
+  },
+];

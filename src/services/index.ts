@@ -4,3 +4,4 @@ export * from './user';
 export * from './roleManagement';
 export * from './document';
 export * from './certificateType';
+export * from './certificatePerson';
