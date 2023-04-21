@@ -25,6 +25,7 @@ import {
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import styles from './index.less';
 
 const { warning, confirm } = Modal;
 
@@ -250,6 +251,7 @@ const CertificatePersonList: React.FC = () => {
           colProps={{
             span: 12,
           }}
+          className={styles.modalCon}
         >
           <ProFormText
             label={'姓名'}
