@@ -183,6 +183,9 @@ export interface CertificatetItem {
   sort_order: number;
   update_by: number;
   update_user: string;
+  can_delete: boolean;
+  is_exists_cert: boolean;
+  rel_cert_list: Array<string>;
 }
 
 export interface CertificateData {

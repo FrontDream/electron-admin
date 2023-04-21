@@ -106,7 +106,7 @@ const RoleTypeList: React.FC = () => {
     const { id = 0, is_exists_role, rel_role_list } = record;
 
     console.log('record:', record);
-    const delRole = async () => {
+    const del = async () => {
       const hide = message.loading('正在删除');
 
       try {
@@ -140,7 +140,7 @@ const RoleTypeList: React.FC = () => {
       icon: <ExclamationCircleFilled />,
       content: '角色类型删除后，无法恢复！请谨慎删除！',
       async onOk() {
-        delRole();
+        del();
       },
       onCancel() {
         console.log('Cancel');

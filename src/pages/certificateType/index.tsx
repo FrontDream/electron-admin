@@ -52,24 +52,30 @@ const CertificateTypeList: React.FC = () => {
     },
     {
       title: '操作',
-      dataIndex: 'option',
+      dataIndex: 'id',
       valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="update"
-          onClick={() => {
-            setModalVisible(true);
-            setCurrentRow(record);
-            setIsDdd(false);
-          }}
-        >
-          修改
-        </a>,
+      render: (_, record) => {
+        const { can_delete } = record;
 
-        <a key="del" onClick={() => handleRemove(record)}>
-          删除
-        </a>,
-      ],
+        if (can_delete) {
+          return [
+            <a
+              key="update"
+              onClick={() => {
+                setModalVisible(true);
+                setCurrentRow(record);
+                setIsDdd(false);
+              }}
+            >
+              修改
+            </a>,
+            <a key="del" onClick={() => handleRemove(record)}>
+              删除
+            </a>,
+          ];
+        }
+        return [];
+      },
     },
   ];
 
@@ -102,8 +108,8 @@ const CertificateTypeList: React.FC = () => {
     }
   };
   const handleRemove = async (record: CertificatetItem) => {
-    const { id = 0, is_exists_user, rel_user_list } = record;
-    const delDepartment = async () => {
+    const { id = 0, is_exists_cert, rel_cert_list } = record;
+    const del = async () => {
       const hide = message.loading('正在删除');
 
       try {
@@ -122,11 +128,13 @@ const CertificateTypeList: React.FC = () => {
       }
     };
 
-    if (is_exists_user) {
+    if (is_exists_cert) {
       warning({
         title: '禁止删除',
         icon: <ExclamationCircleFilled />,
-        content: `该证书类型正在使用中，请先删除 ${rel_user_list.join(',')} 等证书或修改这些证书的所属证书类型后重试!`,
+        content: `该证书类型正在使用中，请先前往证书管理删除 ${rel_cert_list.join(
+          ',',
+        )} 等证书或修改这些证书的所属证书类型后重试!`,
       });
       return;
     }
@@ -135,7 +143,7 @@ const CertificateTypeList: React.FC = () => {
       icon: <ExclamationCircleFilled />,
       content: '证书类型删除后，无法恢复！请谨慎删除！',
       async onOk() {
-        delDepartment();
+        del();
       },
       onCancel() {
         console.log('Cancel');
