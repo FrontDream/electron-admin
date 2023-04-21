@@ -258,6 +258,8 @@ export interface CertificatetPersonItem {
   resign_time?: string;
   update_by?: number;
   update_user?: string;
+  is_exists_cert: boolean;
+  rel_cert_list: Array<string>;
 }
 
 export interface CertificatetPersonData {

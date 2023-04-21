@@ -152,8 +152,8 @@ const CertificatePersonList: React.FC = () => {
     }
   };
   const handleRemove = async (record: CertificatetPersonItem) => {
-    const { id = 0, is_exists_user, rel_user_list } = record;
-    const delDepartment = async () => {
+    const { id = 0, is_exists_cert, rel_cert_list } = record;
+    const del = async () => {
       const hide = message.loading('正在删除');
 
       try {
@@ -172,11 +172,13 @@ const CertificatePersonList: React.FC = () => {
       }
     };
 
-    if (is_exists_user) {
+    if (is_exists_cert) {
       warning({
         title: '禁止删除',
         icon: <ExclamationCircleFilled />,
-        content: `该证书类型正在使用中，请先删除 ${rel_user_list.join(',')} 等证书或修改这些证书的所属证书类型后重试!`,
+        content: `该人员正在使用中，请先前往证书管理删除 ${rel_cert_list.join(
+          ',',
+        )} 等证书或修改这些证书的所属人员后重试!`,
       });
       return;
     }
@@ -185,7 +187,7 @@ const CertificatePersonList: React.FC = () => {
       icon: <ExclamationCircleFilled />,
       content: '人员删除后，无法恢复！请谨慎删除！',
       async onOk() {
-        delDepartment();
+        del();
       },
       onCancel() {
         console.log('Cancel');
