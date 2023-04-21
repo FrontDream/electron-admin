@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, FormInstance } from '@ant-design/pro-form';
-import { CertificatetItem, isSuccess, DepartmentData, TableListPagination } from '@/utils';
+import { CertificateTypeItem, isSuccess, DepartmentData, TableListPagination } from '@/utils';
 import {
   getCertificateTypeListApi,
   addCertificateTypeApi,
@@ -18,12 +18,12 @@ const { warning, confirm } = Modal;
 const CertificateTypeList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<CertificatetItem>();
+  const [currentRow, setCurrentRow] = useState<CertificateTypeItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
 
-  const columns: ProColumns<CertificatetItem>[] = [
+  const columns: ProColumns<CertificateTypeItem>[] = [
     {
       title: '证书类型',
       dataIndex: 'name',
@@ -107,7 +107,7 @@ const CertificateTypeList: React.FC = () => {
       setConfirmLoading(false);
     }
   };
-  const handleRemove = async (record: CertificatetItem) => {
+  const handleRemove = async (record: CertificateTypeItem) => {
     const { id = 0, is_exists_cert, rel_cert_list } = record;
     const del = async () => {
       const hide = message.loading('正在删除');
@@ -153,7 +153,7 @@ const CertificateTypeList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<CertificatetItem, TableListPagination>
+      <ProTable<CertificateTypeItem, TableListPagination>
         headerTitle="证书类型列表"
         actionRef={actionRef}
         rowKey="id"

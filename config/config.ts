@@ -127,7 +127,7 @@ export default defineConfig({
       routes: [
         {
           path: '/certificate',
-          redirect: '/certificate/type',
+          redirect: '/certificate/list',
         },
         {
           name: '证书类型管理',
@@ -140,6 +140,12 @@ export default defineConfig({
           icon: 'smile',
           path: '/certificate/person',
           component: './certificatePerson',
+        },
+        {
+          name: '证书',
+          icon: 'smile',
+          path: '/certificate/list',
+          component: './certificateList',
         },
       ],
     },

@@ -170,10 +170,10 @@ export interface DocumentData {
   type: number;
 }
 
-export interface CertificateListRes extends TableListPagination {
-  data: Array<CertificatetItem>;
+export interface CertificateTypeListRes extends TableListPagination {
+  data: Array<CertificateTypeItem>;
 }
-export interface CertificatetItem {
+export interface CertificateTypeItem {
   create_by: number;
   create_user: string;
   ctime: number;
@@ -188,7 +188,7 @@ export interface CertificatetItem {
   rel_cert_list: Array<string>;
 }
 
-export interface CertificateData {
+export interface CertificateTypeData {
   name: string;
 }
 
@@ -273,4 +273,99 @@ export interface CertificatetPersonData {
   phone: string;
   resign_time: string;
   id?: number;
+}
+export interface CertificateRes extends TableListPagination {
+  data: Array<CertificateItem>;
+}
+
+export interface CertificateItem {
+  appendix_list: AppendixList;
+  /**
+   * 分类
+   */
+  category?: string;
+  /**
+   * 证书编号
+   */
+  cert_code?: string;
+  /**
+   * 证书颁布时间
+   */
+  cert_data?: string;
+  /**
+   * 关联证书人员id
+   */
+  cert_id?: number;
+  /**
+   * 代码标注，1-是 2-否
+   */
+  code_label?: number;
+  /**
+   * 标注名称
+   */
+  code_label_name: string;
+  create_by?: number;
+  create_user?: string;
+  ctime?: number;
+  /**
+   * 失效时间
+   */
+  expire_time?: string;
+  id?: number;
+  /**
+   * 发证机关
+   */
+  issue_authority?: string;
+  /**
+   * 专业
+   */
+  major?: string;
+  mtime?: number;
+  /**
+   * 失效提示时间，3代表3个月
+   */
+  reminder_time?: number;
+  /**
+   * 证书类型id
+   */
+  type?: number;
+  /**
+   * 类型名称
+   */
+  type_name: string;
+  update_by?: number;
+  update_user?: string;
+}
+
+export interface AppendixList {
+  /**
+   * 附件path
+   */
+  file_path: string;
+  /**
+   * 附件名
+   */
+  name: string;
+  /**
+   * url
+   */
+  url: string;
+}
+export interface CertificateData {
+  cert_id: number;
+  cert_code: string;
+  type: number;
+  category: string;
+  major: string;
+  cert_data: string;
+  expire_time: string;
+  code_label: number;
+  reminder_time: string;
+  issue_authority: string;
+  appendix_list: Array<FileType>;
+}
+
+export interface FileType {
+  name: string;
+  file_path: string;
 }
