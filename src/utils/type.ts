@@ -50,6 +50,9 @@ export interface RoleTypeListItem {
   sort_order?: number;
   create_user: string;
   update_user: string;
+  can_delete: boolean;
+  is_exists_role: boolean;
+  rel_role_list: Array<string>;
 }
 export interface DepartmentData {
   name: string;

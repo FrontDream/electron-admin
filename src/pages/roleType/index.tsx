@@ -1,4 +1,4 @@
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -6,6 +6,9 @@ import { ModalForm, ProFormText, FormInstance } from '@ant-design/pro-form';
 import { RoleTypeListItem, isSuccess, TableListPagination, RoleTypeData } from '@/utils';
 import { getRoleTypeListApi, addRoleTypeApi, deleteRoleTypeApi, updateRoleTypeApi } from '@/services';
 import moment from 'moment';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
+const { warning, confirm } = Modal;
 
 const RoleTypeList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -44,29 +47,30 @@ const RoleTypeList: React.FC = () => {
     },
     {
       title: '操作',
-      dataIndex: 'option',
+      dataIndex: 'id',
       valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="update"
-          onClick={() => {
-            setModalVisible(true);
-            setCurrentRow(record);
-            setIsDdd(false);
-          }}
-        >
-          修改
-        </a>,
-        <Popconfirm
-          title="确定删除该角色类型吗?"
-          okText="确定"
-          cancelText="取消"
-          key="del"
-          onConfirm={() => handleRemove(record)}
-        >
-          <a key="del">删除</a>
-        </Popconfirm>,
-      ],
+      render: (_, record) => {
+        const { can_delete } = record;
+
+        if (can_delete) {
+          return [
+            <a
+              key="update"
+              onClick={() => {
+                setModalVisible(true);
+                setCurrentRow(record);
+                setIsDdd(false);
+              }}
+            >
+              修改
+            </a>,
+            <a key="del" onClick={() => handleRemove(record)}>
+              删除
+            </a>,
+          ];
+        }
+        return [];
+      },
     },
   ];
 
@@ -99,25 +103,49 @@ const RoleTypeList: React.FC = () => {
     }
   };
   const handleRemove = async (record: RoleTypeListItem) => {
-    const hide = message.loading('正在删除');
-    const { id = 0 } = record;
+    const { id = 0, is_exists_role, rel_role_list } = record;
 
-    try {
-      const res = await deleteRoleTypeApi(id);
+    console.log('record:', record);
+    const delRole = async () => {
+      const hide = message.loading('正在删除');
 
-      if (isSuccess(res)) {
-        message.success('删除成功');
-        if (actionRef.current) {
-          actionRef.current.reload();
+      try {
+        const res = await deleteRoleTypeApi(id);
+
+        if (isSuccess(res)) {
+          message.success('删除成功');
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } else {
+          message.error('删除失败，请重试');
         }
-      } else {
-        message.error('删除失败，请重试');
+      } catch (error) {
+        console.error('error:', error);
+      } finally {
+        hide();
       }
-    } catch (error) {
-      console.error('error:', error);
-    } finally {
-      hide();
+    };
+
+    if (is_exists_role) {
+      warning({
+        title: '禁止删除',
+        icon: <ExclamationCircleFilled />,
+        content: `该角色类型正在使用中，请先前往角色管理模块，删除名为 ${rel_role_list.join(',')} 的角色后重试!`,
+      });
+      return;
     }
+    confirm({
+      title: '确定删除该角色类型吗?',
+      icon: <ExclamationCircleFilled />,
+      content: '角色类型删除后，无法恢复！请谨慎删除！',
+      async onOk() {
+        delRole();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   return (
