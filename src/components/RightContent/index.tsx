@@ -60,7 +60,7 @@ const GlobalHeaderRight: React.FC = () => {
       </span>
       <NoticeIconView />
       <Avatar menu />
-      <SelectLang className={styles.action} />
+      {/* <SelectLang className={styles.action} /> */}
     </Space>
   );
 };

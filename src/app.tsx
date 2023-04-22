@@ -60,7 +60,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.username,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
@@ -71,6 +71,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         history.push(loginPath);
       }
     },
+    disableMobile: true,
     // links: isDev
     //   ? [
     //       <Link key="openapi" to="/umi/plugin/openapi" target="_blank">

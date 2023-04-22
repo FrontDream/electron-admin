@@ -51,6 +51,7 @@ const CertificatePersonList: React.FC = () => {
     {
       title: '证件号码',
       dataIndex: 'id_number',
+      copyable: true,
     },
     {
       title: '证件失效时间',

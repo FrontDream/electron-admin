@@ -110,19 +110,16 @@ export default defineConfig({
         },
         {
           name: '类型管理',
-          icon: 'smile',
           path: '/certificate/type',
           component: './certificateType',
         },
         {
           name: '人员管理',
-          icon: 'smile',
           path: '/certificate/person',
           component: './certificatePerson',
         },
         {
           name: '证书列表',
-          icon: 'smile',
           path: '/certificate/list',
           component: './certificateList',
         },
@@ -130,7 +127,7 @@ export default defineConfig({
     },
     {
       name: '文件管理',
-      icon: 'smile',
+      icon: 'FileDoneOutlined',
       path: '/fileManagement',
       component: './documentManagement',
     },
