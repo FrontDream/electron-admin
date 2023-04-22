@@ -3,9 +3,11 @@
 .container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100vh;
   overflow: auto;
-  background: @layout-body-background;
+  background-color: #f7f2eb;
 }
 
 .lang {
@@ -25,11 +27,18 @@
 
 @media (min-width: @screen-md-min) {
   .container {
+    /* 设置背景颜色，背景图加载过程中会显示背景色 */
+    background-color: #f7f2eb;
     background-image: url('/loginBack.svg');
-    // background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
+    /* 背景图不平铺 */
     background-repeat: no-repeat;
-    background-position: center 110px;
-    background-size: 100%;
+    // background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
+    /* 背景图垂直、水平均居中 */
+    background-position: center center;
+    /* 让背景图基于容器大小伸缩 */
+    background-size: cover;
+    /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
+    background-attachment: fixed;
   }
 
   .content {
@@ -47,5 +56,61 @@
 
   &:hover {
     color: @primary-color;
+  }
+}
+
+.con {
+  width: 558px;
+  height: 535px;
+  background: #fff9f0;
+  border-radius: 8px;
+  opacity: 1;
+  .titles {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 67px;
+    .logo {
+      width: 65px;
+      height: 65px;
+    }
+    .title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-left: 3px;
+
+      .titleCn {
+        color: rgba(0, 0, 0, 0.85);
+        font-weight: 500;
+        font-size: 33px;
+        font-family: Alibaba PuHuiTi-Medium, Alibaba PuHuiTi;
+        letter-spacing: 5px;
+        -webkit-background-clip: text;
+      }
+      .titleEn {
+      }
+    }
+  }
+  .form {
+    margin-top: 10px;
+    .loginType {
+      width: 96px;
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      color: #c8793e;
+      font-weight: 400;
+      font-size: 16px;
+      font-family: Abhaya Libre-Regular, Abhaya Libre;
+      border-bottom: 2px solid #c8793e;
+    }
+    :global {
+      .ant-input-prefix {
+        .anticon {
+          color: #c8793e;
+        }
+      }
+    }
   }
 }
