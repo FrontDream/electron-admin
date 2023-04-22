@@ -60,69 +60,48 @@ export default defineConfig({
   // umi routes: https://umijs.org/docs/routing
   routes: [
     {
+      name: '用户管理',
+      icon: 'UserOutlined',
       path: '/user',
-      layout: false,
       routes: [
+        {
+          path: '/user',
+          redirect: '/user/userManagement',
+        },
+        {
+          name: '用户管理',
+          icon: 'smile',
+          path: '/user/userManagement',
+          component: './userManagement',
+        },
+        {
+          name: '部门管理',
+          icon: 'smile',
+          path: '/user/department',
+          component: './department',
+        },
+        {
+          name: '角色类型管理',
+          icon: 'smile',
+          path: '/user/roleType',
+          component: './roleType',
+        },
+        {
+          name: '角色管理',
+          icon: 'smile',
+          path: '/user/role',
+          component: './roleManagement',
+        },
         {
           path: '/user/login',
           layout: false,
-          name: 'login',
           component: './login',
-        },
-        {
-          path: '/user',
-          redirect: '/user/login',
-        },
-        {
-          name: 'register-result',
-          icon: 'smile',
-          path: '/user/register-result',
-          component: './user/register-result',
-        },
-        {
-          name: 'register',
-          icon: 'smile',
-          path: '/user/register',
-          component: './user/register',
-        },
-        {
-          component: '404',
         },
       ],
     },
     {
-      name: '部门管理',
-      icon: 'smile',
-      path: '/department',
-      component: './department',
-    },
-    {
-      name: '角色类型管理',
-      icon: 'smile',
-      path: '/roleType',
-      component: './roleType',
-    },
-    {
-      name: '角色管理',
-      icon: 'smile',
-      path: '/role',
-      component: './roleManagement',
-    },
-    {
-      name: '用户管理',
-      icon: 'smile',
-      path: '/userManagement',
-      component: './userManagement',
-    },
-    {
-      name: '文件管理',
-      icon: 'smile',
-      path: '/fileManagement',
-      component: './documentManagement',
-    },
-    {
       name: '证书管理',
-      icon: 'smile',
+      icon: 'SafetyCertificateOutlined',
       path: '/certificate',
       routes: [
         {
@@ -147,14 +126,13 @@ export default defineConfig({
           path: '/certificate/list',
           component: './certificateList',
         },
-        {
-          name: '证书详情',
-          icon: 'smile',
-          path: '/certificate/list/:id',
-          component: './certificateList/detail',
-          hidden: true,
-        },
       ],
+    },
+    {
+      name: '文件管理',
+      icon: 'smile',
+      path: '/fileManagement',
+      component: './documentManagement',
     },
     {
       path: '/list',

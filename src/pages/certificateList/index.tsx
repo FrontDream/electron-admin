@@ -1,4 +1,4 @@
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Drawer, Card } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -11,6 +11,7 @@ import {
   ProFormDependency,
   ProFormUploadDragger,
 } from '@ant-design/pro-form';
+import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import type { RangePickerProps } from 'antd/es/date-picker';
 import {
   CertificateItem,
@@ -21,11 +22,16 @@ import {
   useCertificatetPersons,
   useCertificatetTypes,
 } from '@/utils';
-import { getCertificateListApi, addCertificateApi, deleteCertificateApi, updateCertificateApi } from '@/services';
+import {
+  getCertificateListApi,
+  addCertificateApi,
+  deleteCertificateApi,
+  updateCertificateApi,
+  uploadFileApi,
+} from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
-import { useHistory } from 'react-router-dom';
 
 const { warning, confirm } = Modal;
 
@@ -34,23 +40,79 @@ const CertificateList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<CertificateItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
-  const history = useHistory();
 
   const certificatetPersons = useCertificatetPersons();
   const certificatetTypes = useCertificatetTypes();
   const certificateTypeEnum = listToEnum(certificatetTypes);
   const certificatePersonEnum = listToEnum(certificatetPersons);
-
-  const handleDetail = (record: CertificateItem) => {
-    history.push(`/certificate/list/${record.id}`);
-  };
-
-  const columns: ProColumns<CertificateItem>[] = [
+  const descriptionColumns: ProDescriptionsItemProps<CertificateItem>[] = [
     {
       title: '证书编号',
       dataIndex: 'cert_code',
+      copyable: true,
+    },
+    {
+      title: '证书人员',
+      dataIndex: 'cert_id',
+      valueEnum: certificatePersonEnum,
+    },
+    {
+      title: '岗位类别',
+      dataIndex: 'category',
+    },
+    {
+      title: '专业',
+      dataIndex: 'major',
+    },
+    {
+      title: '发证日期',
+      dataIndex: 'cert_data',
+    },
+    {
+      title: '失效日期',
+      dataIndex: 'expire_time',
+    },
+    {
+      title: '代码标注',
+      dataIndex: 'code_label',
+      renderText: (val: number) => (val === 1 ? '是' : '否'),
+    },
+    {
+      title: '失效提示时间',
+      dataIndex: 'reminder_time',
+    },
+    {
+      title: '证书类型',
+      dataIndex: 'type',
+      valueEnum: certificateTypeEnum,
+    },
+    {
+      title: '创建人',
+      dataIndex: 'create_user',
+    },
+    {
+      title: '修改人',
+      dataIndex: 'update_user',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'ctime',
+      renderText: (val: number) => moment.unix(val).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      title: '修改时间',
+      dataIndex: 'mtime',
+      renderText: (val: number) => moment.unix(val).format('YYYY-MM-DD HH:mm:ss'),
+    },
+  ];
+  const tableColumns: ProColumns<CertificateItem>[] = [
+    {
+      title: '证书编号',
+      dataIndex: 'cert_code',
+      copyable: true,
     },
     {
       title: '证书人员',
@@ -135,7 +197,8 @@ const CertificateList: React.FC = () => {
         <a
           key="detail"
           onClick={() => {
-            handleDetail(record);
+            setCurrentRow(record);
+            setShowDetail(true);
           }}
         >
           详情
@@ -151,7 +214,10 @@ const CertificateList: React.FC = () => {
   const onFinish = async (values: CertificateData) => {
     console.log('values:', values);
     const { appendix_list = [], ...rest } = values;
+    const file = appendix_list[0].originFileObj;
 
+    await uploadFileApi({ file });
+    return;
     try {
       setConfirmLoading(true);
       let res = {};
@@ -250,7 +316,7 @@ const CertificateList: React.FC = () => {
           </Button>,
         ]}
         request={getCertificateListApi}
-        columns={columns}
+        columns={tableColumns}
         pagination={{ pageSize: 10 }}
         columnsState={{
           defaultValue: {
@@ -288,7 +354,7 @@ const CertificateList: React.FC = () => {
           }}
           className={styles.modalCon}
         >
-          <ProFormText
+          {/* <ProFormText
             label={'证书编号'}
             name="cert_code"
             rules={[
@@ -344,14 +410,10 @@ const CertificateList: React.FC = () => {
           />
           <ProFormDependency name={['expire_time']}>
             {({ expire_time }) => {
-              console.log('expire_time:', expire_time);
-
               const month = moment(expire_time).subtract(3, 'months');
               const disabledDate: RangePickerProps['disabledDate'] = current => {
                 return current && current > month.endOf('date');
               };
-
-              console.log(month);
 
               return (
                 <ProFormDatePicker
@@ -385,7 +447,7 @@ const CertificateList: React.FC = () => {
             placeholder={'请选择证书类型'}
             rules={[{ required: true, message: '请选择证书类型' }]}
             options={certificatetTypes.map(item => ({ label: item.name, value: item.id }))}
-          />
+          /> */}
           <ProFormUploadDragger
             max={4}
             label="证书附件"
@@ -396,6 +458,24 @@ const CertificateList: React.FC = () => {
           />
         </ModalForm>
       )}
+      <Drawer
+        width={'50%'}
+        open={showDetail}
+        onClose={() => {
+          setCurrentRow({} as CertificateItem);
+          setShowDetail(false);
+        }}
+        closable={true}
+        title={'证书详情'}
+      >
+        <ProDescriptions<CertificateItem>
+          column={2}
+          title={'基本信息'}
+          dataSource={currentRow}
+          columns={descriptionColumns}
+        />
+        <Card title={'附件'}></Card>
+      </Drawer>
     </PageContainer>
   );
 };

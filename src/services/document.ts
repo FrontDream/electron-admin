@@ -41,7 +41,7 @@ export async function deleteDocumentApi(id: number, options?: { [key: string]: a
   });
 }
 
-// 修改部门
+// 修改
 export async function updateDocumentApi(data: { id: number; name: string }, options?: { [key: string]: any }) {
   const { id, name } = data;
 
@@ -50,4 +50,22 @@ export async function updateDocumentApi(data: { id: number; name: string }, opti
     data: { name },
     ...(options || {}),
   });
+}
+
+export async function uploadFileApi(data: { file?: File; url: string }, options?: { [key: string]: any }) {
+  const { file, url } = data;
+
+  console.log('file:', file);
+
+  return request<Resp<any>>(
+    'http://43.142.36.238:9000/test//docs/20230411/2.docx?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=Y8qMmEg0SLGSWUmb%2F20230422%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230422T042504Z&X-Amz-Expires=259200&X-Amz-SignedHeaders=host&X-Amz-Signature=db1368f33674580d0cf8bd55128e9c231769776891536d78fc7b7cdee9b35ddd',
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
+      data: file,
+      ...(options || {}),
+    },
+  );
 }
