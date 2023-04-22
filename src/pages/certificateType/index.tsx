@@ -175,6 +175,24 @@ const CertificateTypeList: React.FC = () => {
         request={getCertificateTypeListApi}
         columns={columns}
         pagination={{ pageSize: 10 }}
+        columnsState={{
+          defaultValue: {
+            ctime: {
+              show: false,
+            },
+            mtime: {
+              show: false,
+            },
+            create_user: {
+              show: false,
+            },
+            update_user: {
+              show: false,
+            },
+          },
+          persistenceKey: 'certificatetType',
+          persistenceType: 'localStorage',
+        }}
       />
       {modalVisible && (
         <ModalForm<DepartmentData>

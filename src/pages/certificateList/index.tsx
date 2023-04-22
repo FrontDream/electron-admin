@@ -333,7 +333,7 @@ const CertificateList: React.FC = () => {
               show: false,
             },
           },
-          persistenceKey: 'certificatet',
+          persistenceKey: 'certificateList',
           persistenceType: 'localStorage',
         }}
       />

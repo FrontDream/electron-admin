@@ -189,6 +189,24 @@ const RoleManagementList: React.FC = () => {
         request={getRoleManagementListApi}
         columns={columns}
         pagination={{ pageSize: 10 }}
+        columnsState={{
+          defaultValue: {
+            ctime: {
+              show: false,
+            },
+            mtime: {
+              show: false,
+            },
+            create_user: {
+              show: false,
+            },
+            update_user: {
+              show: false,
+            },
+          },
+          persistenceKey: 'roleManagement',
+          persistenceType: 'localStorage',
+        }}
       />
       {modalVisible && (
         <ModalForm<RoleData>

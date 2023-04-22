@@ -169,6 +169,24 @@ const DepartmentList: React.FC = () => {
         request={getDepartmentListApi}
         columns={columns}
         pagination={{ pageSize: 10 }}
+        columnsState={{
+          defaultValue: {
+            ctime: {
+              show: false,
+            },
+            mtime: {
+              show: false,
+            },
+            create_user: {
+              show: false,
+            },
+            update_user: {
+              show: false,
+            },
+          },
+          persistenceKey: 'department',
+          persistenceType: 'localStorage',
+        }}
       />
       {modalVisible && (
         <ModalForm<DepartmentData>

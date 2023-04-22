@@ -12,14 +12,12 @@ import logger from './utils/log';
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
 
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } },
-]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInSubFrames: true,
@@ -65,7 +63,7 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.handle('log', async (event, arg) => {
-  //与渲染进程通信
+  // 与渲染进程通信
   return new Promise((resolve, reject) => {
     logger.info(arg);
   });
@@ -73,6 +71,7 @@ ipcMain.handle('log', async (event, arg) => {
 
 ipcMain.handle('showMessage', (e, options: MessageBoxOptions) => {
   const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
+
   if (!win) return;
   dialog.showMessageBox(win, options);
 });
