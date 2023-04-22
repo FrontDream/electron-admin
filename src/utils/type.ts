@@ -14,6 +14,12 @@ export interface Result {
   token: string;
   user: string;
 }
+
+export interface LoginData {
+  password: string;
+  username: string;
+  rememberMe?: boolean;
+}
 export interface LoginResData {
   id: number;
   role: number;
@@ -193,7 +199,7 @@ export interface CertificateTypeData {
 }
 
 export interface CertificatePersonListRes extends TableListPagination {
-  data: Array<CertificatetPersonItem>;
+  data: Array<CertificatePersonItem>;
 }
 
 /**
@@ -208,7 +214,7 @@ export enum EducationType {
   Undergraduate = 5,
   Master = 6,
 }
-export interface CertificatetPersonItem {
+export interface CertificatePersonItem {
   /**
    * 公司
    */
@@ -238,7 +244,7 @@ export interface CertificatetPersonItem {
    * 性别名
    */
   gender_name?: string;
-  id?: number;
+  id: number;
   /**
    * 证件号
    */
@@ -247,7 +253,7 @@ export interface CertificatetPersonItem {
   /**
    * 证书人名称
    */
-  name?: string;
+  name: string;
   /**
    * 电话号码
    */
@@ -295,7 +301,7 @@ export interface CertificateItem {
   /**
    * 关联证书人员id
    */
-  cert_id?: number;
+  cert_id: number;
   /**
    * 代码标注，1-是 2-否
    */
@@ -328,7 +334,7 @@ export interface CertificateItem {
   /**
    * 证书类型id
    */
-  type?: number;
+  type: number;
   /**
    * 类型名称
    */

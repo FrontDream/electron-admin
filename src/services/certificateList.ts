@@ -43,3 +43,13 @@ export async function updateCertificateApi(data: CertificateData, options?: { [k
     ...(options || {}),
   });
 }
+
+// 详情
+export async function getCertificateDetailApi(id: number, options?: { [key: string]: any }) {
+  const res = await request<Resp<CertificateItem>>(`/api/certs/certPersonRel/${id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+
+  return res;
+}

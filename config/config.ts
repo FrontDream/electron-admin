@@ -130,7 +130,7 @@ export default defineConfig({
           redirect: '/certificate/list',
         },
         {
-          name: '证书类型管理',
+          name: '类型管理',
           icon: 'smile',
           path: '/certificate/type',
           component: './certificateType',
@@ -142,10 +142,17 @@ export default defineConfig({
           component: './certificatePerson',
         },
         {
-          name: '证书',
+          name: '证书列表',
           icon: 'smile',
           path: '/certificate/list',
           component: './certificateList',
+        },
+        {
+          name: '证书详情',
+          icon: 'smile',
+          path: '/certificate/list/:id',
+          component: './certificateList/detail',
+          hidden: true,
         },
       ],
     },
@@ -320,6 +327,7 @@ export default defineConfig({
     // 只有设置为 variable， 才能使用 configProvide 动态设置主色调
     // https://ant.design/docs/react/customize-theme-variable-cn
     'root-entry-name': 'variable',
+    'primary-color': '#C8793E',
   },
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild

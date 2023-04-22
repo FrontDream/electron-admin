@@ -12,18 +12,20 @@ import {
   ProFormUploadDragger,
 } from '@ant-design/pro-form';
 import type { RangePickerProps } from 'antd/es/date-picker';
-import { CertificateItem, isSuccess, CertificateTypeItem, CertificateData, TableListPagination } from '@/utils';
 import {
-  getCertificateListApi,
-  addCertificateApi,
-  deleteCertificateApi,
-  updateCertificateApi,
-  getCertificateTypeListApi,
-} from '@/services';
+  CertificateItem,
+  isSuccess,
+  CertificateData,
+  TableListPagination,
+  listToEnum,
+  useCertificatetPersons,
+  useCertificatetTypes,
+} from '@/utils';
+import { getCertificateListApi, addCertificateApi, deleteCertificateApi, updateCertificateApi } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
-import { useRequest } from 'umi';
+import { useHistory } from 'react-router-dom';
 
 const { warning, confirm } = Modal;
 
@@ -34,27 +36,27 @@ const CertificateList: React.FC = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
+  const history = useHistory();
 
-  const { data: certificatetTypes = [] } = useRequest(async () => {
-    const { data = [] } = await getCertificateTypeListApi({
-      current: 1,
-      pageSize: 9999,
-    });
+  const certificatetPersons = useCertificatetPersons();
+  const certificatetTypes = useCertificatetTypes();
+  const certificateTypeEnum = listToEnum(certificatetTypes);
+  const certificatePersonEnum = listToEnum(certificatetPersons);
 
-    return { data };
-  });
-
-  const certificateTypeEnum = certificatetTypes.reduce((pre, cur: CertificateTypeItem) => {
-    pre[cur.id] = {
-      text: cur.name,
-    };
-    return pre;
-  }, {});
+  const handleDetail = (record: CertificateItem) => {
+    history.push(`/certificate/list/${record.id}`);
+  };
 
   const columns: ProColumns<CertificateItem>[] = [
     {
       title: '证书编号',
       dataIndex: 'cert_code',
+    },
+    {
+      title: '证书人员',
+      dataIndex: 'cert_id',
+      valueType: 'select',
+      valueEnum: certificatePersonEnum,
     },
     {
       title: '岗位类别',
@@ -130,6 +132,14 @@ const CertificateList: React.FC = () => {
         >
           修改
         </a>,
+        <a
+          key="detail"
+          onClick={() => {
+            handleDetail(record);
+          }}
+        >
+          详情
+        </a>,
 
         <a key="del" onClick={() => handleRemove(record)}>
           删除
@@ -140,6 +150,8 @@ const CertificateList: React.FC = () => {
 
   const onFinish = async (values: CertificateData) => {
     console.log('values:', values);
+    const { appendix_list = [], ...rest } = values;
+
     try {
       setConfirmLoading(true);
       let res = {};
@@ -272,7 +284,7 @@ const CertificateList: React.FC = () => {
           initialValues={isDdd ? {} : { ...currentRow }}
           grid
           colProps={{
-            span: 12,
+            span: 8,
           }}
           className={styles.modalCon}
         >
@@ -286,6 +298,13 @@ const CertificateList: React.FC = () => {
               },
             ]}
             placeholder={'请输入证书编号'}
+          />
+          <ProFormSelect
+            name="cert_id"
+            label="证书人员"
+            placeholder={'请选择证书人员'}
+            rules={[{ required: true, message: '请选择证书人员' }]}
+            options={certificatetPersons.map(item => ({ label: item.name, value: item.id }))}
           />
           <ProFormText
             name="category"

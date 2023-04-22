@@ -11,7 +11,7 @@ import {
   FormInstance,
 } from '@ant-design/pro-form';
 import {
-  CertificatetPersonItem,
+  CertificatePersonItem,
   educationOptions,
   isSuccess,
   CertificatetPersonData,
@@ -32,12 +32,12 @@ const { warning, confirm } = Modal;
 const CertificatePersonList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<CertificatetPersonItem>();
+  const [currentRow, setCurrentRow] = useState<CertificatePersonItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
 
-  const columns: ProColumns<CertificatetPersonItem>[] = [
+  const columns: ProColumns<CertificatePersonItem>[] = [
     {
       title: '姓名',
       dataIndex: 'name',
@@ -151,7 +151,7 @@ const CertificatePersonList: React.FC = () => {
       setConfirmLoading(false);
     }
   };
-  const handleRemove = async (record: CertificatetPersonItem) => {
+  const handleRemove = async (record: CertificatePersonItem) => {
     const { id = 0, is_exists_cert, rel_cert_list } = record;
     const del = async () => {
       const hide = message.loading('正在删除');
@@ -197,7 +197,7 @@ const CertificatePersonList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<CertificatetPersonItem, TableListPagination>
+      <ProTable<CertificatePersonItem, TableListPagination>
         headerTitle="证书类型列表"
         actionRef={actionRef}
         rowKey="id"
