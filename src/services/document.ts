@@ -1,5 +1,12 @@
 import { request } from 'umi';
-import { Resp, DocumentDetail, DocumentListItem, DocumentData } from '@/utils/type';
+import {
+  Resp,
+  DocumentDetail,
+  DocumentListItem,
+  DocumentData,
+  TempDocumentData,
+  TempDocumentResData,
+} from '@/utils/type';
 
 // 文件列表
 export async function getDocumentListApi(params: any, options?: { [key: string]: any }) {
@@ -52,20 +59,33 @@ export async function updateDocumentApi(data: { id: number; name: string }, opti
   });
 }
 
-export async function uploadFileApi(data: { file?: File; url: string }, options?: { [key: string]: any }) {
+// 获取临时上传链接
+export async function getTempDocumentUrlApi(data: Array<TempDocumentData>, options?: { [key: string]: any }) {
+  const res = await request<Resp<TempDocumentResData>>('/api/docs/presigned_url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      list: data,
+    },
+    ...(options || {}),
+  });
+  const listData = res.data;
+
+  return listData.list || [];
+}
+
+// 上传至minio
+export async function uploadFileApi(data: { file: File; url: string }, options?: { [key: string]: any }) {
   const { file, url } = data;
 
-  console.log('file:', file);
-
-  return request<Resp<any>>(
-    'http://43.142.36.238:9000/test//docs/20230411/2.docx?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=Y8qMmEg0SLGSWUmb%2F20230422%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230422T042504Z&X-Amz-Expires=259200&X-Amz-SignedHeaders=host&X-Amz-Signature=db1368f33674580d0cf8bd55128e9c231769776891536d78fc7b7cdee9b35ddd',
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': file.type,
-      },
-      data: file,
-      ...(options || {}),
+  return request<Resp<any>>(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': file.type,
     },
-  );
+    data: file,
+    ...(options || {}),
+  });
 }

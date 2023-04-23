@@ -1,3 +1,5 @@
+import { UploadFile } from 'antd/lib/upload';
+
 export interface Resp<T> {
   code: number;
   data: T;
@@ -368,10 +370,44 @@ export interface CertificateData {
   code_label: number;
   reminder_time: string;
   issue_authority: string;
+  appendix_list: Array<UploadFile>;
+}
+export interface CertificateReqData {
+  cert_id: number;
+  cert_code: string;
+  type: number;
+  category: string;
+  major: string;
+  cert_data: string;
+  expire_time: string;
+  code_label: number;
+  reminder_time: string;
+  issue_authority: string;
   appendix_list: Array<FileType>;
 }
 
 export interface FileType {
   name: string;
   file_path: string;
+}
+
+export enum FileTypeEnum {
+  Document = 1,
+  Image = 2,
+  Zip = 3,
+  Others = 4,
+}
+
+export interface TempDocumentData {
+  type: FileTypeEnum;
+  format: string;
+  filename: string;
+}
+export interface TempDocumentResData {
+  list: Array<TempDocumentResItem>;
+}
+export interface TempDocumentResItem {
+  filename: string;
+  file_path: string;
+  url: string;
 }

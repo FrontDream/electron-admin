@@ -21,14 +21,10 @@ import {
   listToEnum,
   useCertificatetPersons,
   useCertificatetTypes,
+  uploadFiles,
+  FileType,
 } from '@/utils';
-import {
-  getCertificateListApi,
-  addCertificateApi,
-  deleteCertificateApi,
-  updateCertificateApi,
-  uploadFileApi,
-} from '@/services';
+import { getCertificateListApi, addCertificateApi, deleteCertificateApi, updateCertificateApi } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
@@ -212,22 +208,17 @@ const CertificateList: React.FC = () => {
   ];
 
   const onFinish = async (values: CertificateData) => {
-    console.log('values:', values);
     const { appendix_list = [], ...rest } = values;
-    const file = appendix_list[0].originFileObj;
+    const resUplods: Array<FileType> = await uploadFiles(appendix_list);
 
-    await uploadFileApi({ file });
-    return;
     try {
       setConfirmLoading(true);
       let res = {};
 
-      console.log('currentRow:', currentRow);
-
       if (isDdd) {
-        res = await addCertificateApi({ ...values });
+        res = await addCertificateApi({ ...rest, appendix_list: resUplods });
       } else {
-        res = await updateCertificateApi({ ...values, id: currentRow?.id || 0 });
+        res = await updateCertificateApi({ ...rest, id: currentRow?.id || 0 });
       }
 
       if (isSuccess(res, `${isDdd ? '新增' : '修改'}证书失败，请重试！`)) {
@@ -354,7 +345,7 @@ const CertificateList: React.FC = () => {
           }}
           className={styles.modalCon}
         >
-          {/* <ProFormText
+          <ProFormText
             label={'证书编号'}
             name="cert_code"
             rules={[
@@ -447,7 +438,7 @@ const CertificateList: React.FC = () => {
             placeholder={'请选择证书类型'}
             rules={[{ required: true, message: '请选择证书类型' }]}
             options={certificatetTypes.map(item => ({ label: item.name, value: item.id }))}
-          /> */}
+          />
           <ProFormUploadDragger
             max={4}
             label="证书附件"

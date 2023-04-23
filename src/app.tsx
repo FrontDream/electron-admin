@@ -112,8 +112,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 };
 // src/app.tsx
 const authHeaderInterceptor = (url: string, options: RequestConfig) => {
-  console.log('url:', url);
-  console.log('options:', options);
   const jwt = getItem('jwt');
   const authHeader = { Authorization: `JWT ${jwt}` };
 
@@ -129,21 +127,26 @@ const authHeaderInterceptor = (url: string, options: RequestConfig) => {
 
 const responseInterceptors = async (response: Response) => {
   try {
-    console.log('response:', response);
-    const res = await response.clone().json();
+    const { status, url } = response;
 
-    console.log('res:', res);
-    const { code, msg, data } = res;
-    const loginCodes = [410, 411, 412, 413];
+    if (status === 200 && url.includes('/api')) {
+      const res = await response.clone().json();
 
-    if (loginCodes.includes(code)) {
-      removeItem('jwt');
-      history.push(loginPath);
-      message.warning('登录已过期,请重新登录！');
+      const { code } = res;
+      const loginCodes = [410, 411, 412, 413];
+
+      if (loginCodes.includes(code)) {
+        removeItem('jwt');
+        history.push(loginPath);
+        message.warning('登录已过期,请重新登录！');
+        return {};
+      }
+
+      return res;
+    } else if (status === 200) {
       return {};
     }
-
-    return res;
+    throw new Error('状态码错误');
   } catch (e) {
     console.error('3error:', e);
   }
