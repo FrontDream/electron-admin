@@ -459,16 +459,16 @@ const CertificateList: React.FC = () => {
             rules={[{ required: true, message: '请选择证书类型' }]}
             options={certificatetTypes.map(item => ({ label: item.name, value: item.id }))}
           />
-
-          <ProFormUploadDragger
-            max={4}
-            label="证书附件"
-            // name="appendix_list"
-            colProps={{
-              span: 24,
-            }}
-            fieldProps={{ ...uploadProps }}
-          />
+          <Spin spinning={uploading}>
+            <ProFormUploadDragger
+              max={4}
+              label="证书附件"
+              colProps={{
+                span: 24,
+              }}
+              fieldProps={{ ...uploadProps }}
+            />
+          </Spin>
         </ModalForm>
       )}
       <Drawer
