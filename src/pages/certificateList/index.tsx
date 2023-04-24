@@ -214,6 +214,10 @@ const CertificateList: React.FC = () => {
 
   const onFinish = async (values: CertificateData) => {
     try {
+      if (uploading) {
+        message.warning('正在上传，请上传后重试!');
+        return;
+      }
       setConfirmLoading(true);
       let res = {};
 
@@ -261,7 +265,7 @@ const CertificateList: React.FC = () => {
     confirm({
       title: '确定删除该证书吗?',
       icon: <ExclamationCircleFilled />,
-      content: '人员删除后，无法恢复！请谨慎删除！',
+      content: '证书删除后，无法恢复！请谨慎删除！',
       async onOk() {
         del();
       },
