@@ -159,3 +159,26 @@ export const uploadFiles = async (appendix_list: Array<{ name: string; file: Fil
 
   return list;
 };
+
+export const downLoad = async (url: string, name: string) => {
+  const whiteLists = ['zip', 'rar'];
+  const extension = getFileExtension(name);
+  let objectURL;
+
+  if (whiteLists.includes(extension)) {
+    objectURL = url;
+  } else {
+    const responsePromise = await fetch(url);
+    const blob = await responsePromise.blob();
+
+    objectURL = window.URL.createObjectURL(blob);
+  }
+
+  const a = document.createElement('a');
+
+  a.href = objectURL;
+  a.download = name;
+  a.target = 'blank';
+  a.click();
+  a.remove();
+};

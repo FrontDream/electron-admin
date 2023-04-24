@@ -23,6 +23,7 @@ import {
   useCertificatetTypes,
   uploadFiles,
   AppendixList,
+  downLoad,
 } from '@/utils';
 import { getCertificateListApi, addCertificateApi, deleteCertificateApi, updateCertificateApi } from '@/services';
 import moment from 'moment';
@@ -491,7 +492,7 @@ const CertificateList: React.FC = () => {
           {currentRow?.appendix_list?.map(item => {
             return (
               <div key={item.uid}>
-                <a href={item.url}>{item.name}</a>
+                <a onClick={() => downLoad(item.url, item.name)}>{item.name}</a>
               </div>
             );
           })}

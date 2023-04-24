@@ -358,6 +358,7 @@ export interface AppendixList {
    * url
    */
   url: string;
+  uid: string;
 }
 export interface CertificateData {
   cert_id: number;
