@@ -118,22 +118,23 @@ export const typeMap = {
   xlsx: FileTypeEnum.Document,
   pdf: FileTypeEnum.Document,
   jpg: FileTypeEnum.Image,
+  png: FileTypeEnum.Image,
   mp4: FileTypeEnum.Others,
   zip: FileTypeEnum.Zip,
   rar: FileTypeEnum.Zip,
 };
 
-const upload = async (data: { file: RcFile; url: string; name: string; file_path: string }) => {
-  const { file, url, name, file_path } = data;
+const upload = async (data: { file: File; url: string; name: string; file_path: string; uid: string }) => {
+  const { file, url, name, file_path, uid } = data;
 
   return new Promise(resolve => {
     uploadFileApi({ file, url }).then(() => {
-      resolve({ name, file_path });
+      resolve({ name, file_path, uid });
     });
   });
 };
 
-export const uploadFiles = async (appendix_list: Array<UploadFile>) => {
+export const uploadFiles = async (appendix_list: Array<{ name: string; file: File; uid: string }>) => {
   const tasks = [];
   const tempReq = appendix_list.map(item => {
     const { name } = item;
@@ -148,10 +149,10 @@ export const uploadFiles = async (appendix_list: Array<UploadFile>) => {
   const tempUrls = await getTempDocumentUrlApi(tempReq);
 
   for (let i = 0; i < appendix_list.length; i++) {
-    const { originFileObj, name } = appendix_list[i];
+    const { file, name, uid } = appendix_list[i];
     const { file_path, url } = tempUrls[i];
 
-    tasks.push(upload({ file: originFileObj!, url, name, file_path }));
+    tasks.push(upload({ file, url, name, file_path, uid }));
   }
   const list = Promise.all(tasks);
 

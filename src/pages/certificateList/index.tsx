@@ -1,4 +1,4 @@
-import { Button, message, Modal, Drawer, Card } from 'antd';
+import { Button, message, Modal, Drawer, Card, UploadProps, Spin } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -22,24 +22,25 @@ import {
   useCertificatetPersons,
   useCertificatetTypes,
   uploadFiles,
-  FileType,
+  AppendixList,
 } from '@/utils';
 import { getCertificateListApi, addCertificateApi, deleteCertificateApi, updateCertificateApi } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
 
-const { warning, confirm } = Modal;
+const { confirm } = Modal;
 
 const CertificateList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<CertificateItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
-
+  const [fileList, setFileList] = useState<AppendixList[]>([]);
   const certificatetPersons = useCertificatetPersons();
   const certificatetTypes = useCertificatetTypes();
   const certificateTypeEnum = listToEnum(certificatetTypes);
@@ -186,6 +187,9 @@ const CertificateList: React.FC = () => {
             setModalVisible(true);
             setCurrentRow(record);
             setIsDdd(false);
+            const { appendix_list = [] } = record;
+
+            setFileList(appendix_list);
           }}
         >
           修改
@@ -208,22 +212,20 @@ const CertificateList: React.FC = () => {
   ];
 
   const onFinish = async (values: CertificateData) => {
-    const { appendix_list = [], ...rest } = values;
-    const resUplods: Array<FileType> = await uploadFiles(appendix_list);
-
     try {
       setConfirmLoading(true);
       let res = {};
 
       if (isDdd) {
-        res = await addCertificateApi({ ...rest, appendix_list: resUplods });
+        res = await addCertificateApi({ ...values, appendix_list: fileList });
       } else {
-        res = await updateCertificateApi({ ...rest, id: currentRow?.id || 0 });
+        res = await updateCertificateApi({ ...values, id: currentRow?.id || 0, appendix_list: fileList });
       }
 
       if (isSuccess(res, `${isDdd ? '新增' : '修改'}证书失败，请重试！`)) {
         message.success(`${isDdd ? '新增' : '修改'}证书成功`);
         setModalVisible(false);
+        setFileList([]);
         if (actionRef.current) {
           actionRef.current.reload();
         }
@@ -235,7 +237,7 @@ const CertificateList: React.FC = () => {
     }
   };
   const handleRemove = async (record: CertificateItem) => {
-    const { id = 0, is_exists_cert, rel_cert_list } = record;
+    const { id = 0 } = record;
     const del = async () => {
       const hide = message.loading('正在删除');
 
@@ -255,18 +257,8 @@ const CertificateList: React.FC = () => {
       }
     };
 
-    if (is_exists_cert) {
-      warning({
-        title: '禁止删除',
-        icon: <ExclamationCircleFilled />,
-        content: `该人员正在使用中，请先前往证书管理删除 ${rel_cert_list.join(
-          ',',
-        )} 等证书或修改这些证书的所属人员后重试!`,
-      });
-      return;
-    }
     confirm({
-      title: '确定删除该人员吗?',
+      title: '确定删除该证书吗?',
       icon: <ExclamationCircleFilled />,
       content: '人员删除后，无法恢复！请谨慎删除！',
       async onOk() {
@@ -283,6 +275,34 @@ const CertificateList: React.FC = () => {
     const reminder_time = moment(expire_time).subtract(3, 'months');
 
     modalFormRef.current?.setFieldValue('reminder_time', reminder_time);
+  };
+  const onRemove = (file: any) => {
+    const { uid } = file;
+    const files = fileList.filter(item => item.uid !== uid);
+
+    setFileList(files);
+  };
+
+  const uploadProps: UploadProps = {
+    name: 'file',
+    multiple: true,
+    fileList: fileList,
+    onRemove: onRemove,
+    customRequest: async ({ file, onSuccess, onError }) => {
+      const { name, uid } = file;
+
+      try {
+        setUploading(true);
+        const res = await uploadFiles([{ name, file, uid }]);
+
+        setUploading(false);
+        onSuccess?.(res, file);
+        setFileList([...fileList, ...res]);
+      } catch (error) {
+        onError?.(error);
+      }
+      return;
+    },
   };
 
   return (
@@ -439,13 +459,15 @@ const CertificateList: React.FC = () => {
             rules={[{ required: true, message: '请选择证书类型' }]}
             options={certificatetTypes.map(item => ({ label: item.name, value: item.id }))}
           />
+
           <ProFormUploadDragger
             max={4}
             label="证书附件"
-            name="appendix_list"
+            // name="appendix_list"
             colProps={{
               span: 24,
             }}
+            fieldProps={{ ...uploadProps }}
           />
         </ModalForm>
       )}
@@ -465,7 +487,15 @@ const CertificateList: React.FC = () => {
           dataSource={currentRow}
           columns={descriptionColumns}
         />
-        <Card title={'附件'}></Card>
+        <Card title={'附件'} bordered={false} className={styles.appendixListCard}>
+          {currentRow?.appendix_list?.map(item => {
+            return (
+              <div key={item.uid}>
+                <a href={item.url}>{item.name}</a>
+              </div>
+            );
+          })}
+        </Card>
       </Drawer>
     </PageContainer>
   );

@@ -287,7 +287,7 @@ export interface CertificateRes extends TableListPagination {
 }
 
 export interface CertificateItem {
-  appendix_list: AppendixList;
+  appendix_list: Array<AppendixList>;
   /**
    * 分类
    */
@@ -384,6 +384,7 @@ export interface CertificateReqData {
   reminder_time: string;
   issue_authority: string;
   appendix_list: Array<FileType>;
+  id?: number;
 }
 
 export interface FileType {

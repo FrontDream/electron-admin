@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { Resp, CertificateRes, CertificateData, CertificateItem, CertificateReqData } from '@/utils/type';
+import { Resp, CertificateRes, CertificateReqData, CertificateItem } from '@/utils/type';
 
 // 列表
 export async function getCertificateListApi(params: any, options?: { [key: string]: any }) {
@@ -34,7 +34,7 @@ export async function deleteCertificateApi(id: number, options?: { [key: string]
 }
 
 // 修改
-export async function updateCertificateApi(data: CertificateData, options?: { [key: string]: any }) {
+export async function updateCertificateApi(data: CertificateReqData, options?: { [key: string]: any }) {
   const { id, ...rest } = data;
 
   return request<Resp<CertificateItem>>(`/api/certs/certPersonRel/${id}`, {
