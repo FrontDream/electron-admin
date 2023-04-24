@@ -139,9 +139,10 @@ export const uploadFiles = async (appendix_list: Array<{ name: string; file: Fil
   const tempReq = appendix_list.map(item => {
     const { name } = item;
     const extension = getFileExtension(name);
+    const type = typeMap[extension] || FileTypeEnum.Others;
 
     return {
-      type: typeMap[extension],
+      type,
       format: extension,
       filename: name,
     };
