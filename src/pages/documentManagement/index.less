@@ -4,16 +4,14 @@
   li {
     list-style: none;
   }
-  .hover_pointer {
-    cursor: pointer;
-  }
   a {
     color: #000;
     text-decoration: none;
   }
-
-  a:hover {
-    color: #f0ad4e;
+  :global {
+    .ant-checkbox-checked::after {
+      border: none;
+    }
   }
   .none {
     display: none;
@@ -37,88 +35,130 @@
       border-radius: 100px;
     }
   }
-  .breads {
+  .nav {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    margin-top: 16px;
+    .common {
+      color: #c8793e;
+      font-size: 16px;
+    }
+    .backNext {
+      color: #c8793e;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .commonGray {
+      color: #979797;
+      font-size: 16px;
+    }
+    .backNext {
+    }
+    .delimiter {
+      margin-right: 14px;
+      margin-left: 14px;
+      color: #c8793e;
+    }
+    .breadcrumb_all {
+      display: flex;
+      align-items: center;
+    }
+    .breadcrumbAllText {
+      color: #c8793e;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .arrow_right {
+      margin-right: 8px;
+      margin-left: 8px;
+      color: #979797;
+      font-size: 16px;
+    }
     .breadcrumb_item {
+      display: flex;
+      align-items: center;
       ul {
         display: flex;
+        align-items: center;
+        margin-bottom: 0px;
+        padding: 0px;
       }
       .bc_name {
+        font-size: 16px;
         cursor: pointer;
       }
-      .arrow_right {
-        padding: 0 10px;
-      }
+    }
+    .fileTotal {
+      margin-left: auto;
+      color: #7e8490;
+      font-size: 14px;
     }
   }
 
   .table_files {
-    ul {
+    .table_top {
       display: flex;
-      flex-wrap: wrap;
-      li {
-        position: relative;
-        width: calc(10% - 10px);
-        min-width: 118px;
-        margin: 5px;
-        text-align: center;
-        .selected_bgc {
-          background-color: #e0f6ff;
-        }
-        .format_img {
-          width: 56px;
-          height: 56px;
-        }
-        .public_img {
-          position: absolute;
-          top: 76px;
-          left: 35px;
-          width: 48px;
-          height: 17px;
-        }
+      align-items: center;
+      margin-top: 17px;
+      color: #c8793e;
+      font-size: 14px;
+      .txt {
+        margin-left: 5px;
       }
     }
 
-    .table_top {
-      height: 38px;
-      padding-left: 15px;
-      color: #333333;
-      font-weight: 400;
-      font-size: 14px;
-      font-family: Microsoft YaHei;
-      line-height: 38px;
-      background-color: #f5f5f5;
-      box-shadow: 0px -1px 0px 0px #e8e8e8;
-    }
-
-    .table_top > label > span {
-      padding-left: 10px;
-    }
-    .single_checkbox {
-      height: 20px;
-      margin: 10px;
-      line-height: 20px;
-    }
-
-    .single_checkbox > div {
+    ul {
       display: flex;
-      justify-content: space-between;
-    }
-    .flies_title {
-      display: -webkit-box;
-      width: 100%;
-      margin: 4px 0 20px;
-      padding: 0px 15px;
-      overflow: hidden;
-      color: #333333;
-      font-weight: 400;
-      font-size: 14px;
-      font-family: PingFang SC;
-      word-break: break-all;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-    }
-    .operate_box:hover {
-      background-color: #fff;
+      flex-wrap: wrap;
+      padding: 0px;
+      li {
+        position: relative;
+        box-sizing: border-box;
+        width: 133px;
+        height: 167px;
+        margin-top: 17px;
+        margin-right: 17px;
+        border-radius: 4px;
+        .content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          .fileImg {
+            width: 80px;
+            height: 95px;
+          }
+          .fileName {
+            margin-top: 17px;
+            color: rgba(0, 0, 0, 0.85);
+            font-size: 20px;
+            text-align: center;
+          }
+        }
+        .operation {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          width: 34px;
+          height: 18px;
+          background: rgba(255, 255, 255, 0.4);
+          border-radius: 0px 4px;
+        }
+      }
+      .selected_bgc {
+        background: #f4e4d8;
+      }
+      .itemCheckbox {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+      }
     }
   }
 }
