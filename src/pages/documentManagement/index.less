@@ -1,86 +1,124 @@
 @import '~antd/es/style/themes/default.less';
 
-.avatarHolder {
-  margin-bottom: 24px;
-  text-align: center;
-
-  & > img {
-    width: 104px;
-    height: 104px;
-    margin-bottom: 20px;
+.pageCon {
+  li {
+    list-style: none;
   }
-
-  .name {
-    margin-bottom: 4px;
-    color: @heading-color;
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 28px;
+  .hover_pointer {
+    cursor: pointer;
   }
-}
-
-.detail {
-  p {
-    position: relative;
-    margin-bottom: 8px;
-    padding-left: 26px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  i {
-    position: absolute;
-    top: 4px;
-    left: 0;
-    width: 14px;
-    height: 14px;
-  }
-}
-
-.tagsTitle,
-.teamTitle {
-  margin-bottom: 12px;
-  color: @heading-color;
-  font-weight: 500;
-}
-
-.tags {
-  :global {
-    .ant-tag {
-      margin-bottom: 8px;
-    }
-  }
-}
-
-.team {
-  :global {
-    .ant-avatar {
-      margin-right: 12px;
-    }
-  }
-
   a {
-    display: block;
-    margin-bottom: 24px;
-    overflow: hidden;
-    color: @text-color;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    word-break: break-all;
-    transition: color 0.3s;
+    color: #000;
+    text-decoration: none;
+  }
 
-    &:hover {
-      color: @primary-color;
+  a:hover {
+    color: #f0ad4e;
+  }
+  .none {
+    display: none;
+  }
+  .btnList {
+    .uploadBtn {
+      margin-right: 24px;
+    }
+    .newFolder {
+      margin-right: 24px;
+    }
+    .batchDelete {
+      margin-right: 24px;
+    }
+    .searchCon {
+      margin-left: auto;
+    }
+    .search {
+      width: 300px;
+      background: #f2f3f8;
+      border-radius: 100px;
     }
   }
-}
+  .breads {
+    .breadcrumb_item {
+      ul {
+        display: flex;
+      }
+      .bc_name {
+        cursor: pointer;
+      }
+      .arrow_right {
+        padding: 0 10px;
+      }
+    }
+  }
 
-.tabsCard {
-  :global {
-    .ant-card-head {
-      padding: 0 16px;
+  .table_files {
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      li {
+        position: relative;
+        width: calc(10% - 10px);
+        min-width: 118px;
+        margin: 5px;
+        text-align: center;
+        .selected_bgc {
+          background-color: #e0f6ff;
+        }
+        .format_img {
+          width: 56px;
+          height: 56px;
+        }
+        .public_img {
+          position: absolute;
+          top: 76px;
+          left: 35px;
+          width: 48px;
+          height: 17px;
+        }
+      }
+    }
+
+    .table_top {
+      height: 38px;
+      padding-left: 15px;
+      color: #333333;
+      font-weight: 400;
+      font-size: 14px;
+      font-family: Microsoft YaHei;
+      line-height: 38px;
+      background-color: #f5f5f5;
+      box-shadow: 0px -1px 0px 0px #e8e8e8;
+    }
+
+    .table_top > label > span {
+      padding-left: 10px;
+    }
+    .single_checkbox {
+      height: 20px;
+      margin: 10px;
+      line-height: 20px;
+    }
+
+    .single_checkbox > div {
+      display: flex;
+      justify-content: space-between;
+    }
+    .flies_title {
+      display: -webkit-box;
+      width: 100%;
+      margin: 4px 0 20px;
+      padding: 0px 15px;
+      overflow: hidden;
+      color: #333333;
+      font-weight: 400;
+      font-size: 14px;
+      font-family: PingFang SC;
+      word-break: break-all;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+    .operate_box:hover {
+      background-color: #fff;
     }
   }
 }

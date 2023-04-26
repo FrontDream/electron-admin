@@ -168,6 +168,10 @@ export interface DocumentListItem {
   update_by: string;
   update_user: string;
   url: string;
+  format: string;
+  imageUrl?: string;
+  isSelected?: boolean;
+  isShowOpetate?: boolean;
 }
 
 export interface DocumentData {

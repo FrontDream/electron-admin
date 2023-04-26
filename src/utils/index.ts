@@ -182,3 +182,18 @@ export const downLoad = async (url: string, name: string) => {
   a.click();
   a.remove();
 };
+
+export const fileImagesMap = {
+  doc: '/images/word.png',
+  docx: '/images/word.png',
+  xls: '/images/excel.png',
+  xlsx: '/images/excel.png',
+  pdf: '/images/pdf.png',
+  jpg: '/images/jpg.png',
+  png: '/images/png.png',
+  mp4: '/images/video.png',
+  zip: '/images/zip.png',
+  '7z': '/images/zip.png',
+  rar: '/images/rar.png',
+  AAA: '/images/文件夹.png',
+};
