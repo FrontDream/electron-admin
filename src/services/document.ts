@@ -41,9 +41,14 @@ export async function addDocumentApi(data: DocumentData, options?: { [key: strin
 }
 
 // 删除文件
-export async function deleteDocumentApi(id: number, options?: { [key: string]: any }) {
-  return request<Resp<DocumentListItem>>(`/api/users/department/${id}`, {
+export async function deleteDocumentApi(ids: Array<number>, options?: { [key: string]: any }) {
+  const id = ids[0];
+
+  return request<Resp<DocumentListItem>>(`/api/docs/document/${id}`, {
     method: 'DELETE',
+    data: {
+      ids,
+    },
     ...(options || {}),
   });
 }

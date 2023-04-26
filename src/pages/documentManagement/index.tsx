@@ -1,16 +1,25 @@
-import { Card, Row, Button, Input, Checkbox, Dropdown, MenuProps } from 'antd';
+import { Card, Row, Button, Input, Checkbox, Dropdown, Modal, MenuProps, message } from 'antd';
 import { useState, useMemo, useEffect } from 'react';
-import { DocumentListItem, fileImagesMap } from '@/utils';
+import { DocumentListItem, fileImagesMap, isSuccess } from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
-import cls from 'classnames';
-import { getDocumentListApi } from '@/services';
-import { UploadOutlined, DownloadOutlined, EllipsisOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { getDocumentListApi, deleteDocumentApi } from '@/services';
+import {
+  UploadOutlined,
+  DownloadOutlined,
+  EllipsisOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+} from '@ant-design/icons';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import styles from './index.less';
 
 export interface BreadcrumItemType {
   name: string;
   id: number;
 }
+
+const { confirm } = Modal;
 
 const DocumentManagement = () => {
   const [allChecked, setAllChecked] = useState(false);
@@ -38,7 +47,7 @@ const DocumentManagement = () => {
       if (item.type === 1) {
         format = 'AAA';
       }
-      return { ...item, isSelected: false, isShowOpetate: false, imageUrl: fileImagesMap[format] };
+      return { ...item, isSelected: false, imageUrl: fileImagesMap[format] };
     });
 
     setFileAndFolderList(updateList);
@@ -63,7 +72,6 @@ const DocumentManagement = () => {
   const handleBreakdown = (item: DocumentListItem) => {
     if (item.type && item.type === 1) {
       console.log(item, '这是双击');
-      // this.breadcrumbsList.push(item);
       setBreadcrumbsList([...breadcrumbsList, { name: item.name, id: item.id }]);
       getTableData({ parent_id: item.id });
     }
@@ -95,79 +103,63 @@ const DocumentManagement = () => {
   const handleAllFolderBtn = () => {
     setBreadcrumbsList([]);
     getTableData({ parent_id: 0 });
+    setAllChecked(false);
   };
   // 点击头部面包屑
   const handleBreadcrumbsItem = (item: BreadcrumItemType, index: number) => {
     setBreadcrumbsList(breadcrumbsList.splice(0, index + 1));
     getTableData({ parent_id: item.id });
+    setAllChecked(false);
   };
 
   // 点击全选框
   const allSelectBtn = (e: CheckboxChangeEvent) => {
     const isAll = e.target.checked;
-    const chilles = document.getElementsByName('single') as NodeList;
     const list = [...fileAndFolderList];
 
-    if (isAll) {
-      list.forEach(item => {
-        if (item.type && item.type === 1) {
-          item.isSelected = true;
-        }
-      });
-      for (let i = 0; i < chilles.length; i++) {
-        chilles[i].checked = true;
+    list.forEach(item => {
+      if (item.type && item.type === 2) {
+        item.isSelected = isAll;
       }
-    } else {
-      list.forEach(item => {
-        if (item.type && item.type === 1) {
-          item.isSelected = false;
-        }
-      });
-      for (let i = 0; i < chilles.length; i++) {
-        chilles[i].checked = false;
-      }
-    }
+    });
+
     setFileAndFolderList(list);
     setAllChecked(isAll);
   };
 
   // 点击单选框
   const singleSelect = (item: DocumentListItem, e) => {
-    item.isSelected = e.target.checked;
+    const isSelected = e.target.checked;
+
     setFlieId(item.id);
     const chill = document.getElementById('all') as HTMLInputElement;
     const chillesNum = document.getElementsByName('single').length;
     const selectedNum = document.querySelectorAll('input[name="single"]:checked').length;
+    const updateList = fileAndFolderList.map(file => {
+      if (file.id !== item.id) {
+        return file;
+      }
+      return { ...file, isSelected };
+    });
 
-    console.log('selectedNum:', selectedNum);
-    console.log('chillesNum:', chillesNum);
-    console.log('chill:', chill);
+    setFileAndFolderList(updateList);
     if (chill) {
       if (chillesNum === selectedNum) {
-        chill.checked = true;
+        setAllChecked(true);
       } else {
-        chill.checked = false;
+        setAllChecked(false);
       }
     }
   };
-
-  // 鼠标离开 编辑和删除区域，
-  const operateMouseLeave = item => {
-    item.isShowOpetate = false;
-  };
-  const editBtn = (item: DocumentListItem) => {
-    console.log(item, '这是编辑');
-  };
-
-  const deleteBtn = (item: DocumentListItem) => {
-    console.log('删除：', item);
+  const handleDeleteOne = async () => {
+    await deleteFileFolder([flieId!]);
   };
 
   const items: MenuProps['items'] = [
     {
       key: '1',
       label: (
-        <a rel="noopener noreferrer">
+        <a rel="noopener noreferrer" onClick={handleDeleteOne}>
           <DeleteOutlined /> 删除
         </a>
       ),
@@ -189,6 +181,59 @@ const DocumentManagement = () => {
     });
   };
 
+  const deleteFileFolder = async (ids: Array<number>) => {
+    const del = async () => {
+      const hide = message.loading('正在删除');
+
+      try {
+        const res = await deleteDocumentApi(ids);
+
+        if (isSuccess(res, '删除失败，请重试')) {
+          message.success('删除成功');
+          await refreshFiles();
+        }
+      } catch (error) {
+        console.error('error:', error);
+      } finally {
+        hide();
+      }
+    };
+
+    confirm({
+      title: '确定删除吗?',
+      icon: <ExclamationCircleFilled />,
+      content: '删除后，无法恢复！请谨慎删除！',
+      async onOk() {
+        del();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+  const handleBatchRemove = async () => {
+    const selectedList = fileAndFolderList.filter(item => item.isSelected);
+
+    if (!selectedList.length) {
+      message.warning('请选择文件或文件夹后重试');
+      return;
+    }
+    const ids = selectedList.map(item => item.id);
+
+    await deleteFileFolder(ids);
+  };
+
+  const refreshFiles = async () => {
+    if (breadcrumbsList.length) {
+      const lastItem = breadcrumbsList[breadcrumbsList.length - 1];
+
+      await getTableData({ parent_id: lastItem.id });
+    } else {
+      await getTableData({ parent_id: 0 });
+    }
+  };
+
   return (
     <PageContainer className={styles.pageCon}>
       <Card>
@@ -196,11 +241,11 @@ const DocumentManagement = () => {
           <Button type="primary" shape="round" icon={<UploadOutlined />} className={styles.uploadBtn}>
             上传
           </Button>
+          <Button type="primary" className={styles.batchDelete} shape="round" onClick={handleBatchRemove}>
+            批量删除
+          </Button>
           <Button className={styles.newFolder} shape="round">
             新建文件夹
-          </Button>
-          <Button className={styles.batchDelete} shape="round">
-            批量删除
           </Button>
           <Button type="primary" shape="round">
             权限设定
@@ -248,7 +293,7 @@ const DocumentManagement = () => {
         <Row>
           <div className={styles.table_files}>
             <div className={styles.table_top}>
-              <Checkbox onChange={allSelectBtn} checked={allChecked} disabled={!isShowAllSelect}>
+              <Checkbox id="all" onChange={allSelectBtn} checked={allChecked} disabled={!isShowAllSelect}>
                 全选
               </Checkbox>
             </div>
@@ -268,15 +313,15 @@ const DocumentManagement = () => {
                     <Checkbox
                       className={styles.itemCheckbox}
                       style={{
-                        display: item.type === 2 && (flieId === item.id || item.isSelected) ? 'block' : 'none',
+                        display: flieId === item.id || item.isSelected ? 'block' : 'none',
                       }}
                       name="single"
                       onChange={e => singleSelect(item, e)}
+                      checked={item.isSelected}
                     />
                     <div
                       className={styles.operation}
                       style={{ display: flieId === item.id || item.isSelected ? 'block' : 'none' }}
-                      onMouseLeave={() => operateMouseLeave(item)}
                     >
                       <DownloadOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
                       <Dropdown menu={{ items }} placement="bottom" arrow>
