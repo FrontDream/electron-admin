@@ -29,6 +29,12 @@ import { getCertificateListApi, addCertificateApi, deleteCertificateApi, updateC
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
+import create from 'zustand';
+
+const useStore = create(set => ({
+  fileList: [] as AppendixList[],
+  addFileList: list => set(state => ({ fileList: list })),
+}));
 
 const { confirm } = Modal;
 
@@ -41,7 +47,9 @@ const CertificateList: React.FC = () => {
   const [showDetail, setShowDetail] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
-  const [fileList, setFileList] = useState<AppendixList[]>([]);
+  // const [fileList, setFileList] = useState<AppendixList[]>([]);
+  const fileList = useStore(state => state.fileList);
+  const setFileList = useStore(state => state.addFileList);
   const certificatetPersons = useCertificatetPersons();
   const certificatetTypes = useCertificatetTypes();
   const certificateTypeEnum = listToEnum(certificatetTypes);
@@ -298,11 +306,14 @@ const CertificateList: React.FC = () => {
 
       try {
         setUploading(true);
+
         const res = await uploadFiles([{ name, file, uid }]);
+        const fileListUpdate = useStore.getState().fileList;
 
         setUploading(false);
         onSuccess?.(res, file);
-        setFileList([...fileList, ...res]);
+
+        setFileList([...fileListUpdate, ...res]);
       } catch (error) {
         onError?.(error);
       }
