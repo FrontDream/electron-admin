@@ -63,6 +63,7 @@ const DocumentManagement = () => {
   const [uploading, setUploading] = useState(false);
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
+  const [listLoading, setListLoading] = useState(false);
 
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
   // 全选框的显隐 ,1 文件夹，2文件
@@ -88,6 +89,7 @@ const DocumentManagement = () => {
   }, []);
 
   const getTableData = async (params: { parent_id?: number; name?: string }) => {
+    setListLoading(true);
     const documentList = await getDocumentListApi(params);
     const updateList = documentList.map(item => {
       let format = item.format;
@@ -99,6 +101,7 @@ const DocumentManagement = () => {
     });
 
     setFileAndFolderList(updateList);
+    setListLoading(false);
   };
   const fileMouseEnter = (item: DocumentListItem) => {
     setFocusItem(item);
@@ -421,59 +424,61 @@ const DocumentManagement = () => {
                 全选
               </Checkbox>
             </div>
-            <ul>
-              {fileAndFolderList.map(item => {
-                return (
-                  <li
-                    key={item.id}
-                    title={item.name}
-                    className={`${focusItem?.id === item.id || item.isSelected ? styles.selected_bgc : ''}`}
-                    onMouseEnter={() => fileMouseEnter(item)}
-                    onMouseLeave={fileMouseLeave}
-                    onDoubleClick={() => handleBreakdown(item)}
-                  >
-                    <Checkbox
-                      className={styles.itemCheckbox}
-                      style={{
-                        display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none',
-                      }}
-                      name="single"
-                      onChange={e => singleSelect(item, e)}
-                      checked={item.isSelected}
-                    />
-                    <div
-                      className={styles.operation}
-                      style={{ display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none' }}
+            <Spin spinning={listLoading}>
+              <ul>
+                {fileAndFolderList.map(item => {
+                  return (
+                    <li
+                      key={item.id}
+                      title={item.name}
+                      className={`${focusItem?.id === item.id || item.isSelected ? styles.selected_bgc : ''}`}
+                      onMouseEnter={() => fileMouseEnter(item)}
+                      onMouseLeave={fileMouseLeave}
+                      onDoubleClick={() => handleBreakdown(item)}
                     >
-                      <DownloadOutlined
-                        style={{ color: '#C8793E', cursor: 'pointer' }}
-                        onClick={() => downLoad(item.url, item.name)}
+                      <Checkbox
+                        className={styles.itemCheckbox}
+                        style={{
+                          display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none',
+                        }}
+                        name="single"
+                        onChange={e => singleSelect(item, e)}
+                        checked={item.isSelected}
                       />
-                      <Dropdown menu={{ items }} placement="bottom" arrow>
-                        <EllipsisOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
-                      </Dropdown>
-                    </div>
-
-                    <div className={styles.content}>
-                      <img
-                        src={item.imageUrl}
-                        alt=""
-                        className={styles.fileImg}
-                        style={{ width: item.type === 1 ? '95px' : '80px' }}
-                      />
-                      <Text
-                        className={styles.fileName}
-                        style={{ width: item.type === 1 ? '95px' : '80px' }}
-                        ellipsis={{ tooltip: item.name }}
+                      <div
+                        className={styles.operation}
+                        style={{ display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none' }}
                       >
-                        {item.name}
-                      </Text>
-                      {/* <div className={styles.fileName}>{item.name}</div> */}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+                        <DownloadOutlined
+                          style={{ color: '#C8793E', cursor: 'pointer' }}
+                          onClick={() => downLoad(item.url, item.name)}
+                        />
+                        <Dropdown menu={{ items }} placement="bottom" arrow>
+                          <EllipsisOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
+                        </Dropdown>
+                      </div>
+
+                      <div className={styles.content}>
+                        <img
+                          src={item.imageUrl}
+                          alt=""
+                          className={styles.fileImg}
+                          style={{ width: item.type === 1 ? '95px' : '80px' }}
+                        />
+                        <Text
+                          className={styles.fileName}
+                          style={{ width: item.type === 1 ? '95px' : '80px' }}
+                          ellipsis={{ tooltip: item.name }}
+                        >
+                          {item.name}
+                        </Text>
+                        {/* <div className={styles.fileName}>{item.name}</div> */}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </Spin>
           </div>
         </Row>
         {modalVisible && (
