@@ -1,8 +1,8 @@
 import { Card, Row, Button, Input, Checkbox, Dropdown, Modal, MenuProps, message } from 'antd';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { DocumentListItem, fileImagesMap, isSuccess } from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
-import { getDocumentListApi, deleteDocumentApi } from '@/services';
+import { getDocumentListApi, deleteDocumentApi, addDocumentApi } from '@/services';
 import {
   UploadOutlined,
   DownloadOutlined,
@@ -11,6 +11,7 @@ import {
   EditOutlined,
   ExclamationCircleFilled,
 } from '@ant-design/icons';
+import { ModalForm, ProFormText, FormInstance } from '@ant-design/pro-form';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import styles from './index.less';
 
@@ -22,9 +23,12 @@ export interface BreadcrumItemType {
 const { confirm } = Modal;
 
 const DocumentManagement = () => {
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [allChecked, setAllChecked] = useState(false);
   const [breadcrumbsList, setBreadcrumbsList] = useState<Array<BreadcrumItemType>>([]);
   const [flieId, setFlieId] = useState<number | null>();
+  const modalFormRef = useRef<FormInstance>();
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
   // 全选框的显隐 ,1 文件夹，2文件
   const isShowAllSelect = useMemo(() => {
@@ -32,6 +36,15 @@ const DocumentManagement = () => {
       return item.type === 2;
     });
   }, [fileAndFolderList]);
+
+  const currentId = useMemo(() => {
+    if (breadcrumbsList.length) {
+      const lastItem = breadcrumbsList[breadcrumbsList.length - 1];
+
+      return lastItem.id;
+    }
+    return 0;
+  }, [breadcrumbsList]);
 
   useEffect(() => {
     getTableData({
@@ -225,13 +238,33 @@ const DocumentManagement = () => {
   };
 
   const refreshFiles = async () => {
-    if (breadcrumbsList.length) {
-      const lastItem = breadcrumbsList[breadcrumbsList.length - 1];
+    await getTableData({ parent_id: currentId });
+  };
+  const createFolderFinish = async (value: { name: string }) => {
+    const { name } = value;
 
-      await getTableData({ parent_id: lastItem.id });
-    } else {
-      await getTableData({ parent_id: 0 });
+    try {
+      setConfirmLoading(true);
+      const res = await addDocumentApi([{ name, parent_id: currentId, type: 1 }]);
+
+      if (isSuccess(res)) {
+        message.success('新建文件夹成功');
+        setModalVisible(false);
+        await refreshFiles();
+      } else {
+        message.error('新建文件夹失败，请重试');
+      }
+    } catch (error) {
+      console.error('error:', error);
+    } finally {
+      setConfirmLoading(false);
     }
+
+    console.log('value:', value);
+  };
+
+  const handleNewFolder = () => {
+    setModalVisible(true);
   };
 
   return (
@@ -244,7 +277,7 @@ const DocumentManagement = () => {
           <Button type="primary" className={styles.batchDelete} shape="round" onClick={handleBatchRemove}>
             批量删除
           </Button>
-          <Button className={styles.newFolder} shape="round">
+          <Button type="primary" className={styles.newFolder} shape="round" onClick={handleNewFolder}>
             新建文件夹
           </Button>
           <Button type="primary" shape="round">
@@ -323,7 +356,8 @@ const DocumentManagement = () => {
                       className={styles.operation}
                       style={{ display: flieId === item.id || item.isSelected ? 'block' : 'none' }}
                     >
-                      <DownloadOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
+                      {item.type === 2 && <DownloadOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />}
+
                       <Dropdown menu={{ items }} placement="bottom" arrow>
                         <EllipsisOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
                       </Dropdown>
@@ -339,6 +373,29 @@ const DocumentManagement = () => {
             </ul>
           </div>
         </Row>
+        {modalVisible && (
+          <ModalForm<{ name: string }>
+            formRef={modalFormRef}
+            modalProps={{ centered: true, confirmLoading }}
+            title={'新建文件夹'}
+            width="400px"
+            visible={modalVisible}
+            onVisibleChange={setModalVisible}
+            onFinish={createFolderFinish}
+            initialValues={{ name: '新建文件夹' }}
+          >
+            <ProFormText
+              label={'文件夹名称'}
+              rules={[
+                {
+                  required: true,
+                  message: '文件夹名称不能为空',
+                },
+              ]}
+              name="name"
+            />
+          </ModalForm>
+        )}
       </Card>
     </PageContainer>
   );

@@ -175,11 +175,12 @@ export interface DocumentListItem {
 }
 
 export interface DocumentData {
-  file_path: string;
+  file_path?: string;
   name: string;
   parent_id: number;
-  size: string;
+  size?: string;
   type: number;
+  format?: string;
 }
 
 export interface CertificateTypeListRes extends TableListPagination {

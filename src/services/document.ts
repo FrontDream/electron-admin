@@ -29,13 +29,13 @@ export async function getDocumentApi(id: string, options?: { [key: string]: any 
 }
 
 // 新建文件
-export async function addDocumentApi(data: DocumentData, options?: { [key: string]: any }) {
+export async function addDocumentApi(data: Array<DocumentData>, options?: { [key: string]: any }) {
   return request<Resp<DocumentListItem>>('/api/docs/document', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    data,
+    data: { list: data },
     ...(options || {}),
   });
 }
