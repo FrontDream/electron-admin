@@ -195,5 +195,8 @@ export const fileImagesMap = {
   zip: '/images/zip.png',
   '7z': '/images/zip.png',
   rar: '/images/rar.png',
+  dwg: '/images/dwg.png',
+  iso: '/images/iso.png',
+  txt: '/images/txt.png',
   AAA: '/images/文件夹.png',
 };
