@@ -1,4 +1,17 @@
-import { Card, Row, Button, Input, Checkbox, Spin, Dropdown, UploadProps, Modal, MenuProps, message } from 'antd';
+import {
+  Card,
+  Row,
+  Button,
+  Input,
+  Checkbox,
+  Spin,
+  Dropdown,
+  UploadProps,
+  Modal,
+  MenuProps,
+  message,
+  Typography,
+} from 'antd';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   DocumentListItem,
@@ -30,6 +43,7 @@ export interface BreadcrumItemType {
 }
 
 const { confirm } = Modal;
+const { Text } = Typography;
 
 const useStore = create(set => ({
   fileList: [] as AppendixList[],
@@ -450,7 +464,10 @@ const DocumentManagement = () => {
                         className={styles.fileImg}
                         style={{ width: item.type === 1 ? '95px' : '80px' }}
                       />
-                      <div className={styles.fileName}>{item.name}</div>
+                      <Text className={styles.fileName} style={{ width: 100 }} ellipsis={{ tooltip: item.name }}>
+                        {item.name}
+                      </Text>
+                      {/* <div className={styles.fileName}>{item.name}</div> */}
                     </div>
                   </li>
                 );
