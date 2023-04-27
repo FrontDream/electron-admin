@@ -41,7 +41,7 @@ const DocumentManagement = () => {
   const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
   const [allChecked, setAllChecked] = useState(false);
   const [breadcrumbsList, setBreadcrumbsList] = useState<Array<BreadcrumItemType>>([]);
-  const [flieId, setFlieId] = useState<number | null>();
+  const [focusItem, setFocusItem] = useState<DocumentListItem | null>();
   const modalFormRef = useRef<FormInstance>();
   const uploadModalFormRef = useRef<FormInstance>();
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -87,11 +87,11 @@ const DocumentManagement = () => {
     setFileAndFolderList(updateList);
   };
   const fileMouseEnter = (item: DocumentListItem) => {
-    setFlieId(item.id);
+    setFocusItem(item);
   };
   // 鼠标离开 li
   const fileMouseLeave = () => {
-    setFlieId(null);
+    setFocusItem(null);
   };
 
   // 双击文件夹进入下一级
@@ -150,7 +150,7 @@ const DocumentManagement = () => {
   const singleSelect = (item: DocumentListItem, e) => {
     const isSelected = e.target.checked;
 
-    setFlieId(item.id);
+    setFocusItem(item);
     const chill = document.getElementById('all') as HTMLInputElement;
     const chillesNum = document.getElementsByName('single').length;
     const selectedNum = document.querySelectorAll('input[name="single"]:checked').length;
@@ -171,7 +171,11 @@ const DocumentManagement = () => {
     }
   };
   const handleDeleteOne = async () => {
-    await deleteFileFolder([flieId!]);
+    if (focusItem) {
+      const id = focusItem.id;
+
+      await deleteFileFolder([id!]);
+    }
   };
 
   const items: MenuProps['items'] = [
@@ -289,6 +293,7 @@ const DocumentManagement = () => {
         message.success('新建文件夹成功');
         setUploadModalVisible(false);
         setUploadConfirmLoading(false);
+        setFileList([]);
         await refreshFiles();
       }
     } catch (error) {
@@ -408,7 +413,7 @@ const DocumentManagement = () => {
                   <li
                     key={item.id}
                     title={item.name}
-                    className={`${flieId === item.id || item.isSelected ? styles.selected_bgc : ''}`}
+                    className={`${focusItem?.id === item.id || item.isSelected ? styles.selected_bgc : ''}`}
                     onMouseEnter={() => fileMouseEnter(item)}
                     onMouseLeave={fileMouseLeave}
                     onDoubleClick={() => handleBreakdown(item)}
@@ -416,7 +421,7 @@ const DocumentManagement = () => {
                     <Checkbox
                       className={styles.itemCheckbox}
                       style={{
-                        display: flieId === item.id || item.isSelected ? 'block' : 'none',
+                        display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none',
                       }}
                       name="single"
                       onChange={e => singleSelect(item, e)}
@@ -424,7 +429,7 @@ const DocumentManagement = () => {
                     />
                     <div
                       className={styles.operation}
-                      style={{ display: flieId === item.id || item.isSelected ? 'block' : 'none' }}
+                      style={{ display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none' }}
                     >
                       {item.type === 2 && (
                         <DownloadOutlined
