@@ -445,13 +445,10 @@ const DocumentManagement = () => {
                       className={styles.operation}
                       style={{ display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none' }}
                     >
-                      {item.type === 2 && (
-                        <DownloadOutlined
-                          style={{ color: '#C8793E', cursor: 'pointer' }}
-                          onClick={() => downLoad(item.url, item.name)}
-                        />
-                      )}
-
+                      <DownloadOutlined
+                        style={{ color: '#C8793E', cursor: 'pointer' }}
+                        onClick={() => downLoad(item.url, item.name)}
+                      />
                       <Dropdown menu={{ items }} placement="bottom" arrow>
                         <EllipsisOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
                       </Dropdown>
@@ -464,7 +461,11 @@ const DocumentManagement = () => {
                         className={styles.fileImg}
                         style={{ width: item.type === 1 ? '95px' : '80px' }}
                       />
-                      <Text className={styles.fileName} style={{ width: 100 }} ellipsis={{ tooltip: item.name }}>
+                      <Text
+                        className={styles.fileName}
+                        style={{ width: item.type === 1 ? '95px' : '80px' }}
+                        ellipsis={{ tooltip: item.name }}
+                      >
                         {item.name}
                       </Text>
                       {/* <div className={styles.fileName}>{item.name}</div> */}
