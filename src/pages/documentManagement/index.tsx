@@ -1,6 +1,6 @@
 import { Card, Row, Button, Input, Checkbox, Dropdown, Modal, MenuProps, message } from 'antd';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { DocumentListItem, fileImagesMap, isSuccess } from '@/utils';
+import { DocumentListItem, fileImagesMap, isSuccess, downLoad } from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
 import { getDocumentListApi, deleteDocumentApi, addDocumentApi } from '@/services';
 import {
@@ -356,7 +356,12 @@ const DocumentManagement = () => {
                       className={styles.operation}
                       style={{ display: flieId === item.id || item.isSelected ? 'block' : 'none' }}
                     >
-                      {item.type === 2 && <DownloadOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />}
+                      {item.type === 2 && (
+                        <DownloadOutlined
+                          style={{ color: '#C8793E', cursor: 'pointer' }}
+                          onClick={() => downLoad(item.url, item.name)}
+                        />
+                      )}
 
                       <Dropdown menu={{ items }} placement="bottom" arrow>
                         <EllipsisOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
