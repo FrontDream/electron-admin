@@ -1,6 +1,14 @@
-import { Card, Row, Button, Input, Checkbox, Dropdown, Modal, MenuProps, message } from 'antd';
+import { Card, Row, Button, Input, Checkbox, Spin, Dropdown, UploadProps, Modal, MenuProps, message } from 'antd';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { DocumentListItem, fileImagesMap, isSuccess, downLoad } from '@/utils';
+import {
+  DocumentListItem,
+  fileImagesMap,
+  isSuccess,
+  downLoad,
+  uploadFiles,
+  getFileExtension,
+  AppendixList,
+} from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
 import { getDocumentListApi, deleteDocumentApi, addDocumentApi } from '@/services';
 import {
@@ -11,8 +19,9 @@ import {
   EditOutlined,
   ExclamationCircleFilled,
 } from '@ant-design/icons';
-import { ModalForm, ProFormText, FormInstance } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, FormInstance, ProFormUploadDragger } from '@ant-design/pro-form';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
+import create from 'zustand';
 import styles from './index.less';
 
 export interface BreadcrumItemType {
@@ -22,13 +31,25 @@ export interface BreadcrumItemType {
 
 const { confirm } = Modal;
 
+const useStore = create(set => ({
+  fileList: [] as AppendixList[],
+  addFileList: (list: Array<AppendixList>) => set(() => ({ fileList: list })),
+}));
+
 const DocumentManagement = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
   const [allChecked, setAllChecked] = useState(false);
   const [breadcrumbsList, setBreadcrumbsList] = useState<Array<BreadcrumItemType>>([]);
   const [flieId, setFlieId] = useState<number | null>();
   const modalFormRef = useRef<FormInstance>();
+  const uploadModalFormRef = useRef<FormInstance>();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [uploadConfirmLoading, setUploadConfirmLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileList = useStore(state => state.fileList);
+  const setFileList = useStore(state => state.addFileList);
+
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
   // 全选框的显隐 ,1 文件夹，2文件
   const isShowAllSelect = useMemo(() => {
@@ -72,14 +93,6 @@ const DocumentManagement = () => {
   const fileMouseLeave = () => {
     setFlieId(null);
   };
-  // 鼠标右键
-  const fileMouseDown = (item: DocumentListItem, e) => {
-    e.target.oncontextmenu = function (e) {
-      // 阻止鼠标右键默认事件
-      e.preventDefault();
-      console.log(item, 'zzzzz');
-    };
-  };
 
   // 双击文件夹进入下一级
   const handleBreakdown = (item: DocumentListItem) => {
@@ -89,13 +102,6 @@ const DocumentManagement = () => {
       getTableData({ parent_id: item.id });
     }
     setAllChecked(false);
-  };
-
-  // 点击文件是下载
-  const downloadBtn = item => {
-    if (item.type && item.FileFormat === 2) {
-      console.log('这是单击下载');
-    }
   };
 
   // 返回上一级
@@ -188,8 +194,8 @@ const DocumentManagement = () => {
     },
   ];
 
-  const onSearch = (name: string) => {
-    getTableData({
+  const onSearch = async (name: string) => {
+    await getTableData({
       name,
     });
   };
@@ -247,12 +253,10 @@ const DocumentManagement = () => {
       setConfirmLoading(true);
       const res = await addDocumentApi([{ name, parent_id: currentId, type: 1 }]);
 
-      if (isSuccess(res)) {
+      if (isSuccess(res, '新建文件夹失败，请重试')) {
         message.success('新建文件夹成功');
         setModalVisible(false);
         await refreshFiles();
-      } else {
-        message.error('新建文件夹失败，请重试');
       }
     } catch (error) {
       console.error('error:', error);
@@ -266,12 +270,80 @@ const DocumentManagement = () => {
   const handleNewFolder = () => {
     setModalVisible(true);
   };
+  const onUploadFinish = async () => {
+    try {
+      if (uploading) {
+        message.warning('正在上传，请上传后重试!');
+        return;
+      }
+      setUploadConfirmLoading(true);
+      console.log('files:', fileList);
+      const files = fileList.map(item => {
+        const { name, file_path, uid } = item;
+
+        return { name, file_path, uid, parent_id: currentId, type: 2, format: getFileExtension(name) };
+      });
+      const res = await addDocumentApi(files);
+
+      if (isSuccess(res, '上传，请重试')) {
+        message.success('新建文件夹成功');
+        setUploadModalVisible(false);
+        setUploadConfirmLoading(false);
+        await refreshFiles();
+      }
+    } catch (error) {
+      console.error('error:', error);
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
+  const onRemove = (file: { name: string; file_path: string; uid: string }) => {
+    const { uid } = file;
+    const files = fileList.filter(item => item.uid !== uid);
+
+    setFileList(files);
+  };
+
+  const uploadProps: UploadProps = {
+    name: 'file',
+    multiple: true,
+    fileList: fileList,
+    onRemove: onRemove,
+    customRequest: async ({ file, onSuccess, onError }) => {
+      const { name, uid } = file;
+
+      try {
+        setUploading(true);
+
+        const res = await uploadFiles([{ name, file, uid }]);
+        const fileListUpdate = useStore.getState().fileList;
+
+        setUploading(false);
+        onSuccess?.(res, file);
+
+        setFileList([...fileListUpdate, ...res]);
+      } catch (error) {
+        onError?.(error);
+      }
+      return;
+    },
+  };
+
+  const handleUpload = () => {
+    setUploadModalVisible(true);
+  };
 
   return (
     <PageContainer className={styles.pageCon}>
       <Card>
         <Row className={styles.btnList}>
-          <Button type="primary" shape="round" icon={<UploadOutlined />} className={styles.uploadBtn}>
+          <Button
+            type="primary"
+            shape="round"
+            icon={<UploadOutlined />}
+            className={styles.uploadBtn}
+            onClick={handleUpload}
+          >
             上传
           </Button>
           <Button type="primary" className={styles.batchDelete} shape="round" onClick={handleBatchRemove}>
@@ -339,9 +411,7 @@ const DocumentManagement = () => {
                     className={`${flieId === item.id || item.isSelected ? styles.selected_bgc : ''}`}
                     onMouseEnter={() => fileMouseEnter(item)}
                     onMouseLeave={fileMouseLeave}
-                    onMouseDown={e => fileMouseDown(item, e)}
                     onDoubleClick={() => handleBreakdown(item)}
-                    onClick={() => downloadBtn(item)}
                   >
                     <Checkbox
                       className={styles.itemCheckbox}
@@ -399,6 +469,27 @@ const DocumentManagement = () => {
               ]}
               name="name"
             />
+          </ModalForm>
+        )}
+        {uploadModalVisible && (
+          <ModalForm<any>
+            formRef={uploadModalFormRef}
+            modalProps={{ centered: true, confirmLoading: uploadConfirmLoading }}
+            title={'上传文件'}
+            width="400px"
+            visible={uploadModalVisible}
+            onVisibleChange={setUploadModalVisible}
+            onFinish={onUploadFinish}
+          >
+            <Spin spinning={uploading}>
+              <ProFormUploadDragger
+                max={4}
+                colProps={{
+                  span: 24,
+                }}
+                fieldProps={{ ...uploadProps }}
+              />
+            </Spin>
           </ModalForm>
         )}
       </Card>
