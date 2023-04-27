@@ -444,7 +444,12 @@ const DocumentManagement = () => {
                     </div>
 
                     <div className={styles.content}>
-                      <img src={item.imageUrl} alt="" className={styles.fileImg} />
+                      <img
+                        src={item.imageUrl}
+                        alt=""
+                        className={styles.fileImg}
+                        style={{ width: item.type === 1 ? '95px' : '80px' }}
+                      />
                       <div className={styles.fileName}>{item.name}</div>
                     </div>
                   </li>
