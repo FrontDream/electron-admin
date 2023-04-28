@@ -219,6 +219,7 @@ const DocumentManagement = () => {
     await getTableData({
       name,
     });
+    setBreadcrumbsList([]);
   };
 
   const deleteFileFolder = async (ids: Array<number>) => {
@@ -383,14 +384,10 @@ const DocumentManagement = () => {
         </Row>
         <Row>
           <div className={styles.nav}>
-            {breadcrumbsList.length > 0 && (
-              <>
-                <div onClick={backBtn} className={styles.backNext}>
-                  返回上一级
-                </div>
-                <span className={styles.delimiter}>|</span>
-              </>
-            )}
+            <div onClick={backBtn} className={styles.backNext}>
+              返回上一级
+            </div>
+            <span className={styles.delimiter}>|</span>
             <div className={styles.breadcrumb_all}>
               <span onClick={handleAllFolderBtn} className={styles.breadcrumbAllText}>
                 全部文件
@@ -447,7 +444,7 @@ const DocumentManagement = () => {
                       />
                       <div
                         className={styles.operation}
-                        style={{ display: focusItem?.id === item.id || item.isSelected ? 'block' : 'none' }}
+                        style={{ display: focusItem?.id === item.id || item.isSelected ? 'flex' : 'none' }}
                       >
                         <DownloadOutlined
                           style={{ color: '#C8793E', cursor: 'pointer' }}
@@ -459,20 +456,10 @@ const DocumentManagement = () => {
                       </div>
 
                       <div className={styles.content}>
-                        <img
-                          src={item.imageUrl}
-                          alt=""
-                          className={styles.fileImg}
-                          style={{ width: item.type === 1 ? '95px' : '80px' }}
-                        />
-                        <Text
-                          className={styles.fileName}
-                          style={{ width: item.type === 1 ? '95px' : '80px' }}
-                          ellipsis={{ tooltip: item.name }}
-                        >
+                        <img src={item.imageUrl} alt="" className={styles.fileImg} />
+                        <Text className={styles.fileName} style={{ width: '80px' }} ellipsis={{ tooltip: item.name }}>
                           {item.name}
                         </Text>
-                        {/* <div className={styles.fileName}>{item.name}</div> */}
                       </div>
                     </li>
                   );

@@ -186,6 +186,8 @@ export const downLoad = async (url: string, name: string) => {
 export const fileImagesMap = {
   doc: '/images/word.png',
   docx: '/images/word.png',
+  ppt: '/images/ppt.png',
+  pptx: '/images/ppt.png',
   xls: '/images/excel.png',
   xlsx: '/images/excel.png',
   pdf: '/images/pdf.png',
