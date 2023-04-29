@@ -381,6 +381,25 @@ const DocumentManagement = () => {
   const handleUpload = () => {
     setUploadModalVisible(true);
   };
+  const handleDownSingle = async item => {
+    const { type, id, url, name } = item;
+
+    if (type === 1) {
+      const hide = message.loading('正在下载');
+
+      try {
+        const ids = [id];
+
+        await multiDownZip(ids);
+      } catch (error) {
+        message.warning('下载失败,请重试');
+      } finally {
+        hide();
+      }
+    } else {
+      downLoad(url, name);
+    }
+  };
 
   return (
     <PageContainer className={styles.pageCon}>
@@ -483,7 +502,7 @@ const DocumentManagement = () => {
                       >
                         <DownloadOutlined
                           style={{ color: '#C8793E', cursor: 'pointer' }}
-                          onClick={() => downLoad(item.url, item.name)}
+                          onClick={() => handleDownSingle(item)}
                         />
                         <Dropdown menu={{ items }} placement="bottom" arrow>
                           <EllipsisOutlined style={{ color: '#C8793E', cursor: 'pointer' }} />
