@@ -151,9 +151,7 @@ const DocumentManagement = () => {
     const list = [...fileAndFolderList];
 
     list.forEach(item => {
-      if (item.type && item.type === 2) {
-        item.isSelected = isAll;
-      }
+      item.isSelected = isAll;
     });
 
     setFileAndFolderList(list);
