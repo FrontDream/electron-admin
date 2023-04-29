@@ -69,7 +69,7 @@ export async function multiDownFilesApi(ids: Array<number>, options?: { [key: st
 export async function updateDocumentApi(data: { id: number; name: string }, options?: { [key: string]: any }) {
   const { id, name } = data;
 
-  return request<Resp<DocumentListItem>>(`/api/users/department/${id}`, {
+  return request<Resp<DocumentListItem>>(`/api/docs/document/${id}`, {
     method: 'PUT',
     data: { name },
     ...(options || {}),

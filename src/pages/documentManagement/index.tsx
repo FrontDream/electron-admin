@@ -24,7 +24,7 @@ import {
   multiDownZip,
 } from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
-import { getDocumentListApi, deleteDocumentApi, addDocumentApi } from '@/services';
+import { getDocumentListApi, deleteDocumentApi, addDocumentApi, updateDocumentApi } from '@/services';
 import {
   UploadOutlined,
   DownloadOutlined,
@@ -57,6 +57,7 @@ const DocumentManagement = () => {
   const [allChecked, setAllChecked] = useState(false);
   const [breadcrumbsList, setBreadcrumbsList] = useState<Array<BreadcrumItemType>>([]);
   const [focusItem, setFocusItem] = useState<DocumentListItem | null>();
+  const [editItem, setEditItem] = useState<DocumentListItem>();
   const modalFormRef = useRef<FormInstance>();
   const uploadModalFormRef = useRef<FormInstance>();
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -66,6 +67,7 @@ const DocumentManagement = () => {
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
   const [listLoading, setListLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
   // 全选框的显隐 ,1 文件夹，2文件
@@ -189,6 +191,13 @@ const DocumentManagement = () => {
       await deleteFileFolder([id!]);
     }
   };
+  const handleReName = async () => {
+    if (focusItem) {
+      setEditItem({ ...focusItem });
+      setIsEdit(true);
+      setModalVisible(true);
+    }
+  };
 
   const items: MenuProps['items'] = [
     {
@@ -202,7 +211,7 @@ const DocumentManagement = () => {
     {
       key: '2',
       label: (
-        <a rel="noopener noreferrer">
+        <a rel="noopener noreferrer" onClick={handleReName}>
           <EditOutlined />
           重命名
         </a>
@@ -211,10 +220,12 @@ const DocumentManagement = () => {
   ];
 
   const onSearch = async (name: string) => {
-    await getTableData({
-      name,
-    });
-    setBreadcrumbsList([]);
+    if (name) {
+      await getTableData({
+        name,
+      });
+      setBreadcrumbsList([]);
+    }
   };
 
   const deleteFileFolder = async (ids: Array<number>) => {
@@ -296,13 +307,18 @@ const DocumentManagement = () => {
   };
   const createFolderFinish = async (value: { name: string }) => {
     const { name } = value;
+    let res;
 
     try {
       setConfirmLoading(true);
-      const res = await addDocumentApi([{ name, parent_id: currentId, type: 1 }]);
-
-      if (isSuccess(res, '新建文件夹失败，请重试')) {
-        message.success('新建文件夹成功');
+      if (!isEdit) {
+        res = await addDocumentApi([{ name, parent_id: currentId, type: 1 }]);
+      } else {
+        res = await updateDocumentApi({ id: editItem!.id, name });
+      }
+      console.log('res:', res);
+      if (isSuccess(res, `${isEdit ? '重命名' : '新建文件夹'}失败，请重试`)) {
+        message.success(`${isEdit ? '重命名' : '新建文件夹'}成功`);
         setModalVisible(false);
         await refreshFiles();
       }
@@ -317,6 +333,7 @@ const DocumentManagement = () => {
 
   const handleNewFolder = () => {
     setModalVisible(true);
+    setIsEdit(false);
   };
   const onUploadFinish = async () => {
     try {
@@ -526,15 +543,15 @@ const DocumentManagement = () => {
           <ModalForm<{ name: string }>
             formRef={modalFormRef}
             modalProps={{ centered: true, confirmLoading }}
-            title={'新建文件夹'}
+            title={`${isEdit ? '重命名' : '新建文件夹'}`}
             width="400px"
             visible={modalVisible}
             onVisibleChange={setModalVisible}
             onFinish={createFolderFinish}
-            initialValues={{ name: '新建文件夹' }}
+            initialValues={{ name: isEdit ? editItem?.name : '新建文件夹' }}
           >
             <ProFormText
-              label={'文件夹名称'}
+              label={'名称'}
               rules={[
                 {
                   required: true,
