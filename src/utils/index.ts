@@ -226,16 +226,16 @@ export async function multiDownZip(ids: Array<number>) {
     const { list } = data;
     const zip = new JSZip();
     const daytime = moment().format('YYYY-MM-DD HH:mm:ss');
-    const outPromises = await downloadFiles2ZipWithFolder(list, zip);
 
-    await Promise.all(outPromises);
+    await downloadFiles2ZipWithFolder(list, zip);
+
     zip.generateAsync({ type: 'blob' }).then(blob => {
       FileSaver.saveAs(blob, `${daytime}.zip`);
     });
   }
 }
 
-export async function downloadFiles2ZipWithFolder(listData: any, zip) {
+export async function downloadFiles2ZipWithFolder(listData: any, zip: any) {
   const outPromises = listData?.map(async item => {
     const { type, url, list, name } = item;
     // 文件
@@ -252,5 +252,5 @@ export async function downloadFiles2ZipWithFolder(listData: any, zip) {
     }
   });
 
-  return outPromises;
+  await Promise.all(outPromises);
 }
