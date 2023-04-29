@@ -1,13 +1,16 @@
 import { message } from 'antd';
 import { EducationType, FileTypeEnum } from './type';
 import { useRequest } from 'umi';
-import { UploadFile, RcFile } from 'antd/lib/upload';
 import {
   getCertificatePersonListApi,
   getCertificateTypeListApi,
   uploadFileApi,
   getTempDocumentUrlApi,
+  multiDownFilesApi,
 } from '@/services';
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
+import moment from 'moment';
 
 export * from './type';
 
@@ -202,3 +205,52 @@ export const fileImagesMap = {
   txt: '/images/txt.png',
   AAA: '/images/文件夹.png',
 };
+
+const getEachFile = (url: string) => {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then((res: any) => {
+        resolve(res.blob());
+      })
+      .catch((error: any) => {
+        reject(error);
+      });
+  });
+};
+
+export async function multiDownZip(ids: Array<number>) {
+  const res = await multiDownFilesApi(ids);
+
+  if (isSuccess(res, '批量下载失败，请重试')) {
+    const { data } = res;
+    const { list } = data;
+    const zip = new JSZip();
+    const daytime = moment().format('YYYY-MM-DD HH:mm:ss');
+    const outPromises = await downloadFiles2ZipWithFolder(list, zip);
+
+    await Promise.all(outPromises);
+    zip.generateAsync({ type: 'blob' }).then(blob => {
+      FileSaver.saveAs(blob, `${daytime}.zip`);
+    });
+  }
+}
+
+export async function downloadFiles2ZipWithFolder(listData: any, zip) {
+  const outPromises = listData?.map(async item => {
+    const { type, url, list, name } = item;
+    // 文件
+
+    if (type === 2) {
+      const blob = await getEachFile(url);
+
+      zip?.file(name, blob);
+    } else {
+      // 文件夹
+      const zipFolder = zip.folder(name);
+
+      await downloadFiles2ZipWithFolder(list, zipFolder);
+    }
+  });
+
+  return outPromises;
+}

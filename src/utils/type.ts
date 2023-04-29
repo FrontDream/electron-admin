@@ -418,3 +418,7 @@ export interface TempDocumentResItem {
   file_path: string;
   url: string;
 }
+
+export interface MultiRes {
+  list: Array<DocumentListItem>;
+}

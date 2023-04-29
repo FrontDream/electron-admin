@@ -21,6 +21,7 @@ import {
   uploadFiles,
   getFileExtension,
   AppendixList,
+  multiDownZip,
 } from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
 import { getDocumentListApi, deleteDocumentApi, addDocumentApi } from '@/services';
@@ -60,6 +61,7 @@ const DocumentManagement = () => {
   const uploadModalFormRef = useRef<FormInstance>();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [uploadConfirmLoading, setUploadConfirmLoading] = useState(false);
+  const [downLoading, setDownLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
@@ -67,11 +69,6 @@ const DocumentManagement = () => {
 
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
   // 全选框的显隐 ,1 文件夹，2文件
-  const isShowAllSelect = useMemo(() => {
-    return fileAndFolderList.every(item => {
-      return item.type === 2;
-    });
-  }, [fileAndFolderList]);
 
   const currentId = useMemo(() => {
     if (breadcrumbsList.length) {
@@ -232,6 +229,7 @@ const DocumentManagement = () => {
         if (isSuccess(res, '删除失败，请重试')) {
           message.success('删除成功');
           await refreshFiles();
+          setAllChecked(false);
         }
       } catch (error) {
         console.error('error:', error);
@@ -240,7 +238,7 @@ const DocumentManagement = () => {
       }
     };
 
-    confirm({
+    await confirm({
       title: '确定删除吗?',
       icon: <ExclamationCircleFilled />,
       content: '删除后，无法恢复！请谨慎删除！',
@@ -265,8 +263,38 @@ const DocumentManagement = () => {
     await deleteFileFolder(ids);
   };
 
+  const handleBatchDown = async () => {
+    const hide = message.loading('正在下载');
+
+    setDownLoading(true);
+
+    try {
+      const selectedList = fileAndFolderList.filter(item => item.isSelected);
+
+      if (!selectedList.length) {
+        message.warning('请选择文件或文件夹后重试');
+        return;
+      }
+      const ids = selectedList.map(item => item.id);
+
+      await multiDownZip(ids);
+      resetSelect();
+    } catch (error) {
+      message.warning('下载失败,请重试');
+    } finally {
+      hide();
+      setDownLoading(false);
+    }
+  };
+
   const refreshFiles = async () => {
     await getTableData({ parent_id: currentId });
+  };
+  const resetSelect = () => {
+    const list = fileAndFolderList.map(item => ({ ...item, isSelected: false }));
+
+    setFileAndFolderList(list);
+    setAllChecked(false);
   };
   const createFolderFinish = async (value: { name: string }) => {
     const { name } = value;
@@ -372,6 +400,15 @@ const DocumentManagement = () => {
           <Button type="primary" className={styles.batchDelete} shape="round" onClick={handleBatchRemove}>
             批量删除
           </Button>
+          <Button
+            type="primary"
+            className={styles.batchDelete}
+            shape="round"
+            onClick={handleBatchDown}
+            loading={downLoading}
+          >
+            批量下载
+          </Button>
           <Button type="primary" className={styles.newFolder} shape="round" onClick={handleNewFolder}>
             新建文件夹
           </Button>
@@ -417,7 +454,7 @@ const DocumentManagement = () => {
         <Row>
           <div className={styles.table_files}>
             <div className={styles.table_top}>
-              <Checkbox id="all" onChange={allSelectBtn} checked={allChecked} disabled={!isShowAllSelect}>
+              <Checkbox id="all" onChange={allSelectBtn} checked={allChecked}>
                 全选
               </Checkbox>
             </div>

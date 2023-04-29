@@ -6,6 +6,7 @@ import {
   DocumentData,
   TempDocumentData,
   TempDocumentResData,
+  MultiRes,
 } from '@/utils/type';
 
 // 文件列表
@@ -46,6 +47,17 @@ export async function deleteDocumentApi(ids: Array<number>, options?: { [key: st
 
   return request<Resp<DocumentListItem>>(`/api/docs/document/${id}`, {
     method: 'DELETE',
+    data: {
+      ids,
+    },
+    ...(options || {}),
+  });
+}
+
+// 批量下载文件
+export async function multiDownFilesApi(ids: Array<number>, options?: { [key: string]: any }) {
+  return request<Resp<MultiRes>>('/api/docs/multiDownloads', {
+    method: 'POST',
     data: {
       ids,
     },
