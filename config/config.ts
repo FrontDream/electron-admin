@@ -132,139 +132,6 @@ export default defineConfig({
       component: './documentManagement',
     },
     {
-      path: '/list',
-      icon: 'table',
-      name: 'list',
-      routes: [
-        {
-          path: '/list/search',
-          name: 'search-list',
-          component: './list/search',
-          routes: [
-            {
-              path: '/list/search',
-              redirect: '/list/search/articles',
-            },
-            {
-              name: 'articles',
-              icon: 'smile',
-              path: '/list/search/articles',
-              component: './list/search/articles',
-            },
-            {
-              name: 'projects',
-              icon: 'smile',
-              path: '/list/search/projects',
-              component: './list/search/projects',
-            },
-            {
-              name: 'applications',
-              icon: 'smile',
-              path: '/list/search/applications',
-              component: './list/search/applications',
-            },
-          ],
-        },
-        {
-          path: '/list',
-          redirect: '/list/table-list',
-        },
-        {
-          name: 'table-list',
-          icon: 'smile',
-          path: '/list/table-list',
-          component: './list/table-list',
-        },
-        {
-          name: 'basic-list',
-          icon: 'smile',
-          path: '/list/basic-list',
-          component: './list/basic-list',
-        },
-        {
-          name: 'card-list',
-          icon: 'smile',
-          path: '/list/card-list',
-          component: './list/card-list',
-        },
-      ],
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      icon: 'profile',
-      routes: [
-        {
-          path: '/profile',
-          redirect: '/profile/basic',
-        },
-        {
-          name: 'basic',
-          icon: 'smile',
-          path: '/profile/basic',
-          component: './profile/basic',
-        },
-        {
-          name: 'advanced',
-          icon: 'smile',
-          path: '/profile/advanced',
-          component: './profile/advanced',
-        },
-      ],
-    },
-    {
-      name: 'result',
-      icon: 'CheckCircleOutlined',
-      path: '/result',
-      routes: [
-        {
-          path: '/result',
-          redirect: '/result/success',
-        },
-        {
-          name: 'success',
-          icon: 'smile',
-          path: '/result/success',
-          component: './result/success',
-        },
-        {
-          name: 'fail',
-          icon: 'smile',
-          path: '/result/fail',
-          component: './result/fail',
-        },
-      ],
-    },
-    {
-      name: 'exception',
-      icon: 'warning',
-      path: '/exception',
-      routes: [
-        {
-          path: '/exception',
-          redirect: '/exception/403',
-        },
-        {
-          name: '403',
-          icon: 'smile',
-          path: '/exception/403',
-          component: './exception/403',
-        },
-        {
-          name: '404',
-          icon: 'smile',
-          path: '/exception/404',
-          component: './exception/404',
-        },
-        {
-          name: '500',
-          icon: 'smile',
-          path: '/exception/500',
-          component: './exception/500',
-        },
-      ],
-    },
-    {
       name: 'account',
       icon: 'user',
       path: '/account',
@@ -289,7 +156,7 @@ export default defineConfig({
     },
     {
       path: '/',
-      redirect: '/list/search',
+      redirect: '/user/userManagement',
     },
     {
       component: '404',
