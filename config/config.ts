@@ -17,7 +17,7 @@ export default defineConfig({
     rendererTarget: 'web',
     builderOptions: {
       appId: 'com.nanxu.desktop-oa',
-      productName: '管理系统',
+      productName: '旭达共享',
       nsis: {
         oneClick: false, // 是否一键安装
         allowToChangeInstallationDirectory: true, //是否允许修改安装目录
@@ -27,7 +27,7 @@ export default defineConfig({
         installerHeaderIcon: './build/icons/icon.ico', // 安装时头部图标
         createDesktopShortcut: true, // 是否创建桌面图标
         createStartMenuShortcut: true, // 是否创建开始菜单图标
-        shortcutName: '管理系统快捷方式', // 快捷方式名称
+        shortcutName: '旭达共享', // 快捷方式名称
         runAfterFinish: true, //是否安装完成后运行
       },
     },

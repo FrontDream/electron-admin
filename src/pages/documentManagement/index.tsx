@@ -67,6 +67,8 @@ const DocumentManagement = () => {
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
   const [listLoading, setListLoading] = useState(false);
+  const [permissionModalVisible, setPermissionModalVisible] = useState(false);
+  const [permissionConfirmLoading, setPermissionConfirmLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
@@ -417,6 +419,7 @@ const DocumentManagement = () => {
       downLoad(url, name);
     }
   };
+  const handleConfirmPermission = () => {};
 
   return (
     <PageContainer className={styles.pageCon}>
@@ -582,6 +585,16 @@ const DocumentManagement = () => {
               />
             </Spin>
           </ModalForm>
+        )}
+        {permissionModalVisible && (
+          <Modal
+            centered
+            confirmLoading={permissionConfirmLoading}
+            title={'权限设定'}
+            width="800px"
+            open={permissionModalVisible}
+            onOk={handleConfirmPermission}
+          ></Modal>
         )}
       </Card>
     </PageContainer>
