@@ -12,9 +12,9 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: '旭达共享',
+  // title: '旭达共享',
   pwa: false,
-  logo: '/topLogo.svg',
+  // logo: '/topLogo.svg',
   iconfontUrl: '',
   menu: {
     locale: false,

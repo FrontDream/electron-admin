@@ -62,6 +62,14 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     waterMarkProps: {
       content: initialState?.currentUser?.username,
     },
+    headerTitleRender: () => {
+      return (
+        <a className="customHeader">
+          <img src="/topLogo.svg" />
+          <h1>旭达共享</h1>
+        </a>
+      );
+    },
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
