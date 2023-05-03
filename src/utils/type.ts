@@ -422,3 +422,27 @@ export interface TempDocumentResItem {
 export interface MultiRes {
   list: Array<DocumentListItem>;
 }
+
+export interface PermissionListItem {
+  can_create?: boolean;
+  can_destroy?: boolean;
+  can_update?: boolean;
+  can_view?: boolean;
+  cat_id?: number;
+  create_by?: number;
+  create_user?: string;
+  ctime?: number;
+  id?: number;
+  mtime?: number;
+  object_name?: string;
+  object_name_cn?: string;
+  update_by?: number;
+  update_user?: string;
+}
+
+export interface PermissionReq {
+  object_name: string;
+  object_name_cn: string;
+  cat_id: number;
+  id?: number;
+}
