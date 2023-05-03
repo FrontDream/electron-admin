@@ -430,6 +430,9 @@ export interface MultiRes {
   list: Array<DocumentListItem>;
 }
 
+export interface PermissionRes {
+  data: Array<PermissionListItem>;
+}
 export interface PermissionListItem {
   can_create?: boolean;
   can_destroy?: boolean;

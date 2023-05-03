@@ -1,16 +1,15 @@
 import { request } from 'umi';
-import { Resp, PermissionReq, PermissionListItem } from '@/utils/type';
+import { Resp, PermissionReq, PermissionListItem, PermissionRes } from '@/utils/type';
 
 // 权限列表
 export async function getPermissionListApi(params: any, options?: { [key: string]: any }) {
-  const res = await request<Resp<Array<PermissionListItem>>>('/api/users/permission', {
+  const res = await request<Resp<PermissionRes>>('/api/users/permission', {
     method: 'GET',
     params,
     ...(options || {}),
   });
-  const { data = [] } = res;
 
-  return data;
+  return res.data;
 }
 
 // 新建权限
