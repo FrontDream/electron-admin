@@ -32,10 +32,12 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleFilled,
+  ShareAltOutlined,
 } from '@ant-design/icons';
 import { ModalForm, ProFormText, FormInstance, ProFormUploadDragger } from '@ant-design/pro-form';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import create from 'zustand';
+import PermissionModal from './permissionModal';
 import styles from './index.less';
 
 export interface BreadcrumItemType {
@@ -68,7 +70,7 @@ const DocumentManagement = () => {
   const setFileList = useStore(state => state.addFileList);
   const [listLoading, setListLoading] = useState(false);
   const [permissionModalVisible, setPermissionModalVisible] = useState(false);
-  const [permissionConfirmLoading, setPermissionConfirmLoading] = useState(false);
+
   const [isEdit, setIsEdit] = useState(false);
 
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
@@ -88,7 +90,6 @@ const DocumentManagement = () => {
       parent_id: 0,
     });
   }, []);
-
   const getTableData = async (params: { parent_id?: number; name?: string }) => {
     setListLoading(true);
     const documentList = await getDocumentListApi(params);
@@ -201,9 +202,17 @@ const DocumentManagement = () => {
     }
   };
 
+  const handlePermission = () => {
+    if (focusItem) {
+      setEditItem({ ...focusItem });
+      setIsEdit(false);
+      setPermissionModalVisible(true);
+    }
+  };
+
   const items: MenuProps['items'] = [
     {
-      key: '1',
+      key: 'del',
       label: (
         <a rel="noopener noreferrer" onClick={handleDeleteOne}>
           <DeleteOutlined /> 删除
@@ -211,11 +220,20 @@ const DocumentManagement = () => {
       ),
     },
     {
-      key: '2',
+      key: 'reName',
       label: (
         <a rel="noopener noreferrer" onClick={handleReName}>
           <EditOutlined />
           重命名
+        </a>
+      ),
+    },
+    {
+      key: 'share',
+      label: (
+        <a rel="noopener noreferrer" onClick={handlePermission}>
+          <ShareAltOutlined />
+          授权
         </a>
       ),
     },
@@ -419,7 +437,10 @@ const DocumentManagement = () => {
       downLoad(url, name);
     }
   };
-  const handleConfirmPermission = () => {};
+
+  const hanldeCancelPermission = () => {
+    setPermissionModalVisible(false);
+  };
 
   return (
     <PageContainer className={styles.pageCon}>
@@ -448,9 +469,6 @@ const DocumentManagement = () => {
           </Button>
           <Button type="primary" className={styles.newFolder} shape="round" onClick={handleNewFolder}>
             新建文件夹
-          </Button>
-          <Button type="primary" shape="round">
-            权限设定
           </Button>
           <div className={styles.searchCon}>
             <Input.Search placeholder="请输入搜索内容" className={styles.search} onSearch={onSearch} />
@@ -587,14 +605,7 @@ const DocumentManagement = () => {
           </ModalForm>
         )}
         {permissionModalVisible && (
-          <Modal
-            centered
-            confirmLoading={permissionConfirmLoading}
-            title={'权限设定'}
-            width="800px"
-            open={permissionModalVisible}
-            onOk={handleConfirmPermission}
-          ></Modal>
+          <PermissionModal visible={permissionModalVisible} focusItem={editItem} onCancel={hanldeCancelPermission} />
         )}
       </Card>
     </PageContainer>

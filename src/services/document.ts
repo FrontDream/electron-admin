@@ -7,6 +7,7 @@ import {
   TempDocumentData,
   TempDocumentResData,
   MultiRes,
+  UpdateDocReq,
 } from '@/utils/type';
 
 // 文件列表
@@ -103,6 +104,30 @@ export async function uploadFileApi(data: { file: File; url: string }, options?:
       'Content-Type': file.type,
     },
     data: file,
+    ...(options || {}),
+  });
+}
+
+// 文件用户权限列表
+export async function getUserDocPermissionApi(params: { doc_id: number }, options?: { [key: string]: any }) {
+  const res = await request<Resp<Array<number>>>('/api/users/userDocPermission', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+  const { data = [] } = res;
+
+  return data;
+}
+
+// 更新权限
+export async function uploadPermissionApi(data: UpdateDocReq, options?: { [key: string]: any }) {
+  return request<Resp<any>>('/api/users/userDocPermission', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: { can_view: true, can_create: true, can_update: true, can_destroy: true, ...data },
     ...(options || {}),
   });
 }

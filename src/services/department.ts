@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { Resp, DepartmentListItem, DepartmentData, DepartmentListRes } from '@/utils/type';
+import { Resp, DepartmentUserRes, DepartmentListItem, DepartmentData, DepartmentListRes } from '@/utils/type';
 
 // 部门列表
 export async function getDepartmentListApi(params: any, options?: { [key: string]: any }) {
@@ -42,4 +42,14 @@ export async function updateDepartmentApi(data: { id: number; name: string }, op
     data: { name },
     ...(options || {}),
   });
+}
+
+// 部门用户列表
+export async function getDepartmentUserApi() {
+  const res = await request<Resp<DepartmentUserRes>>('/api/users/departUser', {
+    method: 'GET',
+  });
+  const { data } = res;
+
+  return data;
 }

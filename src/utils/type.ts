@@ -32,6 +32,13 @@ export interface LoginResData {
 export interface DepartmentListRes extends TableListPagination {
   data: Array<DepartmentListItem>;
 }
+export interface DepartmentUserItem {
+  key: number;
+  title: string;
+}
+export interface DepartmentUserRes extends DepartmentUserItem {
+  children: Array<DepartmentUserItem>;
+}
 export interface DepartmentListItem {
   id: number;
   ctime?: string;
@@ -445,4 +452,14 @@ export interface PermissionReq {
   object_name_cn: string;
   cat_id: number;
   id?: number;
+}
+
+export interface UpdateDocReq {
+  doc_id: number;
+  doc_type: number;
+  can_view?: boolean;
+  can_create?: boolean;
+  can_update?: boolean;
+  can_destroy?: boolean;
+  user_list: Array<number | string>;
 }
