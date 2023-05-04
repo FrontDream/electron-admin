@@ -123,12 +123,15 @@ const authHeaderInterceptor = (url: string, options: RequestConfig) => {
   const jwt = getItem('jwt');
   const authHeader = { Authorization: `JWT ${jwt}` };
 
-  // 非登录
-  if (url !== '/api/users/login') {
-    return {
-      url,
-      options: { ...options, interceptors: true, headers: authHeader },
-    };
+  if (url.includes('/api')) {
+    // 非登录
+    if (url !== '/api/users/login') {
+      return {
+        url: isDev ? url : `http://43.142.36.238${url}`,
+        options: { ...options, interceptors: true, headers: authHeader },
+      };
+    }
+    return { url: isDev ? url : `http://43.142.36.238${url}`, options };
   }
   return { url, options };
 };

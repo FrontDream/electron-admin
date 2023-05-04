@@ -21,9 +21,11 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInSubFrames: true,
-      devTools: app.isPackaged ? false : true,
+      // devTools: app.isPackaged ? false : true,
       contextIsolation: true,
       nodeIntegrationInWorker: true,
+      devTools: true,
+      webSecurity: false,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
