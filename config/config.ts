@@ -69,25 +69,25 @@ export default defineConfig({
           redirect: '/user/userManagement',
         },
         {
-          name: '用户管理',
+          name: '用户列表',
           icon: 'smile',
           path: '/user/userManagement',
           component: './userManagement',
         },
         {
-          name: '部门管理',
+          name: '部门列表',
           icon: 'smile',
           path: '/user/department',
           component: './department',
         },
         {
-          name: '角色类型管理',
+          name: '角色类型列表',
           icon: 'smile',
           path: '/user/roleType',
           component: './roleType',
         },
         {
-          name: '角色管理',
+          name: '角色列表',
           icon: 'smile',
           path: '/user/role',
           component: './roleManagement',
@@ -109,12 +109,12 @@ export default defineConfig({
           redirect: '/certificate/list',
         },
         {
-          name: '类型管理',
+          name: '类型列表',
           path: '/certificate/type',
           component: './certificateType',
         },
         {
-          name: '人员管理',
+          name: '人员列表',
           path: '/certificate/person',
           component: './certificatePerson',
         },
@@ -129,7 +129,17 @@ export default defineConfig({
       name: '文件管理',
       icon: 'FileDoneOutlined',
       path: '/fileManagement',
-      component: './documentManagement',
+      routes: [
+        {
+          path: '/fileManagement',
+          redirect: '/fileManagement/list',
+        },
+        {
+          name: '文件列表',
+          path: '/fileManagement/list',
+          component: './documentManagement',
+        },
+      ],
     },
     {
       name: 'account',
