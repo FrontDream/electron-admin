@@ -1,4 +1,4 @@
-import { Button, message, Modal, Row, Col, Checkbox, Tree, Spin } from 'antd';
+import { Button, message, Modal, Row, Col, Checkbox, Tree } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -139,6 +139,11 @@ const RoleManagementList: React.FC = () => {
     const updateRightOptions = secondMenus
       .filter(item => menu_ids.includes(item.menu_id))
       .map(item => {
+        item?.children?.forEach(item => {
+          if (item.request_method === 'GET') {
+            item.disable = true;
+          }
+        });
         // 求交集
         const thirdChildIds = item?.children.map(child => child.id);
         const thirdChildIdsSet = new Set(thirdChildIds);
@@ -148,10 +153,23 @@ const RoleManagementList: React.FC = () => {
         return { ...item, secondIsChecked: true, thirdCheckedList };
       });
 
+    const checkedMenus: Array<number> = [];
+
+    permissionList.map(firstLevel => {
+      const { list = [] } = firstLevel;
+
+      // 当二级没有全选时，过滤掉一级
+      list.map(secondLevel => {
+        if (menu_ids.includes(secondLevel.menu_id)) {
+          checkedMenus.push(secondLevel.menu_id);
+        }
+      });
+    });
+
     setCurrentRow(data);
     modalFormRef.current?.setFieldsValue({ name, role_type });
     setRightOptions(updateRightOptions);
-    setCheckedKeys(menu_ids);
+    setCheckedKeys(checkedMenus);
     setDetailLoading(false);
   };
 
@@ -170,7 +188,7 @@ const RoleManagementList: React.FC = () => {
         permission_ids.push(...thirdCheckedList);
         menu_ids.push(...[menu_id, parentMenuId]);
       }
-      menu_ids = Array.from(new Set(menu_ids));
+      menu_ids = Array.from(new Set(menu_ids)) as Array<number>;
 
       if (isDdd) {
         res = await addRoleApi({ name, role_type, menu_ids, permission_ids });
@@ -258,11 +276,19 @@ const RoleManagementList: React.FC = () => {
       .filter(item => checkedKeysValue.includes(item.menu_id))
       .map(item => {
         const alreadyRightOption = rightOptions.find(option => option.menu_id === item.menu_id);
+        let getOptionID;
+
+        item?.children?.forEach(item => {
+          if (item.request_method === 'GET') {
+            getOptionID = item.id;
+            item.disable = true;
+          }
+        });
 
         if (alreadyRightOption) {
           return alreadyRightOption;
         }
-        return { ...item, secondIsChecked: true, thirdCheckedList: [] };
+        return { ...item, secondIsChecked: true, thirdCheckedList: [getOptionID] };
       });
 
     setRightOptions(updateRightOptions);
@@ -381,8 +407,10 @@ const RoleManagementList: React.FC = () => {
                       >
                         <Row>
                           {option?.children?.map(item => (
-                            <Col span={12} key={item.id}>
-                              <Checkbox value={item.id}>{item.brief}</Checkbox>
+                            <Col span={8} key={item.id}>
+                              <Checkbox value={item.id} disabled={item?.disable}>
+                                {item.brief}
+                              </Checkbox>
                             </Col>
                           ))}
                         </Row>

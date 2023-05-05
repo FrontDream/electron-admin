@@ -112,8 +112,8 @@ export interface RoleTypeData {
 export interface RoleData {
   name: string;
   role_type: number;
-  menu_ids: Array<string>;
-  permission_ids: Array<string>;
+  menu_ids: Array<number>;
+  permission_ids: Array<number>;
 }
 
 export interface UserListRes extends TableListPagination {
@@ -487,23 +487,24 @@ export interface UpdateDocReq {
 }
 
 export interface PermissionThirdLevel {
-  id: string;
+  id: number;
   path: string;
   brief: string;
   request_method: string;
+  disable?: boolean;
 }
 export interface PermissionSecondLevel {
-  menu_id: string;
+  menu_id: number;
   menu_name: string;
   children: Array<PermissionThirdLevel>;
-  parentMenuId?: string;
+  parentMenuId?: number;
   parentMenuName?: string;
-  thirdCheckedList?: Array<string>;
+  thirdCheckedList?: Array<number>;
   secondIsChecked?: boolean;
 }
 
 export interface PermissionFirstLevel {
-  menu_id: string;
+  menu_id: number;
   menu_name: string;
   list: Array<PermissionSecondLevel>;
 }

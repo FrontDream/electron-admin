@@ -35,7 +35,7 @@ export async function deleteRoleApi(id: number, options?: { [key: string]: any }
 
 // 修改角色
 export async function updateRoleApi(
-  data: { id: number; name: string; role_type: number },
+  data: { id: number; name: string; role_type: number; permission_ids: Array<number>; menu_ids: Array<number> },
   options?: { [key: string]: any },
 ) {
   const { id, name, role_type, menu_ids, permission_ids } = data;
