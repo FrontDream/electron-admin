@@ -73,7 +73,7 @@ const CertificatePersonList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '入职时间',
+      title: '离职时间',
       dataIndex: 'resign_time',
       hideInSearch: true,
     },

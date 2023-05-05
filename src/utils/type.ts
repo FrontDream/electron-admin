@@ -75,6 +75,23 @@ export interface DepartmentData {
 export interface RoleManagementListRes extends TableListPagination {
   data: Array<RoleManagementListItem>;
 }
+export interface RoleDetail {
+  id: number;
+  ctime: number;
+  mtime: number;
+  create_by: number;
+  update_by: number;
+  name: string;
+  role_type: number;
+  sort_order: number;
+  role_type_name: string;
+  is_exists_user: boolean;
+  rel_user_list: Array<number>;
+  menu_ids: Array<number>;
+  api_ids: Array<number>;
+  create_user: string;
+  update_user: string;
+}
 export interface RoleManagementListItem {
   id: number;
   ctime: number;
@@ -95,6 +112,8 @@ export interface RoleTypeData {
 export interface RoleData {
   name: string;
   role_type: number;
+  menu_ids: Array<string>;
+  permission_ids: Array<string>;
 }
 
 export interface UserListRes extends TableListPagination {
@@ -431,7 +450,7 @@ export interface MultiRes {
 }
 
 export interface PermissionRes {
-  data: Array<PermissionListItem>;
+  list: Array<PermissionFirstLevel>;
 }
 export interface PermissionListItem {
   can_create?: boolean;
@@ -465,4 +484,26 @@ export interface UpdateDocReq {
   can_update?: boolean;
   can_destroy?: boolean;
   user_list: Array<number | string>;
+}
+
+export interface PermissionThirdLevel {
+  id: string;
+  path: string;
+  brief: string;
+  request_method: string;
+}
+export interface PermissionSecondLevel {
+  menu_id: string;
+  menu_name: string;
+  children: Array<PermissionThirdLevel>;
+  parentMenuId?: string;
+  parentMenuName?: string;
+  thirdCheckedList?: Array<string>;
+  secondIsChecked?: boolean;
+}
+
+export interface PermissionFirstLevel {
+  menu_id: string;
+  menu_name: string;
+  list: Array<PermissionSecondLevel>;
 }

@@ -1,4 +1,4 @@
-import { Button, message, Modal, Row, Col, Card, Checkbox } from 'antd';
+import { Button, message, Modal, Row, Col, Checkbox, Tree, Spin } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -9,7 +9,9 @@ import {
   RoleData,
   TableListPagination,
   RoleTypeListItem,
-  PermissionListItem,
+  PermissionFirstLevel,
+  PermissionSecondLevel,
+  RoleDetail,
 } from '@/utils';
 import {
   getRoleManagementListApi,
@@ -18,6 +20,7 @@ import {
   updateRoleApi,
   getRoleTypeListApi,
   getPermissionListApi,
+  getRoleDetailApi,
 } from '@/services';
 import moment from 'moment';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
@@ -27,22 +30,18 @@ import styles from './index.less';
 
 const { warning, confirm } = Modal;
 
-const plainOptions = ['Apple', 'Pear', 'Orange', 'Ban'];
-const defaultCheckedList = ['Apple', 'Orange'];
-
 const RoleManagementList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<RoleManagementListItem>();
+  const [currentRow, setCurrentRow] = useState<RoleDetail>();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
-  const [permissionList, setPermissionList] = useState<Array<PermissionListItem>>([]);
-  const [checkedLeft, setCheckedLeft] = useState<Array<number>>([]);
-
-  const [indeterminate, setIndeterminate] = useState(true);
-  const [checkAll, setCheckAll] = useState(false);
-  const [checkedList, setCheckedList] = useState<CheckboxValueType[]>(defaultCheckedList);
+  const [permissionList, setPermissionList] = useState<Array<PermissionFirstLevel>>([]);
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+  const [secondMenus, setSecondMenus] = useState<Array<PermissionSecondLevel>>([]);
+  const [rightOptions, setRightOptions] = useState<Array<PermissionSecondLevel>>([]);
 
   const { data = [] } = useRequest(async () => {
     const res = await getRoleTypeListApi({
@@ -53,12 +52,23 @@ const RoleManagementList: React.FC = () => {
     return { data: res.data };
   });
 
-  const { loading: permissionLoading } = useRequest(
+  // 获取权限列表
+  useRequest(
     async () => {
-      const res = await getPermissionListApi({});
-      const { data = [] } = res;
+      const res = await getPermissionListApi();
+      const { list: permissionList = [] } = res;
 
-      setPermissionList(data);
+      setPermissionList(permissionList);
+      const secondMenus = [] as Array<PermissionSecondLevel>;
+
+      permissionList.map(firstMenu => {
+        const { menu_id, menu_name, list = [] } = firstMenu;
+        const updateList = list.map(item => ({ ...item, parentMenuId: menu_id, parentMenuName: menu_name }));
+
+        secondMenus.push(...updateList);
+      });
+
+      setSecondMenus(secondMenus);
     },
     { refreshDeps: [] },
   );
@@ -108,14 +118,7 @@ const RoleManagementList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
-          key="update"
-          onClick={() => {
-            setModalVisible(true);
-            setCurrentRow(record);
-            setIsDdd(false);
-          }}
-        >
+        <a key="update" onClick={() => handleEdit(record)}>
           修改
         </a>,
         <a key="del" onClick={() => handleRemove(record)}>
@@ -124,6 +127,33 @@ const RoleManagementList: React.FC = () => {
       ],
     },
   ];
+  const handleEdit = async (record: RoleManagementListItem) => {
+    const { id } = record;
+
+    setModalVisible(true);
+    setDetailLoading(true);
+
+    setIsDdd(false);
+    const data = await getRoleDetailApi({ id });
+    const { menu_ids = [], api_ids = [], name, role_type } = data;
+    const updateRightOptions = secondMenus
+      .filter(item => menu_ids.includes(item.menu_id))
+      .map(item => {
+        // 求交集
+        const thirdChildIds = item?.children.map(child => child.id);
+        const thirdChildIdsSet = new Set(thirdChildIds);
+        const thirdCheckedList = api_ids.filter(id => thirdChildIdsSet.has(id));
+
+        console.log('thirdCheckedList:', thirdCheckedList);
+        return { ...item, secondIsChecked: true, thirdCheckedList };
+      });
+
+    setCurrentRow(data);
+    modalFormRef.current?.setFieldsValue({ name, role_type });
+    setRightOptions(updateRightOptions);
+    setCheckedKeys(menu_ids);
+    setDetailLoading(false);
+  };
 
   const onFinish = async (value: RoleData) => {
     const { name, role_type } = value;
@@ -131,11 +161,21 @@ const RoleManagementList: React.FC = () => {
     try {
       setConfirmLoading(true);
       let res = {};
+      const permission_ids = [];
+      let menu_ids = [];
+
+      for (const rightOption of rightOptions) {
+        const { menu_id, parentMenuId, thirdCheckedList = [] } = rightOption;
+
+        permission_ids.push(...thirdCheckedList);
+        menu_ids.push(...[menu_id, parentMenuId]);
+      }
+      menu_ids = Array.from(new Set(menu_ids));
 
       if (isDdd) {
-        res = await addRoleApi({ name, role_type });
+        res = await addRoleApi({ name, role_type, menu_ids, permission_ids });
       } else {
-        res = await updateRoleApi({ name, id: currentRow?.id || 0, role_type });
+        res = await updateRoleApi({ name, id: currentRow?.id || 0, role_type, menu_ids, permission_ids });
       }
 
       if (isSuccess(res)) {
@@ -199,25 +239,40 @@ const RoleManagementList: React.FC = () => {
     });
   };
 
-  const hanleSelectLeft = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues);
-    setCheckedLeft(checkedValues);
+  const onChange = (list: CheckboxValueType[], option: PermissionSecondLevel) => {
+    const updateOption = { ...option, thirdCheckedList: [...list] };
+    const updateRightOptions = rightOptions.map(item => {
+      if (item.menu_id === updateOption.menu_id) {
+        return { ...item, ...updateOption };
+      }
+      return item;
+    });
+
+    setRightOptions(updateRightOptions);
   };
 
-  const onChange = (list: CheckboxValueType[]) => {
-    setCheckedList(list);
-    setIndeterminate(!!list.length && list.length < plainOptions.length);
-    setCheckAll(list.length === plainOptions.length);
+  const onCheck = (checkedKeysValue: React.Key[]) => {
+    console.log('onCheck', checkedKeysValue);
+    setCheckedKeys(checkedKeysValue);
+    const updateRightOptions = secondMenus
+      .filter(item => checkedKeysValue.includes(item.menu_id))
+      .map(item => {
+        const alreadyRightOption = rightOptions.find(option => option.menu_id === item.menu_id);
+
+        if (alreadyRightOption) {
+          return alreadyRightOption;
+        }
+        return { ...item, secondIsChecked: true, thirdCheckedList: [] };
+      });
+
+    setRightOptions(updateRightOptions);
   };
 
-  const onCheckAllChange = (e: CheckboxChangeEvent) => {
-    setCheckedList(e.target.checked ? plainOptions : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
-  };
-
+  console.log('rightOptions:', rightOptions);
+  console.log('currentRow:', currentRow);
+  console.log('permissionList:', permissionList);
   return (
-    <PageContainer className={styles.roleManage}>
+    <PageContainer className={styles.pageCon}>
       <ProTable<RoleManagementListItem, TableListPagination>
         headerTitle="角色列表"
         actionRef={actionRef}
@@ -268,7 +323,6 @@ const RoleManagementList: React.FC = () => {
           visible={modalVisible}
           onVisibleChange={setModalVisible}
           onFinish={onFinish}
-          initialValues={isDdd ? {} : { ...currentRow }}
           grid
           colProps={{
             span: 12,
@@ -295,37 +349,47 @@ const RoleManagementList: React.FC = () => {
               },
             ]}
           />
-          <Row>
+          <Row style={{ width: '100%' }}>
             <Col span={11} className={styles.roleManage}>
               <div className={styles.title}>菜单权限</div>
-              <Checkbox.Group
-                style={{ width: '100%' }}
-                onChange={hanleSelectLeft}
-                value={checkedLeft}
-                className={styles.group}
-              >
-                <Row>
-                  {permissionList.map(item => (
-                    <Col span={24} key={item.id} className={styles.checkboxItem}>
-                      <Checkbox value={item.id}>{item.object_name_cn}</Checkbox>
-                    </Col>
-                  ))}
-                </Row>
-              </Checkbox.Group>
+              <div className={styles.checkboxAll}>
+                <Tree
+                  className={styles.children}
+                  defaultExpandAll={true}
+                  checkable
+                  treeData={permissionList}
+                  fieldNames={{ title: 'menu_name', key: 'menu_id', children: 'list' }}
+                  checkedKeys={checkedKeys}
+                  onCheck={onCheck}
+                />
+              </div>
             </Col>
             <Col span={2}></Col>
             <Col span={11} className={styles.roleManage}>
               <div className={styles.title}>功能权限</div>
               <div className={styles.checkboxAll}>
-                <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
-                  Check all
-                </Checkbox>
-                <Checkbox.Group
-                  options={plainOptions}
-                  value={checkedList}
-                  onChange={onChange}
-                  className={styles.children}
-                />
+                {rightOptions.map(option => {
+                  return (
+                    <div key={option.menu_id}>
+                      <Checkbox checked={option?.secondIsChecked} disabled>
+                        {option.menu_name}
+                      </Checkbox>
+                      <Checkbox.Group
+                        value={option?.thirdCheckedList}
+                        onChange={list => onChange(list, option)}
+                        className={styles.children}
+                      >
+                        <Row>
+                          {option?.children?.map(item => (
+                            <Col span={12} key={item.id}>
+                              <Checkbox value={item.id}>{item.brief}</Checkbox>
+                            </Col>
+                          ))}
+                        </Row>
+                      </Checkbox.Group>
+                    </div>
+                  );
+                })}
               </div>
             </Col>
           </Row>

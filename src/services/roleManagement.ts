@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { Resp, RoleManagementListItem, RoleManagementListRes, RoleData } from '@/utils/type';
+import { Resp, RoleManagementListItem, RoleManagementListRes, RoleData, RoleDetail } from '@/utils/type';
 
 // 角色列表
 export async function getRoleManagementListApi(params: any, options?: { [key: string]: any }) {
@@ -38,11 +38,23 @@ export async function updateRoleApi(
   data: { id: number; name: string; role_type: number },
   options?: { [key: string]: any },
 ) {
-  const { id, name, role_type } = data;
+  const { id, name, role_type, menu_ids, permission_ids } = data;
 
   return request<Resp<RoleManagementListItem>>(`/api/users/role/${id}`, {
     method: 'PUT',
-    data: { name, role_type },
+    data: { name, role_type, menu_ids, permission_ids },
     ...(options || {}),
   });
+}
+
+// 角色详情
+export async function getRoleDetailApi(params: { id: number }, options?: { [key: string]: any }) {
+  const { id } = params;
+  const res = await request<Resp<RoleDetail>>(`/api/users/role/${id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+  const { data } = res;
+
+  return data;
 }

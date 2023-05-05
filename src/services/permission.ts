@@ -2,11 +2,9 @@ import { request } from 'umi';
 import { Resp, PermissionReq, PermissionListItem, PermissionRes } from '@/utils/type';
 
 // 权限列表
-export async function getPermissionListApi(params: any, options?: { [key: string]: any }) {
+export async function getPermissionListApi() {
   const res = await request<Resp<PermissionRes>>('/api/users/permission', {
     method: 'GET',
-    params,
-    ...(options || {}),
   });
 
   return res.data;
