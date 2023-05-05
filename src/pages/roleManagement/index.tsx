@@ -1,5 +1,5 @@
-import { Button, message, Modal, Row, Col, Checkbox, Tree } from 'antd';
-import React, { useState, useRef } from 'react';
+import { Button, message, Modal, Row, Col, Checkbox, Tree, Spin } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, FormInstance, ProFormSelect } from '@ant-design/pro-form';
@@ -38,9 +38,13 @@ const RoleManagementList: React.FC = () => {
   const [detailLoading, setDetailLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
+  // 全部权限列表
   const [permissionList, setPermissionList] = useState<Array<PermissionFirstLevel>>([]);
+  // 左侧选中节点
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+  // 全部二级菜单
   const [secondMenus, setSecondMenus] = useState<Array<PermissionSecondLevel>>([]);
+  // 右侧元数据
   const [rightOptions, setRightOptions] = useState<Array<PermissionSecondLevel>>([]);
 
   const { data = [] } = useRequest(async () => {
@@ -51,6 +55,13 @@ const RoleManagementList: React.FC = () => {
 
     return { data: res.data };
   });
+
+  useEffect(() => {
+    if (!modalVisible) {
+      setCheckedKeys([]);
+      setRightOptions([]);
+    }
+  }, [modalVisible]);
 
   // 获取权限列表
   useRequest(
@@ -350,77 +361,86 @@ const RoleManagementList: React.FC = () => {
           onVisibleChange={setModalVisible}
           onFinish={onFinish}
           grid
-          colProps={{
-            span: 12,
-          }}
+          className={styles.modalCon}
         >
-          <ProFormText
-            label={'角色名称'}
-            rules={[
-              {
-                required: true,
-                message: '角色名称不能为空',
-              },
-            ]}
-            name="name"
-          />
-          <ProFormSelect
-            options={data.map(item => ({ value: item.id, label: item.name }))}
-            name="role_type"
-            label="角色类型"
-            rules={[
-              {
-                required: true,
-                message: '角色类型不能为空',
-              },
-            ]}
-          />
-          <Row style={{ width: '100%' }}>
-            <Col span={11} className={styles.roleManage}>
-              <div className={styles.title}>菜单权限</div>
-              <div className={styles.checkboxAll}>
-                <Tree
-                  className={styles.children}
-                  defaultExpandAll={true}
-                  checkable
-                  treeData={permissionList}
-                  fieldNames={{ title: 'menu_name', key: 'menu_id', children: 'list' }}
-                  checkedKeys={checkedKeys}
-                  onCheck={onCheck}
-                />
-              </div>
-            </Col>
-            <Col span={2}></Col>
-            <Col span={11} className={styles.roleManage}>
-              <div className={styles.title}>功能权限</div>
-              <div className={styles.checkboxAll}>
-                {rightOptions.map(option => {
-                  return (
-                    <div key={option.menu_id}>
-                      <Checkbox checked={option?.secondIsChecked} disabled>
-                        {option.menu_name}
-                      </Checkbox>
-                      <Checkbox.Group
-                        value={option?.thirdCheckedList}
-                        onChange={list => onChange(list, option)}
-                        className={styles.children}
-                      >
-                        <Row>
-                          {option?.children?.map(item => (
-                            <Col span={8} key={item.id}>
-                              <Checkbox value={item.id} disabled={item?.disable}>
-                                {item.brief}
-                              </Checkbox>
-                            </Col>
-                          ))}
-                        </Row>
-                      </Checkbox.Group>
-                    </div>
-                  );
-                })}
-              </div>
-            </Col>
-          </Row>
+          <Spin spinning={detailLoading} style={{ width: '100%' }}>
+            <Row>
+              <ProFormText
+                label={'角色名称'}
+                rules={[
+                  {
+                    required: true,
+                    message: '角色名称不能为空',
+                  },
+                ]}
+                name="name"
+                colProps={{
+                  span: 11,
+                }}
+              />
+              <Col span={2}></Col>
+              <ProFormSelect
+                options={data.map(item => ({ value: item.id, label: item.name }))}
+                name="role_type"
+                label="角色类型"
+                rules={[
+                  {
+                    required: true,
+                    message: '角色类型不能为空',
+                  },
+                ]}
+                colProps={{
+                  span: 11,
+                }}
+              />
+            </Row>
+            <Row style={{ width: '100%' }}>
+              <Col span={11} className={styles.roleManage}>
+                <div className={styles.title}>菜单权限</div>
+                <div className={styles.checkboxAll}>
+                  <Tree
+                    className={styles.children}
+                    defaultExpandAll={true}
+                    checkable
+                    treeData={permissionList}
+                    fieldNames={{ title: 'menu_name', key: 'menu_id', children: 'list' }}
+                    checkedKeys={checkedKeys}
+                    onCheck={onCheck}
+                  />
+                </div>
+              </Col>
+              <Col span={2}></Col>
+              <Col span={11} className={styles.roleManage}>
+                <div className={styles.title}>功能权限</div>
+                <div className={styles.checkboxAll}>
+                  {rightOptions.map(option => {
+                    return (
+                      <div key={option.menu_id}>
+                        <Checkbox checked={option?.secondIsChecked} disabled>
+                          {option.menu_name}
+                        </Checkbox>
+                        <Checkbox.Group
+                          value={option?.thirdCheckedList}
+                          onChange={list => onChange(list, option)}
+                          className={styles.children}
+                        >
+                          <Row>
+                            {option?.children?.map(item => (
+                              <Col span={8} key={item.id}>
+                                <Checkbox value={item.id} disabled={item?.disable}>
+                                  {item.brief}
+                                </Checkbox>
+                              </Col>
+                            ))}
+                          </Row>
+                        </Checkbox.Group>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Col>
+            </Row>
+          </Spin>
         </ModalForm>
       )}
     </PageContainer>
