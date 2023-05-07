@@ -58,6 +58,13 @@ const routes = [
         access: 'isCertificatePersonList',
       },
       {
+        name: '人员详情',
+        hideInMenu: true,
+        path: '/certificate/person/:id',
+        component: './certificatePersonList/detail',
+        // access: 'isCertificatePersonList',
+      },
+      {
         name: '证书列表',
         path: '/certificate/list',
         component: './certificateList',

@@ -25,6 +25,7 @@ import {
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 import styles from './index.less';
 
 const { warning, confirm } = Modal;
@@ -36,11 +37,18 @@ const CertificatePersonList: React.FC = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
+  const history = useHistory();
 
   const columns: ProColumns<CertificatePersonItem>[] = [
     {
       title: '姓名',
       dataIndex: 'name',
+      valueType: 'option',
+      render: (_, record) => [
+        <a key={'name'} onClick={() => history.push(`/certificate/person/${record.id}`)}>
+          {record.name}
+        </a>,
+      ],
     },
     {
       title: '性别',

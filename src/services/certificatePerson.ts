@@ -12,6 +12,16 @@ export async function getCertificatePersonListApi(params: any, options?: { [key:
 
   return data;
 }
+// 详情
+export async function getCertificatePersonDetailApi(id: number, options?: { [key: string]: any }) {
+  const res = await request<Resp<CertificatePersonItem>>(`/api/certs/certPerson/${id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+  const { data } = res;
+
+  return data;
+}
 
 // 新建
 export async function addCertificatePersonApi(data: CertificatetPersonData, options?: { [key: string]: any }) {
