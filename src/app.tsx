@@ -1,4 +1,4 @@
-import { SettingDrawer, PageLoading, Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-layout';
+import { SettingDrawer, PageLoading, Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { history, RunTimeLayoutConfig, RequestConfig } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
@@ -6,53 +6,10 @@ import { getItem, removeItem } from '@/utils';
 import { getUserInfoApi as queryCurrentUser } from '@/services';
 import defaultSettings from '../config/defaultSettings';
 import { message } from 'antd';
-// import { SafetyCertificateOutlined, UserOutlined, FileDoneOutlined } from '@ant-design/icons';
 import { UserInfoDetail } from './utils';
 
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
-
-// const menuMap = {
-//   // 用户管理相关
-//   用户管理: {
-//     icon: <UserOutlined />,
-//     path: '/user',
-//   },
-//   用户列表: {
-//     path: '/user/userManagement',
-//   },
-//   部门列表: {
-//     path: '/user/department',
-//   },
-//   角色类型列表: {
-//     path: '/user/roleType',
-//   },
-//   角色列表: {
-//     path: '/user/role',
-//   },
-//   // 证书管理相关
-//   证书管理: {
-//     icon: <SafetyCertificateOutlined />,
-//     path: '/certificate',
-//   },
-//   类型列表: {
-//     path: '/certificate/type',
-//   },
-//   人员列表: {
-//     path: '/certificate/person',
-//   },
-//   证书列表: {
-//     path: '/certificate/list',
-//   },
-//   // 文件管理相关
-//   文件管理: {
-//     icon: <FileDoneOutlined />,
-//     path: '/fileManagement',
-//   },
-//   文件列表: {
-//     path: '/fileManagement/list',
-//   },
-// };
+const loginPath = '/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -96,17 +53,6 @@ export async function getInitialState(): Promise<{
     settings: defaultSettings,
   };
 }
-
-// const loopMenuItem = (menus: any[]): MenuDataItem[] =>
-//   menus.map(({ menu_name, list }) => {
-//     const menu = menuMap[menu_name];
-
-//     return {
-//       ...menu,
-//       name: menu_name,
-//       children: list && loopMenuItem(list),
-//     };
-//   });
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
@@ -170,10 +116,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     ...initialState?.settings,
-    menu: {
-      locale: false,
-      // request: async () => loopMenuItem(menuList),
-    },
   };
 };
 // src/app.tsx

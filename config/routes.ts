@@ -33,11 +33,6 @@ const routes = [
         component: './roleList',
         access: 'isRoleList',
       },
-      {
-        path: '/user/login',
-        layout: false,
-        component: './login',
-      },
     ],
   },
   {
@@ -88,6 +83,11 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/login',
+    layout: false,
+    component: './login',
+  },
   // {
   //   name: 'account',
   //   icon: 'user',
@@ -113,7 +113,7 @@ const routes = [
   // },
   {
     path: '/',
-    redirect: '/user/userManagement',
+    redirect: '/documentManagement/list',
   },
   {
     component: '404',
