@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { Resp, LoginResData, UserListRes, UserListItem, UserData, PasswordData } from '@/utils/type';
+import { Resp, LoginResData, UserListRes, UserListItem, UserData, PasswordData, UserInfoDetail } from '@/utils/type';
 
 // 登录
 export async function loginApi(data: any, options?: { [key: string]: any }) {
@@ -15,7 +15,7 @@ export async function loginApi(data: any, options?: { [key: string]: any }) {
 
 // 获取用户信息
 export async function getUserInfoApi(params?: any, options?: { [key: string]: any }) {
-  return request<Resp<LoginResData>>('/api/users/userInfo', {
+  return request<Resp<UserInfoDetail>>('/api/users/userInfo', {
     method: 'GET',
     ...(options || {}),
   });
