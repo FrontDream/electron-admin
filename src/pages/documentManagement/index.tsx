@@ -22,6 +22,7 @@ import {
   getFileExtension,
   AppendixList,
   multiDownZip,
+  DocumentPermissionAction,
 } from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
 import { getDocumentListApi, deleteDocumentApi, addDocumentApi, updateDocumentApi } from '@/services';
@@ -70,9 +71,8 @@ const DocumentManagement = () => {
   const setFileList = useStore(state => state.addFileList);
   const [listLoading, setListLoading] = useState(false);
   const [permissionModalVisible, setPermissionModalVisible] = useState(false);
-
+  const [permissionAction, setPermissionAction] = useState({} as DocumentPermissionAction);
   const [isEdit, setIsEdit] = useState(false);
-
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
   // 全选框的显隐 ,1 文件夹，2文件
 
@@ -92,8 +92,10 @@ const DocumentManagement = () => {
   }, []);
   const getTableData = async (params: { parent_id?: number; name?: string }) => {
     setListLoading(true);
-    const documentList = await getDocumentListApi(params);
-    const updateList = documentList.map(item => {
+    const documentRes = await getDocumentListApi(params);
+    const { list = [], ...rest } = documentRes;
+
+    const updateList = list.map(item => {
       let format = item.format;
 
       if (item.type === 1) {
@@ -103,6 +105,7 @@ const DocumentManagement = () => {
     });
 
     setFileAndFolderList(updateList);
+    setPermissionAction(rest);
     setListLoading(false);
   };
   const fileMouseEnter = (item: DocumentListItem) => {
@@ -189,13 +192,28 @@ const DocumentManagement = () => {
   };
   const handleDeleteOne = async () => {
     if (focusItem) {
-      const id = focusItem.id;
+      const { id, can_delete } = focusItem;
+
+      if (!can_delete) {
+        Modal.warning({
+          title: '暂无权限',
+          content: '暂无删除的权限，请先向管理员或文件(文件夹)所有者申请权限后重试',
+        });
+        return;
+      }
 
       await deleteFileFolder([id!]);
     }
   };
   const handleReName = async () => {
     if (focusItem) {
+      if (!focusItem.can_edit) {
+        Modal.warning({
+          title: '暂无权限',
+          content: '暂无重命名的权限，请先向管理员或文件(文件夹)所有者申请权限后重试',
+        });
+        return;
+      }
       setEditItem({ ...focusItem });
       setIsEdit(true);
       setModalVisible(true);
@@ -204,6 +222,13 @@ const DocumentManagement = () => {
 
   const handlePermission = () => {
     if (focusItem) {
+      if (!focusItem.can_authorize) {
+        Modal.warning({
+          title: '暂无权限',
+          content: '暂无授权的权限，请先向管理员或文件(文件夹)所有者申请权限后重试',
+        });
+        return;
+      }
       setEditItem({ ...focusItem });
       setIsEdit(false);
       setPermissionModalVisible(true);
@@ -287,12 +312,26 @@ const DocumentManagement = () => {
       message.warning('请选择文件或文件夹后重试');
       return;
     }
-    const ids = selectedList.map(item => item.id);
+    if (permissionAction.can_delete) {
+      const ids = selectedList.map(item => item.id);
 
-    await deleteFileFolder(ids);
+      await deleteFileFolder(ids);
+      return;
+    }
+    Modal.warning({
+      title: '暂无权限',
+      content: '您在该文件夹下，暂无批量删除的权限，请向先管理员或文件所有者申请权限后重试',
+    });
   };
 
   const handleBatchDown = async () => {
+    if (!permissionAction.can_download) {
+      Modal.warning({
+        title: '暂无权限',
+        content: '您在该文件夹下，暂无批量下载的权限，请向先管理员或文件所有者申请权限后重试',
+      });
+      return;
+    }
     const hide = message.loading('正在下载');
 
     setDownLoading(true);
@@ -352,8 +391,15 @@ const DocumentManagement = () => {
   };
 
   const handleNewFolder = () => {
-    setModalVisible(true);
-    setIsEdit(false);
+    if (permissionAction.can_create) {
+      setModalVisible(true);
+      setIsEdit(false);
+      return;
+    }
+    Modal.warning({
+      title: '暂无权限',
+      content: '您在该文件夹下，暂无新建文件夹的权限，请向先管理员或文件所有者申请权限后重试',
+    });
   };
   const onUploadFinish = async () => {
     try {
@@ -416,10 +462,25 @@ const DocumentManagement = () => {
   };
 
   const handleUpload = () => {
-    setUploadModalVisible(true);
+    if (permissionAction.can_upload) {
+      setUploadModalVisible(true);
+      return;
+    }
+    Modal.warning({
+      title: '暂无权限',
+      content: '您在该文件夹下，暂无权限，请向管理员或文件所有者申请权限',
+    });
   };
-  const handleDownSingle = async item => {
-    const { type, id, url, name } = item;
+  const handleDownSingle = async (item: DocumentListItem) => {
+    const { type, id, url, name, can_download } = item;
+
+    if (!can_download) {
+      Modal.warning({
+        title: '暂无权限',
+        content: '暂无权限，请先向管理员或文件所有者申请权限',
+      });
+      return;
+    }
 
     if (type === 1) {
       const hide = message.loading('正在下载');

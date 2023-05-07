@@ -8,18 +8,18 @@ import {
   TempDocumentResData,
   MultiRes,
   UpdateDocReq,
+  DocumentRes,
 } from '@/utils/type';
 
 // 文件列表
 export async function getDocumentListApi(params: any, options?: { [key: string]: any }) {
-  const res = await request<Resp<Array<DocumentListItem>>>('/api/docs/document', {
+  const res = await request<Resp<DocumentRes>>('/api/docs/document', {
     method: 'GET',
     params,
     ...(options || {}),
   });
-  const { data = [] } = res;
 
-  return data;
+  return res.data || ({} as DocumentRes);
 }
 
 // 文件详情

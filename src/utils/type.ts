@@ -189,6 +189,15 @@ export interface DocumentDetail {
   update_user: string;
   url: string;
 }
+export interface DocumentPermissionAction {
+  can_upload: true;
+  can_delete: true;
+  can_download: true;
+  can_create: true;
+}
+export interface DocumentRes extends DocumentPermissionAction {
+  list: Array<DocumentListItem>;
+}
 export interface DocumentListItem {
   create_by: string;
   create_user: string;
@@ -207,6 +216,10 @@ export interface DocumentListItem {
   imageUrl?: string;
   isSelected?: boolean;
   isShowOpetate?: boolean;
+  can_authorize: boolean;
+  can_delete: boolean;
+  can_download: boolean;
+  can_edit: boolean;
 }
 
 export interface DocumentData {
