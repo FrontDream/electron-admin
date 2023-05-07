@@ -21,16 +21,16 @@ export default function access(initialState: { currentUser?: UserInfoDetail } | 
   console.log('menuNames====:', menuNames);
 
   return {
-    isUser: menuNames.includes('用户管理'),
-    isUserList: menuNames.includes('用户列表'),
-    isDepartmentList: menuNames.includes('部门列表'),
-    isRoleTypeList: menuNames.includes('角色类型列表'),
-    isRoleList: menuNames.includes('角色列表'),
-    isCertificate: menuNames.includes('证书管理'),
-    isCertificateTypeList: menuNames.includes('类型列表'),
-    isCertificatePersonList: menuNames.includes('人员列表'),
-    isCertificateList: menuNames.includes('证书列表'),
-    isDocumentManagement: menuNames.includes('文件管理'),
-    isDocumentList: menuNames.includes('文件列表'),
+    isUser: (route: any) => menuNames.includes(route.name),
+    isUserList: (route: any) => menuNames.includes(route.name),
+    isDepartmentList: (route: any) => menuNames.includes(route.name),
+    isRoleTypeList: (route: any) => menuNames.includes(route.name),
+    isRoleList: (route: any) => menuNames.includes(route.name),
+    isCertificate: (route: any) => menuNames.includes(route.name),
+    isCertificateTypeList: (route: any) => menuNames.includes(route.name),
+    isCertificatePersonList: (route: any) => menuNames.includes(route.name),
+    isCertificateList: (route: any) => menuNames.includes(route.name),
+    isDocumentManagement: (route: any) => menuNames.includes(route.name),
+    isDocumentList: (route: any) => menuNames.includes(route.name),
   };
 }
