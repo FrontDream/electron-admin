@@ -1,22 +1,112 @@
-export default [
+const routes = [
   {
+    name: '用户管理',
+    icon: 'UserOutlined',
     path: '/user',
-    layout: false,
-    routes: [{ name: '登录', path: '/user/login', component: './login' }, { component: './404' }],
-  },
-  { path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
-  {
-    path: '/admin',
-    name: '管理页',
-    icon: 'crown',
-    access: 'canAdmin',
-    component: './Admin',
     routes: [
-      { path: '/admin/sub-page', name: '二级管理页', icon: 'smile', component: './Welcome' },
-      { component: './404' },
+      {
+        path: '/user',
+        redirect: '/user/userManagement',
+      },
+      {
+        name: '用户列表',
+        path: '/user/userManagement',
+        component: './userManagement',
+      },
+      {
+        name: '部门列表',
+        path: '/user/department',
+        component: './department',
+      },
+      {
+        name: '角色类型列表',
+        path: '/user/roleType',
+        component: './roleType',
+      },
+      {
+        name: '角色列表',
+        path: '/user/role',
+        component: './roleManagement',
+      },
+      {
+        path: '/user/login',
+        layout: false,
+        component: './login',
+      },
     ],
   },
-  { name: '查询表格', icon: 'table', path: '/list', component: './TableList' },
-  { path: '/', redirect: '/welcome' },
-  { component: './404' },
+  {
+    name: '证书管理',
+    icon: 'SafetyCertificateOutlined',
+    path: '/certificate',
+    routes: [
+      {
+        path: '/certificate',
+        redirect: '/certificate/list',
+      },
+      {
+        name: '类型列表',
+        path: '/certificate/type',
+        component: './certificateType',
+      },
+      {
+        name: '人员列表',
+        path: '/certificate/person',
+        component: './certificatePerson',
+      },
+      {
+        name: '证书列表',
+        path: '/certificate/list',
+        component: './certificateList',
+      },
+    ],
+  },
+  {
+    name: '文件管理',
+    icon: 'FileDoneOutlined',
+    path: '/fileManagement',
+    routes: [
+      {
+        path: '/fileManagement',
+        redirect: '/fileManagement/list',
+      },
+      {
+        name: '文件列表',
+        path: '/fileManagement/list',
+        component: './documentManagement',
+      },
+    ],
+  },
+  // {
+  //   name: 'account',
+  //   icon: 'user',
+  //   path: '/account',
+  //   routes: [
+  //     {
+  //       path: '/account',
+  //       redirect: '/account/center',
+  //     },
+  //     {
+  //       name: 'center',
+  //       icon: 'smile',
+  //       path: '/account/center',
+  //       component: './account/center',
+  //     },
+  //     {
+  //       name: 'settings',
+  //       icon: 'smile',
+  //       path: '/account/settings',
+  //       component: './account/settings',
+  //     },
+  //   ],
+  // },
+  {
+    path: '/',
+    redirect: '/user/userManagement',
+  },
+  {
+    component: '404',
+  },
 ];
+
+export default routes;

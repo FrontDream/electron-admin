@@ -29,6 +29,15 @@ export interface LoginResData {
   user: string;
 }
 
+export interface UserInfoDetail {
+  user_id: number;
+  username: string;
+  mobile: number;
+  email: string;
+  cert_msg: string;
+  menu_list: Array<PermissionFirstLevel>;
+}
+
 export interface DepartmentListRes extends TableListPagination {
   data: Array<DepartmentListItem>;
 }
