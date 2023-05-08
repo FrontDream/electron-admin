@@ -505,6 +505,7 @@ export interface UpdateDocReq {
   can_create?: boolean;
   can_update?: boolean;
   can_destroy?: boolean;
+  can_authorize?: boolean;
   user_list: Array<number | string>;
 }
 

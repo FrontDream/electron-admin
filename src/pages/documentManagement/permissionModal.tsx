@@ -1,8 +1,9 @@
-import { Modal, message, Tree, Card } from 'antd';
+import { Modal, message, Tree, Card, Col, Row, Checkbox } from 'antd';
 import React, { useState } from 'react';
 import type { DataNode, TreeProps } from 'antd/es/tree';
 import { getUserDocPermissionApi, getDepartmentUserApi, uploadPermissionApi } from '@/services';
 import { useRequest } from 'umi';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { DocumentListItem, isSuccess } from '@/utils';
 
 interface IProps {
@@ -15,6 +16,7 @@ const PermissionModal = (props: IProps) => {
   const { visible, focusItem, onCancel } = props;
   const [permissionConfirmLoading, setPermissionConfirmLoading] = useState(false);
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+  const [canAuthorize, setCanAuthorize] = useState(false);
 
   const { loading: userDocPermissionLoading } = useRequest(
     async () => {
@@ -45,6 +47,7 @@ const PermissionModal = (props: IProps) => {
         doc_id: focusItem!.id,
         doc_type: focusItem!.type,
         user_list: checkedKeys,
+        can_authorize: canAuthorize,
       });
 
       if (isSuccess(res, '授权失败，请重试')) {
@@ -62,6 +65,10 @@ const PermissionModal = (props: IProps) => {
     setCheckedKeys(checkedKeysValue);
   };
 
+  const onChange = (e: CheckboxChangeEvent) => {
+    setCanAuthorize(e.target.checked);
+  };
+
   return (
     <Modal
       centered
@@ -72,9 +79,18 @@ const PermissionModal = (props: IProps) => {
       onOk={handleConfirmPermission}
       onCancel={onCancel}
     >
-      <Card bordered={false} loading={userDocPermissionLoading || departmentUserLoading}>
-        <Tree checkable defaultExpandAll={true} checkedKeys={checkedKeys} onCheck={onCheck} treeData={docUser} />
-      </Card>
+      <Row>
+        <Col span={12}>
+          <Card bordered={false} loading={userDocPermissionLoading || departmentUserLoading}>
+            <Tree checkable defaultExpandAll={true} checkedKeys={checkedKeys} onCheck={onCheck} treeData={docUser} />
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Checkbox checked={canAuthorize} onChange={onChange}>
+            是否允许被授予人有权限向其他人授权
+          </Checkbox>
+        </Col>
+      </Row>
     </Modal>
   );
 };
