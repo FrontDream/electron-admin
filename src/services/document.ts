@@ -9,6 +9,7 @@ import {
   MultiRes,
   UpdateDocReq,
   DocumentRes,
+  DocPermissItem,
 } from '@/utils/type';
 
 // 文件列表
@@ -110,7 +111,7 @@ export async function uploadFileApi(data: { file: File; url: string }, options?:
 
 // 文件用户权限列表
 export async function getUserDocPermissionApi(params: { doc_id: number }, options?: { [key: string]: any }) {
-  const res = await request<Resp<Array<number>>>('/api/users/userDocPermission', {
+  const res = await request<Resp<Array<DocPermissItem>>>('/api/users/userDocPermission', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -127,7 +128,7 @@ export async function uploadPermissionApi(data: UpdateDocReq, options?: { [key: 
     headers: {
       'Content-Type': 'application/json',
     },
-    data: { can_view: true, can_create: true, can_update: true, can_destroy: true, ...data },
+    data,
     ...(options || {}),
   });
 }

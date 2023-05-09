@@ -46,7 +46,7 @@ export async function updateDepartmentApi(data: { id: number; name: string }, op
 
 // 部门用户列表
 export async function getDepartmentUserApi() {
-  const res = await request<Resp<DepartmentUserRes>>('/api/users/departUser', {
+  const res = await request<Resp<Array<DepartmentUserRes>>>('/api/users/departUser', {
     method: 'GET',
   });
   const { data } = res;

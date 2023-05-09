@@ -498,15 +498,19 @@ export interface PermissionReq {
   id?: number;
 }
 
-export interface UpdateDocReq {
-  doc_id: number;
-  doc_type: number;
+export interface DocPermissItem {
   can_view?: boolean;
   can_create?: boolean;
   can_update?: boolean;
   can_destroy?: boolean;
   can_authorize?: boolean;
-  user_list: Array<number | string>;
+  user_id: number;
+}
+
+export interface UpdateDocReq {
+  doc_id: number;
+  doc_type: number;
+  doc_permission_list: Array<DocPermissItem>;
 }
 
 export interface PermissionThirdLevel {
