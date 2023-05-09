@@ -5,6 +5,7 @@ import { getUserDocPermissionApi, getDepartmentUserApi, uploadPermissionApi } fr
 import { useRequest } from 'umi';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { DocumentListItem, isSuccess } from '@/utils';
+import styles from './index.less';
 
 interface IProps {
   visible: boolean;
@@ -126,60 +127,73 @@ const PermissionModal = (props: IProps) => {
       onOk={handleConfirmPermission}
       onCancel={onCancel}
     >
-      <Row>
-        <Col span={8}>
-          <Card title={'部门人员'} bordered={false} loading={userDocPermissionLoading || departmentUserLoading}>
-            <Tree checkable defaultExpandAll={true} checkedKeys={checkedKeys} onCheck={onCheck} treeData={docUser} />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card title={'功能权限'} bordered={false} loading={userDocPermissionLoading || departmentUserLoading}>
-            {rightOptions.map(option => {
-              return (
-                <div key={option.key} style={{ marginTop: '12px' }}>
-                  <Checkbox checked={true} disabled>
-                    {option.title}
-                  </Checkbox>
-                  <Row style={{ paddingLeft: '12px', marginTop: '12px' }}>
-                    <Col span={6} key={'new'}>
-                      <Checkbox
-                        checked={option.can_create}
-                        onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_create')}
-                      >
-                        {'新建文件夹'}
-                      </Checkbox>
-                    </Col>
-                    <Col span={6} key={'reName'}>
-                      <Checkbox
-                        checked={option.can_update}
-                        onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_update')}
-                      >
-                        {'重命名'}
-                      </Checkbox>
-                    </Col>
-                    <Col span={6} key={'delete'}>
-                      <Checkbox
-                        checked={option.can_destroy}
-                        onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_destroy')}
-                      >
-                        {'(批量)删除'}
-                      </Checkbox>
-                    </Col>
-                    <Col span={6} key={'authorize'}>
-                      <Checkbox
-                        checked={option.can_authorize}
-                        onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_authorize')}
-                      >
-                        {'向下授权'}
-                      </Checkbox>
-                    </Col>
-                  </Row>
-                </div>
-              );
-            })}
-          </Card>
-        </Col>
-      </Row>
+      <Card loading={userDocPermissionLoading || departmentUserLoading} bordered={false} className={styles.cardCon}>
+        <Row>
+          <Col span={8} className={styles.colManage}>
+            <div className={styles.title}>部门人员</div>
+            <div className={styles.checkboxAll}>
+              {docUser.length > 0 && (
+                <Tree
+                  checkable
+                  defaultExpandAll={true}
+                  checkedKeys={checkedKeys}
+                  onCheck={onCheck}
+                  treeData={docUser}
+                />
+              )}
+            </div>
+          </Col>
+          <Col span={1}></Col>
+          <Col span={15} className={styles.colManage}>
+            <div className={styles.title}>文档权限</div>
+            <div className={styles.checkboxAll}>
+              {rightOptions.map(option => {
+                return (
+                  <div key={option.key} style={{ marginTop: '12px' }}>
+                    <Checkbox checked={true} disabled>
+                      {option.title}
+                    </Checkbox>
+                    <Row style={{ paddingLeft: '12px', marginTop: '12px' }}>
+                      <Col span={6} key={'new'}>
+                        <Checkbox
+                          checked={option.can_create}
+                          onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_create')}
+                        >
+                          {'新建文件夹'}
+                        </Checkbox>
+                      </Col>
+                      <Col span={6} key={'reName'}>
+                        <Checkbox
+                          checked={option.can_update}
+                          onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_update')}
+                        >
+                          {'重命名'}
+                        </Checkbox>
+                      </Col>
+                      <Col span={6} key={'delete'}>
+                        <Checkbox
+                          checked={option.can_destroy}
+                          onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_destroy')}
+                        >
+                          {'(批量)删除'}
+                        </Checkbox>
+                      </Col>
+                      <Col span={6} key={'authorize'}>
+                        <Checkbox
+                          checked={option.can_authorize}
+                          onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_authorize')}
+                        >
+                          {'向下授权'}
+                        </Checkbox>
+                      </Col>
+                    </Row>
+                  </div>
+                );
+              })}
+            </div>
+          </Col>
+        </Row>
+      </Card>
     </Modal>
   );
 };
