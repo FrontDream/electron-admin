@@ -65,7 +65,7 @@ const RecordList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<RecordListItem, TableListPagination>
-        headerTitle="日志列表"
+        headerTitle="日志明细"
         actionRef={actionRef}
         rowKey="id"
         search={{
