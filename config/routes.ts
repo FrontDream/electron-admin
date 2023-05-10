@@ -91,6 +91,22 @@ const routes = [
     ],
   },
   {
+    name: '报表管理',
+    icon: 'BarChartOutlined',
+    path: '/chartManagement',
+    routes: [
+      {
+        path: '/chartManagement',
+        redirect: '/chartManagement/durationList',
+      },
+      {
+        name: '在线统计',
+        path: '/chartManagement/durationList',
+        component: './durationList',
+      },
+    ],
+  },
+  {
     path: '/login',
     layout: false,
     component: './login',

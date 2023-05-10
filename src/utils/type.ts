@@ -44,6 +44,12 @@ export interface DepartmentListRes extends TableListPagination {
 export interface DepartmentUserItem {
   key: number;
   title: string;
+  can_edit?: boolean;
+  can_view?: boolean;
+  can_create?: boolean;
+  can_update?: boolean;
+  can_destroy?: boolean;
+  can_authorize?: boolean;
 }
 export interface DepartmentUserRes extends DepartmentUserItem {
   children: Array<DepartmentUserItem>;
@@ -534,4 +540,14 @@ export interface PermissionFirstLevel {
   menu_id: number;
   menu_name: string;
   list: Array<PermissionSecondLevel>;
+}
+
+export interface DurationListItem {
+  user_id: number;
+  username: string;
+  job_number: string;
+  duration: number;
+}
+export interface DurationListRes extends TableListPagination {
+  data: Array<DurationListItem>;
 }

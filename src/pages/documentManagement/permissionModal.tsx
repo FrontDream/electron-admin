@@ -1,10 +1,10 @@
 import { Modal, message, Tree, Card, Col, Row, Checkbox } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { DataNode, TreeProps } from 'antd/es/tree';
 import { getUserDocPermissionApi, getDepartmentUserApi, uploadPermissionApi } from '@/services';
 import { useRequest } from 'umi';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { DocumentListItem, isSuccess } from '@/utils';
+import { DocumentListItem, isSuccess, DepartmentUserItem } from '@/utils';
 import styles from './index.less';
 
 interface IProps {
@@ -21,16 +21,16 @@ const PermissionModal = (props: IProps) => {
   // 右侧元数据
   const [rightOptions, setRightOptions] = useState<Array<any>>([]);
 
-  const { loading: userDocPermissionLoading } = useRequest(
+  const { loading: userDocPermissionLoading, data: docPermissionData = [] } = useRequest(
     async () => {
       if (focusItem && focusItem.id) {
         const data = await getUserDocPermissionApi({
           doc_id: focusItem!.id,
         });
 
-        setCheckedKeys(data.map(item => item.user_id));
-        setRightOptions(data.map(item => ({ ...item, key: item.user_id })));
+        return { data };
       }
+      return { data: [] };
     },
     { refreshDeps: [] },
   );
@@ -38,37 +38,49 @@ const PermissionModal = (props: IProps) => {
   const { data: docUser = [] as DataNode[], loading: departmentUserLoading } = useRequest(
     async () => {
       const data = await getDepartmentUserApi();
-      const persons = [];
+      const persons: Array<DepartmentUserItem> = [];
 
-      data.map(department => {
-        const children = department.children.map(item => ({
+      const updateData = data.map(department => {
+        const { can_edit, title, key, children } = department;
+        const childrenUpdate = children.map(item => ({
           ...item,
           can_view: true,
           can_create: true,
           can_update: true,
           can_destroy: true,
           can_authorize: true,
+          disabled: !item.can_edit,
         }));
 
-        persons.push(...children);
+        persons.push(...childrenUpdate);
+        return { disabled: !can_edit, title, key, children: childrenUpdate };
       });
 
       setPersons(persons);
 
-      console.log('data:', data);
-
-      return { data };
+      return { data: updateData };
     },
     { refreshDeps: [] },
   );
+
+  useEffect(() => {
+    setCheckedKeys(docPermissionData.map(item => item.user_id));
+    setRightOptions(
+      docPermissionData.map(item => {
+        const person = persons.find(p => p.key === item.user_id);
+
+        return { ...item, key: item.user_id, disabled: person?.disabled || false };
+      }),
+    );
+  }, [docPermissionData, docUser, persons]);
 
   const handleConfirmPermission = async () => {
     try {
       setPermissionConfirmLoading(true);
       const doc_permission_list = rightOptions.map(item => {
-        const { key, title, ...rest } = item;
+        const { key, can_authorize, can_create, can_destroy, can_update, can_view } = item;
 
-        return { ...rest, user_id: key };
+        return { can_authorize, can_create, can_destroy, can_update, can_view, user_id: key };
       });
       const res = await uploadPermissionApi({
         doc_id: focusItem!.id,
@@ -156,6 +168,7 @@ const PermissionModal = (props: IProps) => {
                     <Row style={{ paddingLeft: '12px', marginTop: '12px' }}>
                       <Col span={6} key={'new'}>
                         <Checkbox
+                          disabled={option.disabled}
                           checked={option.can_create}
                           onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_create')}
                         >
@@ -164,6 +177,7 @@ const PermissionModal = (props: IProps) => {
                       </Col>
                       <Col span={6} key={'reName'}>
                         <Checkbox
+                          disabled={option.disabled}
                           checked={option.can_update}
                           onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_update')}
                         >
@@ -172,6 +186,7 @@ const PermissionModal = (props: IProps) => {
                       </Col>
                       <Col span={6} key={'delete'}>
                         <Checkbox
+                          disabled={option.disabled}
                           checked={option.can_destroy}
                           onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_destroy')}
                         >
@@ -180,6 +195,7 @@ const PermissionModal = (props: IProps) => {
                       </Col>
                       <Col span={6} key={'authorize'}>
                         <Checkbox
+                          disabled={option.disabled}
                           checked={option.can_authorize}
                           onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked, option, 'can_authorize')}
                         >
