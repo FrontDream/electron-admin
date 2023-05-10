@@ -551,3 +551,32 @@ export interface DurationListItem {
 export interface DurationListRes extends TableListPagination {
   data: Array<DurationListItem>;
 }
+
+export interface RecordListItem {
+  id: number;
+  module: {
+    module: string;
+    name: string;
+  };
+  task: {
+    task: string;
+    name: string;
+  };
+  action: {
+    action: string;
+    name: string;
+  };
+  related_id: number;
+  create_at: string;
+  content: {
+    id: number;
+    name: string;
+  };
+  user: {
+    user_id: number;
+    username: string;
+  };
+}
+export interface RecordListRes extends TableListPagination {
+  data: Array<RecordListItem>;
+}

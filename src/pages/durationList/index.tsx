@@ -15,7 +15,30 @@ const DurationList: React.FC = () => {
     {
       title: '工号',
       dataIndex: 'job_number',
+    },
+    {
+      title: '登录时间',
+      dataIndex: 'last_time',
       hideInSearch: true,
+    },
+    {
+      title: '截止时间',
+      dataIndex: 'now_time',
+      hideInSearch: true,
+    },
+    {
+      title: '在线时长',
+      dataIndex: 'duration',
+      hideInSearch: true,
+      renderText: result => {
+        const h = Math.floor((result / 3600) % 24);
+        const m = Math.floor((result / 60) % 60);
+
+        if (h < 1) {
+          return (result = m + '分钟');
+        }
+        return (result = h + '小时' + m + '分钟');
+      },
     },
   ];
 

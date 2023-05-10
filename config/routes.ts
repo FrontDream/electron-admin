@@ -104,6 +104,11 @@ const routes = [
         path: '/chartManagement/durationList',
         component: './durationList',
       },
+      {
+        name: '日志列表',
+        path: '/chartManagement/recordList',
+        component: './recordList',
+      },
     ],
   },
   {
