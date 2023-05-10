@@ -12,6 +12,13 @@ export async function loginApi(data: any, options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+// 退出登录
+export async function outLogin(options?: { [key: string]: any }) {
+  return request<Record<string, any>>('/api/users/signOut', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
 
 // 获取用户信息
 export async function getUserInfoApi(params?: any, options?: { [key: string]: any }) {
