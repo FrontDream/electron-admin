@@ -1,14 +1,23 @@
 import React, { useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { RecordListItem, TableListPagination, useUserEnum } from '@/utils';
-import { getRecordListApi } from '@/services';
+import { RecordListItem, TableListPagination, useUserEnum, downLoad } from '@/utils';
+import { getRecordListApi, downRecordListApi } from '@/services';
 import moment from 'moment';
+import { Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const RecordList: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<any>();
 
   const userEnum = useUserEnum();
+  const handleDown = async () => {
+    const res = await formRef.current?.validateFieldsReturnFormatValue();
+    const downRes = await downRecordListApi(res);
+
+    await downLoad(downRes.url, '日志记录.xlsx');
+  };
 
   const columns: ProColumns<RecordListItem>[] = [
     {
@@ -20,7 +29,7 @@ const RecordList: React.FC = () => {
         const time = moment(create_at).format('YYYY-MM-DD HH:mm:ss');
         const contentInfo = content.name ? `: ${content.name}` : '';
 
-        return `${user.username}于${time}，${action.name}${task.name}${contentInfo}`;
+        return `${user.username}在${time}，${action.name}${task.name}${contentInfo}`;
       },
     },
     {
@@ -50,6 +59,7 @@ const RecordList: React.FC = () => {
       <ProTable<RecordListItem, TableListPagination>
         headerTitle="日志明细"
         actionRef={actionRef}
+        formRef={formRef}
         rowKey="id"
         search={{
           labelWidth: 120,
@@ -61,6 +71,11 @@ const RecordList: React.FC = () => {
           persistenceKey: 'recordList',
           persistenceType: 'localStorage',
         }}
+        toolBarRender={() => [
+          <Button key="button" icon={<DownloadOutlined />} onClick={handleDown} type="primary">
+            下载
+          </Button>,
+        ]}
       />
     </PageContainer>
   );

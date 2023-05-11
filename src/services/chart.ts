@@ -24,3 +24,15 @@ export async function getRecordListApi(params: any, options?: { [key: string]: a
 
   return data;
 }
+
+// 日志列表
+export async function downRecordListApi(params: any, options?: { [key: string]: any }) {
+  const res = await request<Resp<{ url: string }>>('/api/records/recordExport', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+  const { data } = res;
+
+  return data;
+}
