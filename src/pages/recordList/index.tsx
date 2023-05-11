@@ -1,31 +1,14 @@
 import React, { useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { RecordListItem, TableListPagination, UserListItem } from '@/utils';
-import { getRecordListApi, getUserListApi } from '@/services';
+import { RecordListItem, TableListPagination, useUserEnum } from '@/utils';
+import { getRecordListApi } from '@/services';
 import moment from 'moment';
-import { useRequest } from 'umi';
 
 const RecordList: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
-  const { data = [] } = useRequest(async () => {
-    const res = await getUserListApi({
-      current: 1,
-      pageSize: 999999,
-    });
-
-    return { data: res?.data || [] };
-  });
-
-  console.log('data:', data);
-
-  const userEnum = data.reduce((pre, cur: UserListItem) => {
-    pre[cur.id] = {
-      text: cur.username,
-    };
-    return pre;
-  }, {});
+  const userEnum = useUserEnum();
 
   const columns: ProColumns<RecordListItem>[] = [
     {

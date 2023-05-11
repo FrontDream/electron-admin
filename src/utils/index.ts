@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { EducationType, FileTypeEnum } from './type';
+import { EducationType, FileTypeEnum, UserListItem } from './type';
 import { useRequest } from 'umi';
 import {
   getCertificatePersonListApi,
@@ -7,6 +7,7 @@ import {
   uploadFileApi,
   getTempDocumentUrlApi,
   multiDownFilesApi,
+  getUserListApi,
 } from '@/services';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
@@ -104,6 +105,32 @@ export const useCertificatetTypes = () => {
   });
 
   return certificatetTypes;
+};
+
+export const useUserList = () => {
+  const { data = [] } = useRequest(async () => {
+    const res = await getUserListApi({
+      current: 1,
+      pageSize: 999999,
+    });
+
+    return { data: res?.data || [] };
+  });
+
+  return data;
+};
+
+export const useUserEnum = () => {
+  const userList = useUserList();
+
+  const userEnum = userList.reduce((pre, cur: UserListItem) => {
+    pre[cur.id] = {
+      text: cur.username,
+    };
+    return pre;
+  }, {});
+
+  return userEnum;
 };
 
 export const getNameById = function <T extends BasicType>(list: Array<T>, id: number) {

@@ -1,20 +1,30 @@
 import React, { useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { DurationListItem, TableListPagination } from '@/utils';
+import { DurationListItem, TableListPagination, useUserEnum } from '@/utils';
 import { getDurationListApi } from '@/services';
 
 const DurationList: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
+  const userEnum = useUserEnum();
+
   const columns: ProColumns<DurationListItem>[] = [
     {
       title: '用户名',
       dataIndex: 'username',
+      hideInSearch: true,
+    },
+    {
+      title: '用户名',
+      dataIndex: 'user_id',
+      valueEnum: userEnum,
+      hideInTable: true,
     },
     {
       title: '工号',
       dataIndex: 'job_number',
+      hideInSearch: true,
     },
     {
       title: '登录时间',
