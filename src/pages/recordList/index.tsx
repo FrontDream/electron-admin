@@ -64,6 +64,7 @@ const RecordList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        options={{ setting: false, density: false, reload: false }}
         request={getRecordListApi}
         columns={columns}
         pagination={{ pageSize: 10 }}
