@@ -7,6 +7,7 @@
     display: none;
   }
   .item {
+    align-items: center;
     padding-right: 24px;
     padding-left: 24px;
     overflow: hidden;
@@ -14,6 +15,8 @@
     transition: all 0.3s;
 
     .meta {
+      display: flex;
+      align-items: center;
       width: 100%;
     }
 
@@ -35,8 +38,15 @@
       background: @primary-1;
     }
     .title {
-      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      // margin-bottom: 8px;
       font-weight: normal;
+      :global {
+        .ant-typography {
+          margin-bottom: 0px;
+        }
+      }
     }
     .description {
       font-size: 12px;
@@ -53,6 +63,11 @@
       margin-right: 0;
       color: @text-color-secondary;
       font-weight: normal;
+    }
+    :global {
+      .ant-list-item-meta-title {
+        margin-bottom: 0px !important;
+      }
     }
   }
   .loadMore {

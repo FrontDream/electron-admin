@@ -1,8 +1,9 @@
-import { Avatar, List } from 'antd';
+import { Avatar, List, Typography } from 'antd';
 
 import React from 'react';
 import classNames from 'classnames';
 import styles from './NoticeList.less';
+const { Paragraph } = Typography;
 
 export type NoticeIconTabProps = {
   count?: number;
@@ -34,10 +35,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
   if (!list || list.length === 0) {
     return (
       <div className={styles.notFound}>
-        <img
-          src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
-          alt="not found"
-        />
+        <img src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg" alt="not found" />
         <div>{emptyText}</div>
       </div>
     );
@@ -52,43 +50,44 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
             [styles.read]: item.read,
           });
           // eslint-disable-next-line no-nested-ternary
-          const leftIcon = item.avatar ? (
-            typeof item.avatar === 'string' ? (
-              <Avatar className={styles.avatar} src={item.avatar} />
-            ) : (
-              <span className={styles.iconElement}>{item.avatar}</span>
-            )
-          ) : null;
+          // const leftIcon = item.avatar ? (
+          //   typeof item.avatar === 'string' ? (
+          //     <Avatar className={styles.avatar} src={item.avatar} />
+          //   ) : (
+          //     <span className={styles.iconElement}>{item.avatar}</span>
+          //   )
+          // ) : null;
 
           return (
             <List.Item
               className={itemCls}
               key={item.key || i}
-              onClick={() => {
-                onClick?.(item);
-              }}
+              // onClick={() => {
+              //   onClick?.(item);
+              // }}
             >
               <List.Item.Meta
                 className={styles.meta}
-                avatar={leftIcon}
+                avatar={<Avatar className={styles.avatar} src={'/notice.png'} />}
                 title={
                   <div className={styles.title}>
-                    {item.title}
-                    <div className={styles.extra}>{item.extra}</div>
+                    证书编码为：
+                    <Paragraph copyable>{item.cert_code}</Paragraph> 的证书将于{item.expire_time}过期
+                    {/* <div className={styles.extra}>{item.extra}</div> */}
                   </div>
                 }
-                description={
-                  <div>
-                    <div className={styles.description}>{item.description}</div>
-                    <div className={styles.datetime}>{item.datetime}</div>
-                  </div>
-                }
+                // description={
+                //   <div>
+                //     <div className={styles.description}>{item.description}</div>
+                //     <div className={styles.datetime}>{item.datetime}</div>
+                //   </div>
+                // }
               />
             </List.Item>
           );
         }}
       />
-      <div className={styles.bottomBar}>
+      {/* <div className={styles.bottomBar}>
         {showClear ? (
           <div onClick={onClear}>
             {clearText} {title}
@@ -105,7 +104,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
             {viewMoreText}
           </div>
         ) : null}
-      </div>
+      </div> */}
     </div>
   );
 };

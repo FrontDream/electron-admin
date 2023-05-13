@@ -1,5 +1,14 @@
 import { request } from 'umi';
-import { Resp, LoginResData, UserListRes, UserListItem, UserData, PasswordData, UserInfoDetail } from '@/utils/type';
+import {
+  Resp,
+  LoginResData,
+  NoticeInfoRes,
+  UserListRes,
+  UserListItem,
+  UserData,
+  PasswordData,
+  UserInfoDetail,
+} from '@/utils/type';
 
 // 登录
 export async function loginApi(data: any, options?: { [key: string]: any }) {
@@ -26,6 +35,17 @@ export async function getUserInfoApi(params?: any, options?: { [key: string]: an
     method: 'GET',
     ...(options || {}),
   });
+}
+
+// 获取用户消息
+export async function getNoticesApi(options?: { [key: string]: any }) {
+  const res = await request<Resp<NoticeInfoRes>>('/api/users/userMessage', {
+    method: 'GET',
+    ...(options || {}),
+  });
+  const { data = {} as NoticeInfoRes } = res;
+
+  return data;
 }
 
 // 用户列表

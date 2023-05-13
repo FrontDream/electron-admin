@@ -38,6 +38,16 @@ export interface UserInfoDetail {
   menu_list: Array<PermissionFirstLevel>;
 }
 
+export interface NoticeInfoItem {
+  id: number;
+  cert_id: number;
+  cert_code: string;
+  expire_time: string;
+  content: string;
+}
+export interface NoticeInfoRes {
+  data: Array<NoticeInfoItem>;
+}
 export interface DepartmentListRes extends TableListPagination {
   data: Array<DepartmentListItem>;
 }
