@@ -132,7 +132,7 @@ const CertificateTypeList: React.FC = () => {
       warning({
         title: '禁止删除',
         icon: <ExclamationCircleFilled />,
-        content: `该证书类型正在使用中，请先前往证书管理删除 ${rel_cert_list.join(
+        content: `该证书类型正在使用中，请先前往证书列表删除 ${rel_cert_list.join(
           ',',
         )} 等证书或修改这些证书的所属证书类型后重试!`,
       });

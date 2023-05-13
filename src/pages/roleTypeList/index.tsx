@@ -131,7 +131,7 @@ const RoleTypeList: React.FC = () => {
       warning({
         title: '禁止删除',
         icon: <ExclamationCircleFilled />,
-        content: `该角色类型正在使用中，请先前往角色管理模块，删除名为 ${rel_role_list.join(',')} 的角色后重试!`,
+        content: `该角色类型正在使用中，请先前往角色列表模块，删除名为 ${rel_role_list.join(',')} 的角色后重试!`,
       });
       return;
     }
