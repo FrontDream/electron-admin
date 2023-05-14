@@ -86,14 +86,12 @@ const DepartmentList: React.FC = () => {
         res = await updateDepartmentApi({ name, id: currentRow?.id || 0 });
       }
 
-      if (isSuccess(res)) {
+      if (isSuccess(res, `${isDdd ? '新增' : '修改'}部门失败，请重试！`)) {
         message.success(`${isDdd ? '新增' : '修改'}部门成功`);
         setModalVisible(false);
         if (actionRef.current) {
           actionRef.current.reload();
         }
-      } else {
-        message.error(`${isDdd ? '新增' : '修改'}部门失败，请重试！`);
       }
     } catch (error) {
       console.error('error:', error);
