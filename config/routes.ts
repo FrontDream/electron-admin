@@ -113,6 +113,7 @@ const routes = [
   },
   {
     path: '/login',
+    name: '登录中心',
     layout: false,
     component: './login',
   },

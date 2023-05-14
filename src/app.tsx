@@ -115,6 +115,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         </>
       );
     },
+    pageTitleRender: (props, defaultPageTitle, info: { title: string; id: string; pageName: string }) => {
+      return '旭达共享' + '-' + info.pageName;
+    },
     ...initialState?.settings,
   };
 };
