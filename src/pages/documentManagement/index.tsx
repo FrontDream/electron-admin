@@ -197,7 +197,7 @@ const DocumentManagement = () => {
       if (!can_delete) {
         Modal.warning({
           title: '暂无权限',
-          content: '暂无删除的权限，请先向管理员或文件(文件夹)所有者申请权限后重试',
+          content: '暂无删除的权限，请先向管理员申请权限后重试',
         });
         return;
       }
@@ -210,7 +210,7 @@ const DocumentManagement = () => {
       if (!focusItem.can_edit) {
         Modal.warning({
           title: '暂无权限',
-          content: '暂无重命名的权限，请先向管理员或文件(文件夹)所有者申请权限后重试',
+          content: '暂无重命名的权限，请先向管理员申请权限后重试',
         });
         return;
       }
@@ -225,7 +225,7 @@ const DocumentManagement = () => {
       if (!focusItem.can_authorize) {
         Modal.warning({
           title: '暂无权限',
-          content: '暂无授权的权限，请先向管理员或文件(文件夹)所有者申请权限后重试',
+          content: '暂无授权的权限，请先向管理员申请权限后重试',
         });
         return;
       }
@@ -320,7 +320,7 @@ const DocumentManagement = () => {
     }
     Modal.warning({
       title: '暂无权限',
-      content: '您在该文件夹下，暂无批量删除的权限，请向先管理员或文件所有者申请权限后重试',
+      content: '您在该文件夹下，暂无批量删除的权限，请先向管理员申请权限后重试',
     });
   };
 
@@ -328,7 +328,7 @@ const DocumentManagement = () => {
     if (!permissionAction.can_download) {
       Modal.warning({
         title: '暂无权限',
-        content: '您在该文件夹下，暂无批量下载的权限，请向先管理员或文件所有者申请权限后重试',
+        content: '您在该文件夹下，暂无批量下载的权限，请先向管理员申请权限后重试',
       });
       return;
     }
@@ -398,7 +398,7 @@ const DocumentManagement = () => {
     }
     Modal.warning({
       title: '暂无权限',
-      content: '您在该文件夹下，暂无新建文件夹的权限，请向先管理员或文件所有者申请权限后重试',
+      content: '您在该文件夹下，暂无新建文件夹的权限，请先向管理员申请权限后重试',
     });
   };
   const onUploadFinish = async () => {
@@ -469,7 +469,7 @@ const DocumentManagement = () => {
     }
     Modal.warning({
       title: '暂无权限',
-      content: '您在该文件夹下，暂无权限，请向管理员或文件所有者申请权限',
+      content: '您在该文件夹下，暂无上传权限，请先向管理员申请权限后重试',
     });
   };
   const handleDownSingle = async (item: DocumentListItem) => {
@@ -478,7 +478,7 @@ const DocumentManagement = () => {
     if (!can_download) {
       Modal.warning({
         title: '暂无权限',
-        content: '暂无权限，请先向管理员或文件所有者申请权限',
+        content: '暂无下载权限，请先向管理员申请权限后重试',
       });
       return;
     }
