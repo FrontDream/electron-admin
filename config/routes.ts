@@ -113,7 +113,7 @@ const routes = [
   },
   {
     name: '秘钥管理',
-    icon: 'BarChartOutlined',
+    icon: 'SkypeOutlined',
     path: '/secret',
     routes: [
       {
