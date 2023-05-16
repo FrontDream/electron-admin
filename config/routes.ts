@@ -131,6 +131,7 @@ const routes = [
     path: '/login',
     name: '登录中心',
     layout: false,
+    hideInMenu: true,
     component: './login',
   },
   // {
