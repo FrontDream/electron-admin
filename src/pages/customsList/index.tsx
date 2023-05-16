@@ -1,14 +1,18 @@
-import { Button, message } from 'antd';
+import { Button, message, Modal, Typography, Col, Row } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, FormInstance } from '@ant-design/pro-form';
-import { CustomsListItem, isSuccess, CustomsData, TableListPagination } from '@/utils';
+import { CustomsListItem, isSuccess, SecretListItem, CustomsData, TableListPagination } from '@/utils';
 import { getCustomsListApi, addCustomsApi, updateCustomApi } from '@/services';
 import moment from 'moment';
 
+const { Paragraph } = Typography;
+
 const CustomsList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [secretVisible, setSecretVisible] = useState<boolean>(false);
+  const [secretList, setSecretList] = useState<Array<SecretListItem>>([]);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<CustomsListItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -57,6 +61,15 @@ const CustomsList: React.FC = () => {
         >
           修改
         </a>,
+        <a
+          key="keys"
+          onClick={() => {
+            setSecretList(record.secret_list);
+            setSecretVisible(true);
+          }}
+        >
+          秘钥
+        </a>,
       ],
     },
   ];
@@ -86,6 +99,9 @@ const CustomsList: React.FC = () => {
     } finally {
       setConfirmLoading(false);
     }
+  };
+  const handleCancel = () => {
+    setSecretVisible(false);
   };
 
   return (
@@ -154,6 +170,18 @@ const CustomsList: React.FC = () => {
           />
         </ModalForm>
       )}
+      <Modal title="秘钥详情" open={secretVisible} onOk={handleCancel} onCancel={handleCancel}>
+        {secretList.map((item, index) => {
+          return (
+            <Row key={item.md5}>
+              <Col span={7}>秘钥时长: {index === 4 ? '永久' : `${item.validity}天`} </Col>
+              <Col span={17} style={{ display: 'flex' }}>
+                秘钥：<Paragraph copyable>{item.md5}</Paragraph>
+              </Col>
+            </Row>
+          );
+        })}
+      </Modal>
     </PageContainer>
   );
 };
