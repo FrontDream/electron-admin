@@ -590,3 +590,25 @@ export interface RecordListItem {
 export interface RecordListRes extends TableListPagination {
   data: Array<RecordListItem>;
 }
+
+export interface SecretListItem {
+  validity: number;
+  md5: string;
+}
+export interface CustomsListItem {
+  id: number;
+  secret: string;
+  ctime: number;
+  mtime: number;
+  create_by: number;
+  update_by: number;
+  name: string;
+  secret_list: Array<SecretListItem>;
+}
+export interface CustomsListRes extends TableListPagination {
+  data: Array<CustomsListItem>;
+}
+
+export interface CustomsData {
+  name: string;
+}

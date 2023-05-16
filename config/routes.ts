@@ -112,6 +112,22 @@ const routes = [
     ],
   },
   {
+    name: '秘钥管理',
+    icon: 'BarChartOutlined',
+    path: '/secret',
+    routes: [
+      {
+        path: '/secret',
+        redirect: '/secret/customsList',
+      },
+      {
+        name: '客户列表',
+        path: '/secret/customsList',
+        component: './customsList',
+      },
+    ],
+  },
+  {
     path: '/login',
     name: '登录中心',
     layout: false,
