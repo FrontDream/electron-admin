@@ -107,13 +107,11 @@ const DepartmentList: React.FC = () => {
       try {
         const res = await deleteDepartmentApi(id);
 
-        if (isSuccess(res)) {
+        if (isSuccess(res, '删除失败，请重试')) {
           message.success('删除成功');
           if (actionRef.current) {
             actionRef.current.reload();
           }
-        } else {
-          message.error('删除失败，请重试');
         }
       } catch (error) {
         console.error('error:', error);

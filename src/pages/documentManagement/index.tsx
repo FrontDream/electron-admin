@@ -416,7 +416,7 @@ const DocumentManagement = () => {
       });
       const res = await addDocumentApi(files);
 
-      if (isSuccess(res, '上传，请重试')) {
+      if (isSuccess(res, '上传失败，请重试')) {
         message.success('新建文件夹成功');
         setUploadModalVisible(false);
         setUploadConfirmLoading(false);

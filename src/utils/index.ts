@@ -33,6 +33,9 @@ export const isSuccess = (res: any, msg?: string) => {
   } else if (res.code === 468) {
     message.warning(res.msg);
     return false;
+  } else if (res?.code === 403) {
+    message.warning('暂无权限，请先向管理员申请后重试!');
+    return;
   }
   if (msg) {
     message.warning(msg);

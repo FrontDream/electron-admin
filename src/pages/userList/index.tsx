@@ -85,13 +85,11 @@ const userManagement: React.FC = () => {
       try {
         const res = await updateUserStatusApi({ id, status: !status });
 
-        if (isSuccess(res)) {
+        if (isSuccess(res, `${txt}失败，请重试`)) {
           message.success(`${txt}成功`);
           if (actionRef.current) {
             actionRef.current.reload();
           }
-        } else {
-          message.error(`${txt}失败，请重试`);
         }
       } catch (error) {
         console.error('error:', error);
@@ -246,13 +244,11 @@ const userManagement: React.FC = () => {
       try {
         const res = await deleteUserApi(id);
 
-        if (isSuccess(res)) {
+        if (isSuccess(res, '删除失败，请重试')) {
           message.success('删除成功');
           if (actionRef.current) {
             actionRef.current.reload();
           }
-        } else {
-          message.error('删除失败，请重试');
         }
       } catch (error) {
         console.error('error:', error);
