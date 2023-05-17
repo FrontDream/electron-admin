@@ -19,5 +19,8 @@ export default function access(initialState: { currentUser?: UserInfoDetail } | 
     isCertificateList: (route: any) => menu_list.includes(route.name),
     isDocumentManagement: (route: any) => menu_list.includes(route.name),
     isDocumentList: (route: any) => menu_list.includes(route.name),
+    isChartManagement: (route: any) => menu_list.includes(route.name),
+    isDurationList: (route: any) => menu_list.includes(route.name),
+    isLogList: (route: any) => menu_list.includes(route.name),
   };
 }

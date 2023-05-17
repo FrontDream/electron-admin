@@ -94,6 +94,7 @@ const routes = [
     name: '报表管理',
     icon: 'BarChartOutlined',
     path: '/chartManagement',
+    access: 'isChartManagement',
     routes: [
       {
         path: '/chartManagement',
@@ -103,11 +104,13 @@ const routes = [
         name: '在线统计',
         path: '/chartManagement/durationList',
         component: './durationList',
+        access: 'isDurationList',
       },
       {
         name: '日志列表',
         path: '/chartManagement/recordList',
         component: './recordList',
+        access: 'isLogList',
       },
     ],
   },
