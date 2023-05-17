@@ -1,15 +1,18 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { message } from 'antd';
-import React, { useEffect, useRef } from 'react';
-import { ProFormCheckbox, ProFormText, LoginForm, FormInstance } from '@ant-design/pro-form';
+import React, { useEffect, useRef, useState } from 'react';
+import { ProFormCheckbox, ProFormText, LoginForm, ModalForm, FormInstance } from '@ant-design/pro-form';
 import { history, FormattedMessage, useModel } from 'umi';
-import { loginApi } from '@/services/user';
+import { loginApi, validateCustomApi, updateCustomMd5Api } from '@/services';
 import { setItem, removeItem, getItem, isSuccess, LoginResData, LoginData } from '@/utils';
 import styles from './index.less';
 
 const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const loginFormRef = useRef<FormInstance>();
+  const [secretModalVisible, setSecretModalVisible] = useState<boolean>(false);
+  const secretModalFormRef = useRef<FormInstance>();
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     const username = getItem('username') || '';
@@ -45,24 +48,50 @@ const Login: React.FC = () => {
     }
 
     try {
-      const res = await loginApi({ username, password });
+      const validateRes = await validateCustomApi();
+      const { data } = validateRes;
 
-      if (isSuccess(res, '登录失败，请重试')) {
-        const { data = {} as LoginResData } = res;
+      if (data?.secret_valid) {
+        const res = await loginApi({ username, password });
 
-        setItem('jwt', data.token);
-        message.success('登录成功');
-        await fetchUserInfo();
-        /** 此方法会跳转到 redirect 参数所在的位置 */
-        if (!history) return;
-        const { query } = history.location;
-        const { redirect } = query as { redirect: string };
+        if (isSuccess(res, '登录失败，请重试')) {
+          const { data = {} as LoginResData } = res;
 
-        history.push(redirect || '/');
-        return;
+          setItem('jwt', data.token);
+          message.success('登录成功');
+          await fetchUserInfo();
+          /** 此方法会跳转到 redirect 参数所在的位置 */
+          if (!history) return;
+          const { query } = history.location;
+          const { redirect } = query as { redirect: string };
+
+          history.push(redirect || '/');
+          return;
+        }
+      } else {
+        setSecretModalVisible(true);
       }
     } catch (error) {
       console.error('error:', error);
+    }
+  };
+
+  const onFinish = async (value: { md5: string }) => {
+    const { md5 } = value;
+
+    try {
+      setConfirmLoading(true);
+
+      const res = await updateCustomMd5Api({ md5 });
+
+      if (isSuccess(res, '秘钥验证失败，请重试')) {
+        message.success('秘钥验证成功，欢迎继续使用');
+        setSecretModalVisible(false);
+      }
+    } catch (error) {
+      console.error('error:', error);
+    } finally {
+      setConfirmLoading(false);
     }
   };
 
@@ -126,6 +155,28 @@ const Login: React.FC = () => {
           </LoginForm>
         </div>
       </div>
+      {secretModalVisible && (
+        <ModalForm<any>
+          formRef={secretModalFormRef}
+          modalProps={{ centered: true, confirmLoading }}
+          title={'有效期已到，请输入秘钥'}
+          width="400px"
+          visible={secretModalVisible}
+          onVisibleChange={setSecretModalVisible}
+          onFinish={onFinish}
+        >
+          <ProFormText
+            label={'秘钥'}
+            rules={[
+              {
+                required: true,
+                message: '秘钥不能为空',
+              },
+            ]}
+            name="md5"
+          />
+        </ModalForm>
+      )}
     </div>
   );
 };

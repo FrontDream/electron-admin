@@ -127,8 +127,10 @@ const authHeaderInterceptor = (url: string, options: RequestConfig) => {
   const authHeader = { Authorization: `JWT ${jwt}` };
 
   if (url.includes('/api')) {
-    // 非登录
-    if (url !== '/api/users/login') {
+    // 不添加jwt
+    const whiteList = ['/api/users/login', '/api/secret/secretManagement', '/api/secret/verifySecret'];
+
+    if (!whiteList.includes(url)) {
       return {
         url: isDev ? url : `http://43.142.36.238${url}`,
         options: { ...options, interceptors: true, headers: authHeader },

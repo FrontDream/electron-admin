@@ -37,6 +37,23 @@ export async function getUserInfoApi(params?: any, options?: { [key: string]: an
   });
 }
 
+// 校验客户权限
+export async function validateCustomApi(options?: { [key: string]: any }) {
+  return request<Resp<any>>('/api/secret/verifySecret', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 更新客户有效期
+export async function updateCustomMd5Api(data: { md5: string }, options?: { [key: string]: any }) {
+  return request<Resp<any>>('/api/secret/secretManagement', {
+    method: 'POST',
+    data,
+    ...(options || {}),
+  });
+}
+
 // 获取用户消息
 export async function getNoticesApi(options?: { [key: string]: any }) {
   const res = await request<Resp<NoticeInfoRes>>('/api/users/userMessage', {
