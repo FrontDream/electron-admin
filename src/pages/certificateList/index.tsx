@@ -402,12 +402,14 @@ const CertificateList: React.FC = () => {
           <ProFormText
             name="category"
             label="岗位类别"
-            rules={[
-              {
-                required: true,
-                message: '岗位类别不能为空',
-              },
-            ]}
+            rules={
+              [
+                // {
+                //   required: true,
+                //   message: '岗位类别不能为空',
+                // },
+              ]
+            }
             placeholder={'请输入岗位类别'}
           />
           <ProFormText
