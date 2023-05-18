@@ -9,6 +9,7 @@ import {
   ProFormDatePicker,
   ProFormDigit,
   FormInstance,
+  ProFormDependency,
 } from '@ant-design/pro-form';
 import {
   CertificatePersonItem,
@@ -138,8 +139,6 @@ const CertificatePersonList: React.FC = () => {
     try {
       setConfirmLoading(true);
       let res = {};
-
-      console.log('currentRow:', currentRow);
 
       if (isDdd) {
         res = await addCertificatePersonApi({ ...values });
@@ -334,12 +333,32 @@ const CertificatePersonList: React.FC = () => {
             placeholder={'请选择入职日期'}
             rules={[{ required: true, message: '请选择入职日期' }]}
           />
-          <ProFormDatePicker
-            name="resign_time"
-            label="离职日期"
-            placeholder={'请选择离职日期'}
-            rules={[{ required: true, message: '请选择离职日期' }]}
+          <ProFormSelect
+            name="job_status"
+            label="是否离职"
+            placeholder={'请选择是否离职'}
+            rules={[{ required: true, message: '请选择是否离职' }]}
+            options={[
+              { label: '离职', value: 1 },
+              { label: '在职', value: 2 },
+            ]}
           />
+          <ProFormDependency name={['job_status']}>
+            {({ isIn }) => {
+              if (isIn === 1) {
+                return (
+                  <ProFormDatePicker
+                    name="resign_time"
+                    label="离职日期"
+                    placeholder={'请选择离职日期'}
+                    rules={[{ required: true, message: '请选择离职日期' }]}
+                  />
+                );
+              }
+              return <></>;
+            }}
+          </ProFormDependency>
+
           <ProFormDatePicker
             name="expire_time"
             label="证件失效日期"
