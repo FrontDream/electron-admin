@@ -99,13 +99,14 @@ const NoticeIconView = () => {
 
   const openNotificationWithIcon = (data: Array<NoticeInfoItem>) => {
     const certCodes = data.map(item => item.cert_code);
+    const list = Array.from(new Set(certCodes));
 
     api.warning({
       message: '通知',
       description: (
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           证书编号为:
-          {certCodes.map(item => (
+          {list.map(item => (
             <Paragraph copyable key={item}>
               {item}
             </Paragraph>

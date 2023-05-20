@@ -72,8 +72,8 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
                 title={
                   <div className={styles.title}>
                     证书编码为：
-                    <Paragraph copyable>{item.cert_code}</Paragraph> 的证书将于{item.expire_time}过期
-                    {/* <div className={styles.extra}>{item.extra}</div> */}
+                    <Paragraph copyable>{item.cert_code}</Paragraph> 的证书将于{item.expire_time}
+                    {item.type === 1 ? '使用期' : ''}过期
                   </div>
                 }
                 // description={
