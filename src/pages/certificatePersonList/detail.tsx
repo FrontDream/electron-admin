@@ -349,12 +349,21 @@ const CertificatePersonDetail = () => {
           <Descriptions.Item label="姓名">{personData?.name}</Descriptions.Item>
           <Descriptions.Item label="性别">{personData?.gender === 1 ? '男' : '女'}</Descriptions.Item>
           <Descriptions.Item label="证件号码">{personData?.id_number}</Descriptions.Item>
-          <Descriptions.Item label="证件失效时间">{personData?.expire_time}</Descriptions.Item>
+          <Descriptions.Item label="证件失效日期">{personData?.expire_time}</Descriptions.Item>
           <Descriptions.Item label="学历">{personData?.edu_background_name}</Descriptions.Item>
           <Descriptions.Item label="联系号码">{personData?.phone}</Descriptions.Item>
           <Descriptions.Item label="入职时间">{personData?.entry_time}</Descriptions.Item>
-          <Descriptions.Item label="离职时间">{personData?.resign_time}</Descriptions.Item>
+          <Descriptions.Item label="是否离职">{personData?.job_status === 1 ? '离职' : '在职'}</Descriptions.Item>
+          {personData?.job_status === 1 && (
+            <Descriptions.Item label="离职时间">{personData?.resign_time || '-'}</Descriptions.Item>
+          )}
           <Descriptions.Item label="所属公司">{personData?.company}</Descriptions.Item>
+          <Descriptions.Item label="合同所属公司">{personData?.contract || '-'}</Descriptions.Item>
+          <Descriptions.Item label="闽政通所属公司">{personData?.mzt || '-'}</Descriptions.Item>
+          <Descriptions.Item label="医保所属公司">{personData?.medical_insurance || '-'}</Descriptions.Item>
+          <Descriptions.Item label="社保所属公司">{personData?.social_security || '-'}</Descriptions.Item>
+          <Descriptions.Item label="公积金所属公司">{personData?.prov_fund_company || '-'}</Descriptions.Item>
+          <Descriptions.Item label="继续教育情况">{personData?.continuing_edu || '-'}</Descriptions.Item>
           <Descriptions.Item label="创建人">{personData?.create_user}</Descriptions.Item>
           <Descriptions.Item label="修改人">{personData?.update_user}</Descriptions.Item>
           <Descriptions.Item label="创建时间">
@@ -363,6 +372,7 @@ const CertificatePersonDetail = () => {
           <Descriptions.Item label="修改时间">
             {moment.unix(personData?.mtime || 0).format('YYYY-MM-DD HH:mm:ss')}
           </Descriptions.Item>
+          <Descriptions.Item label="备注">{personData?.remark || '-'}</Descriptions.Item>
         </Descriptions>
       </Card>
       <Card title={'证书详情'} bordered={false}>

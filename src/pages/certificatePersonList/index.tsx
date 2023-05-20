@@ -10,6 +10,7 @@ import {
   ProFormDigit,
   FormInstance,
   ProFormDependency,
+  ProFormTextArea,
 } from '@ant-design/pro-form';
 import {
   CertificatePersonItem,
@@ -252,14 +253,14 @@ const CertificatePersonList: React.FC = () => {
           formRef={modalFormRef}
           modalProps={{ centered: true, confirmLoading }}
           title={isDdd ? '新建人员' : '修改人员'}
-          width="600px"
+          width="800px"
           visible={modalVisible}
           onVisibleChange={setModalVisible}
           onFinish={onFinish}
           initialValues={isDdd ? {} : { ...currentRow }}
           grid
           colProps={{
-            span: 12,
+            span: 6,
           }}
           className={styles.modalCon}
         >
@@ -344,8 +345,8 @@ const CertificatePersonList: React.FC = () => {
             ]}
           />
           <ProFormDependency name={['job_status']}>
-            {({ isIn }) => {
-              if (isIn === 1) {
+            {({ job_status }) => {
+              if (job_status === 1) {
                 return (
                   <ProFormDatePicker
                     name="resign_time"
@@ -364,6 +365,19 @@ const CertificatePersonList: React.FC = () => {
             label="证件失效日期"
             placeholder={'请选择证书失效日期'}
             rules={[{ required: true, message: '请选择证书失效日期' }]}
+          />
+          <ProFormText label={'合同所属公司'} name="contract" placeholder={'请输入合同所属公司'} />
+          <ProFormText label={'闽政通所属公司'} name="mzt" placeholder={'请输入闽政通所属公司'} />
+          <ProFormText label={'医保所属公司'} name="medical_insurance" placeholder={'请输入医保所属公司'} />
+          <ProFormText label={'社保所属公司'} name="social_security" placeholder={'请输入社保所属公司'} />
+          <ProFormText label={'公积金所属公司'} name="prov_fund_company" placeholder={'请输入公积金所属公司'} />
+          <ProFormText label={'继续教育情况'} name="continuing_edu" placeholder={'请输入继续教育情况'} />
+          <ProFormTextArea
+            label="备注"
+            name="remark"
+            colProps={{
+              span: 24,
+            }}
           />
         </ModalForm>
       )}
