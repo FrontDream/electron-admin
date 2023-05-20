@@ -12,6 +12,17 @@ export async function getRoleManagementListApi(params: any, options?: { [key: st
 
   return data;
 }
+// 角色列表 无权限
+export async function getRoleListNoPermissionApi(params: any, options?: { [key: string]: any }) {
+  const res = await request<Resp<RoleManagementListRes>>('/api/users/roleType', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+  const { data } = res;
+
+  return data;
+}
 
 // 新建角色
 export async function addRoleApi(data: RoleData, options?: { [key: string]: any }) {

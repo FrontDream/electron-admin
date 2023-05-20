@@ -19,12 +19,12 @@ import {
   deleteUserApi,
   updateUserApi,
   getDepartmentListApi,
-  getRoleManagementListApi,
+  getRoleListNoPermissionApi,
   updateUserStatusApi,
   updatePassword,
 } from '@/services';
 import moment from 'moment';
-import { useRequest, useModel } from 'umi';
+import { useRequest } from 'umi';
 
 const { confirm } = Modal;
 
@@ -54,7 +54,7 @@ const userManagement: React.FC = () => {
     return { data };
   });
   const { data: roles = [] } = useRequest(async () => {
-    const { data = [] } = await getRoleManagementListApi({
+    const { data = [] } = await getRoleListNoPermissionApi({
       current: 1,
       pageSize: 9999,
     });
