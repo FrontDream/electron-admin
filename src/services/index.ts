@@ -9,3 +9,4 @@ export * from './certificateList';
 export * from './permission';
 export * from './chart';
 export * from './customs';
+export * from './companyCertificateType';

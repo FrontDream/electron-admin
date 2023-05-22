@@ -14,7 +14,7 @@ export async function getRoleManagementListApi(params: any, options?: { [key: st
 }
 // 角色列表 无权限
 export async function getRoleListNoPermissionApi(params: any, options?: { [key: string]: any }) {
-  const res = await request<Resp<RoleManagementListRes>>('/api/users/roleType', {
+  const res = await request<Resp<RoleManagementListRes>>('/api/users/roleUnlimited', {
     method: 'GET',
     params,
     ...(options || {}),

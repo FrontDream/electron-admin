@@ -70,6 +70,11 @@ const routes = [
         component: './certificateList',
         access: 'isCertificateList',
       },
+      {
+        name: '企业证书类型列表',
+        path: '/certificate/companyTypeList',
+        component: './companyCertificateTypeList',
+      },
     ],
   },
   {
