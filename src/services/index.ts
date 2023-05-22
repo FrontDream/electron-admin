@@ -11,3 +11,4 @@ export * from './chart';
 export * from './customs';
 export * from './companyCertificateType';
 export * from './companyCertificate';
+export * from './companyCertificateList';

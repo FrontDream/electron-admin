@@ -8,6 +8,8 @@ import {
   getTempDocumentUrlApi,
   multiDownFilesApi,
   getUserListApi,
+  getCertificateCompanyListApi,
+  getCompanyCertificateTypeListApi,
 } from '@/services';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
@@ -134,6 +136,32 @@ export const useUserEnum = () => {
   }, {});
 
   return userEnum;
+};
+
+export const useCertificatetCompany = () => {
+  const { data: certificatetCompany = [] } = useRequest(async () => {
+    const { data = [] } = await getCertificateCompanyListApi({
+      current: 1,
+      pageSize: 99999,
+    });
+
+    return { data };
+  });
+
+  return certificatetCompany;
+};
+
+export const useCompanyCertificatetTypes = () => {
+  const { data: companyCertificatetTypes = [] } = useRequest(async () => {
+    const { data = [] } = await getCompanyCertificateTypeListApi({
+      current: 1,
+      pageSize: 99999,
+    });
+
+    return { data };
+  });
+
+  return companyCertificatetTypes;
 };
 
 export const getNameById = function <T extends BasicType>(list: Array<T>, id: number) {

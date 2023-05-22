@@ -80,6 +80,11 @@ const routes = [
         path: '/certificate/companyList',
         component: './companyList',
       },
+      {
+        name: '企业证书列表',
+        path: '/certificate/companyCertificateList',
+        component: './companyCertificateList',
+      },
     ],
   },
   {
