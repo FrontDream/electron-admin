@@ -76,9 +76,9 @@ const routes = [
         component: './companyCertificateTypeList',
       },
       {
-        name: '企业证书列表',
-        path: '/certificate/companyCertificateList',
-        component: './companyCertificateList',
+        name: '企业列表',
+        path: '/certificate/companyList',
+        component: './companyList',
       },
     ],
   },

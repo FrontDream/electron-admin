@@ -17,7 +17,7 @@ import styles from './index.less';
 
 const { warning, confirm } = Modal;
 
-const CompanyCertificateList: React.FC = () => {
+const CompanyList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<CompanyCertificateListItem>();
@@ -255,4 +255,4 @@ const CompanyCertificateList: React.FC = () => {
   );
 };
 
-export default CompanyCertificateList;
+export default CompanyList;
