@@ -190,7 +190,7 @@ const CompanyCertificateTypeList: React.FC = () => {
               show: false,
             },
           },
-          persistenceKey: 'certificatetType',
+          persistenceKey: 'companyCertificatetType',
           persistenceType: 'localStorage',
         }}
       />

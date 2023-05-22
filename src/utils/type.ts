@@ -641,3 +641,39 @@ export interface CustomsListRes extends TableListPagination {
 export interface CustomsData {
   name: string;
 }
+
+export interface CompanyCertificateListItem {
+  id: number;
+  ctime: number;
+  mtime: number;
+  create_by: number;
+  update_by: number;
+  name: string;
+  former_name: string;
+  reg_address: string;
+  address: string;
+  credit_code: string;
+  established_date: string;
+  leg_representative: string;
+  reg_capital: string;
+  is_exists_cert: boolean;
+  rel_cert_list: Array<string>;
+  create_user: string;
+  update_user: string;
+}
+
+export interface CompanyCertificateListRes extends TableListPagination {
+  data: Array<CompanyCertificateListItem>;
+}
+
+export interface CompanyCertificateData {
+  name: string;
+  former_name: string;
+  reg_address: string;
+  address: string;
+  credit_code: string;
+  established_date: string;
+  leg_representative: string;
+  reg_capital: string;
+  id?: number;
+}

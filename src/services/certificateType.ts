@@ -5,7 +5,7 @@ import { Resp, CertificateTypeListRes, CertificateTypeData, CertificateTypeItem 
 export async function getCertificateTypeListApi(params: any, options?: { [key: string]: any }) {
   const res = await request<Resp<CertificateTypeListRes>>('/api/certs/certTypeDict', {
     method: 'GET',
-    params,
+    params: { ...params, type: 1 },
     ...(options || {}),
   });
   const { data } = res;
@@ -20,7 +20,7 @@ export async function addCertificateTypeApi(data: CertificateTypeData, options?:
     headers: {
       'Content-Type': 'application/json',
     },
-    data,
+    data: { ...data, type: 1 },
     ...(options || {}),
   });
 }
@@ -39,7 +39,7 @@ export async function updateCertificateTypeApi(data: { id: number; name: string 
 
   return request<Resp<CertificateTypeItem>>(`/api/certs/certTypeDict/${id}`, {
     method: 'PUT',
-    data: { name },
+    data: { name, type: 1 },
     ...(options || {}),
   });
 }

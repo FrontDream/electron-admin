@@ -207,7 +207,7 @@ const CertificatePersonList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<CertificatePersonItem, TableListPagination>
-        headerTitle="证书类型列表"
+        headerTitle="人员列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
