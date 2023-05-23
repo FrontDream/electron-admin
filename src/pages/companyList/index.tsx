@@ -31,7 +31,7 @@ const CompanyList: React.FC = () => {
       title: '企业名',
       dataIndex: 'name',
       render: (_, record) => [
-        <a key={'name'} onClick={() => history.push(`/certificate/person/${record.id}`)}>
+        <a key={'name'} onClick={() => history.push(`/certificate/certificateCompany/${record.id}`)}>
           {record.name}
         </a>,
       ],

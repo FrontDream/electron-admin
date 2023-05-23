@@ -66,9 +66,13 @@ const CompanyCertificateList: React.FC = () => {
       copyable: true,
     },
     {
-      title: '证书所属公司',
+      title: '证书所属企业',
       dataIndex: 'cert_id',
       valueEnum: certificateCompanyEnum,
+    },
+    {
+      title: '资质类别',
+      dataIndex: 'category',
     },
     {
       title: '发证机关',
@@ -149,6 +153,11 @@ const CompanyCertificateList: React.FC = () => {
       dataIndex: 'cert_id',
       valueType: 'select',
       valueEnum: certificateCompanyEnum,
+    },
+    {
+      title: '资质类别',
+      dataIndex: 'category',
+      hideInSearch: true,
     },
     {
       title: '发证机关',
@@ -426,6 +435,7 @@ const CompanyCertificateList: React.FC = () => {
             rules={[{ required: true, message: '请选择证书所属企业' }]}
             options={certificatetCompany.map(item => ({ label: item.name, value: item.id }))}
           />
+          <ProFormText name="category" label="资质类别" placeholder={'请输入资质类别'} />
           <ProFormText
             label={'发证机关'}
             name="issue_authority"

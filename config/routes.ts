@@ -81,6 +81,12 @@ const routes = [
         component: './companyList',
       },
       {
+        name: '企业详情',
+        hideInMenu: true,
+        path: '/certificate/certificateCompany/:id',
+        component: './companyList/detail',
+      },
+      {
         name: '企业证书列表',
         path: '/certificate/companyCertificateList',
         component: './companyCertificateList',

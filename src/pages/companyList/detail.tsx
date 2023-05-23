@@ -6,11 +6,11 @@ import { useState, useRef } from 'react';
 import type { RangePickerProps } from 'antd/es/date-picker';
 import { useParams } from 'react-router-dom';
 import {
-  getCertificatePersonDetailApi,
-  getCertificateListApi,
-  updateCertificateApi,
-  addCertificateApi,
-  deleteCertificateApi,
+  getCertificateCompanyDetailApi,
+  getCompanyCertificateListApi,
+  updateCompanyCertificateApi,
+  addCompanyCertificateApi,
+  deleteCompanyCertificateApi,
 } from '@/services';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import moment from 'moment';
@@ -18,12 +18,12 @@ import {
   CertificateItem,
   TableListPagination,
   AppendixList,
-  useCertificatetTypes,
+  useCompanyCertificatetTypes,
   listToEnum,
   CertificateData,
   isSuccess,
   uploadFiles,
-  useCertificatetPersons,
+  useCertificatetCompany,
   downLoad,
 } from '@/utils';
 import {
@@ -48,47 +48,41 @@ const useStore = create(set => ({
 
 const { confirm } = Modal;
 
-const CertificatePersonDetail = () => {
+const CertificateCompanyDetail = () => {
   const { id = '' } = useParams<{ id: string }>();
-  const certificatetTypes = useCertificatetTypes();
-  const certificateTypeEnum = listToEnum(certificatetTypes);
+  const companyCertificatetTypes = useCompanyCertificatetTypes();
+  const companyCertificateTypeEnum = listToEnum(companyCertificatetTypes);
   const actionRef = useRef<ActionType>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isDdd, setIsDdd] = useState(true);
-  const certificatetPersons = useCertificatetPersons();
-  const certificatePersonEnum = listToEnum(certificatetPersons);
+  const certificatetCompany = useCertificatetCompany();
+  const certificateCompanyEnum = listToEnum(certificatetCompany);
 
   const tableColumns: ProColumns<CertificateItem>[] = [
     {
-      title: '证书编号',
+      title: '企业证书编号',
       dataIndex: 'cert_code',
       copyable: true,
     },
     {
-      title: '证书人员',
+      title: '证书所属企业',
       dataIndex: 'cert_id',
-      hideInSearch: true,
       valueType: 'select',
-      valueEnum: certificatePersonEnum,
+      valueEnum: certificateCompanyEnum,
     },
     {
-      title: '岗位类别',
+      title: '资质类别',
       dataIndex: 'category',
       hideInSearch: true,
     },
     {
-      title: '专业',
-      dataIndex: 'major',
+      title: '发证机关',
+      dataIndex: 'issue_authority',
       hideInSearch: true,
     },
     {
       title: '发证日期',
       dataIndex: 'cert_data',
-      hideInSearch: true,
-    },
-    {
-      title: '失效日期',
-      dataIndex: 'expire_time',
       hideInSearch: true,
     },
     {
@@ -98,15 +92,20 @@ const CertificatePersonDetail = () => {
       render: val => (val === 1 ? '是' : '否'),
     },
     {
+      title: '失效日期',
+      dataIndex: 'expire_time',
+      hideInSearch: true,
+    },
+    {
       title: '失效提示时间',
       dataIndex: 'reminder_time',
       hideInSearch: true,
     },
     {
-      title: '证书类型',
+      title: '企业证书类型',
       dataIndex: 'type',
       valueType: 'select',
-      valueEnum: certificateTypeEnum,
+      valueEnum: companyCertificateTypeEnum,
     },
     {
       title: '创建人',
@@ -171,28 +170,26 @@ const CertificatePersonDetail = () => {
   const [uploading, setUploading] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const modalFormRef = useRef<FormInstance>();
-
-  // const [fileList, setFileList] = useState<AppendixList[]>([]);
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
   const descriptionColumns: ProDescriptionsItemProps<CertificateItem>[] = [
     {
-      title: '证书编号',
+      title: '企业证书编号',
       dataIndex: 'cert_code',
       copyable: true,
     },
     {
-      title: '证书人员',
+      title: '证书所属公司',
       dataIndex: 'cert_id',
-      valueEnum: certificatePersonEnum,
+      valueEnum: certificateCompanyEnum,
     },
     {
-      title: '岗位类别',
+      title: '资质类别',
       dataIndex: 'category',
     },
     {
-      title: '专业',
-      dataIndex: 'major',
+      title: '发证机关',
+      dataIndex: 'issue_authority',
     },
     {
       title: '发证日期',
@@ -204,9 +201,9 @@ const CertificatePersonDetail = () => {
       renderText: (val: number) => (val === 1 ? '是' : '否'),
     },
     {
-      title: '证书类型',
+      title: '企业证书类型',
       dataIndex: 'type',
-      valueEnum: certificateTypeEnum,
+      valueEnum: companyCertificateTypeEnum,
     },
     {
       title: '是否有失效日期',
@@ -258,9 +255,9 @@ const CertificatePersonDetail = () => {
       renderText: (val: number) => moment.unix(val).format('YYYY-MM-DD HH:mm:ss'),
     },
   ];
-  const { data: personData, loading: personDetailLoading } = useRequest(
+  const { data: companyData, loading: companyDetailLoading } = useRequest(
     async () => {
-      const data = await getCertificatePersonDetailApi(Number(id));
+      const data = await getCertificateCompanyDetailApi(Number(id));
 
       return { data };
     },
@@ -284,13 +281,13 @@ const CertificatePersonDetail = () => {
       }
 
       if (isDdd) {
-        res = await addCertificateApi({ ...body });
+        res = await addCompanyCertificateApi({ ...body });
       } else {
-        res = await updateCertificateApi({ ...body, id: currentRow?.id || 0 });
+        res = await updateCompanyCertificateApi({ ...body, id: currentRow?.id || 0 });
       }
 
-      if (isSuccess(res, `${isDdd ? '新增' : '修改'}证书失败，请重试！`)) {
-        message.success(`${isDdd ? '新增' : '修改'}证书成功`);
+      if (isSuccess(res, `${isDdd ? '新增' : '修改'}企业证书失败，请重试！`)) {
+        message.success(`${isDdd ? '新增' : '修改'}企业证书成功`);
         setModalVisible(false);
         setFileList([]);
         if (actionRef.current) {
@@ -309,7 +306,7 @@ const CertificatePersonDetail = () => {
       const hide = message.loading('正在删除');
 
       try {
-        const res = await deleteCertificateApi(id);
+        const res = await deleteCompanyCertificateApi(id);
 
         if (isSuccess(res, '删除失败，请重试')) {
           message.success('删除成功');
@@ -325,9 +322,9 @@ const CertificatePersonDetail = () => {
     };
 
     confirm({
-      title: '确定删除该证书吗?',
+      title: '确定删除该企业证书吗?',
       icon: <ExclamationCircleFilled />,
-      content: '证书删除后，无法恢复！请谨慎删除！',
+      content: '企业证书删除后，无法恢复！请谨慎删除！',
       async onOk() {
         del();
       },
@@ -377,38 +374,27 @@ const CertificatePersonDetail = () => {
 
   return (
     <PageContainer>
-      <Card bordered={false} title={'人员详情'} loading={personDetailLoading}>
+      <Card bordered={false} title={'企业详情'} loading={companyDetailLoading}>
         <Descriptions style={{ marginBottom: 32 }}>
-          <Descriptions.Item label="姓名">{personData?.name}</Descriptions.Item>
-          <Descriptions.Item label="性别">{personData?.gender === 1 ? '男' : '女'}</Descriptions.Item>
-          <Descriptions.Item label="证件号码">{personData?.id_number}</Descriptions.Item>
-          <Descriptions.Item label="证件失效日期">{personData?.expire_time}</Descriptions.Item>
-          <Descriptions.Item label="学历">{personData?.edu_background_name}</Descriptions.Item>
-          <Descriptions.Item label="联系号码">{personData?.phone}</Descriptions.Item>
-          <Descriptions.Item label="入职时间">{personData?.entry_time}</Descriptions.Item>
-          <Descriptions.Item label="是否离职">{personData?.job_status === 1 ? '离职' : '在职'}</Descriptions.Item>
-          {personData?.job_status === 1 && (
-            <Descriptions.Item label="离职时间">{personData?.resign_time || '-'}</Descriptions.Item>
-          )}
-          <Descriptions.Item label="所属公司">{personData?.company}</Descriptions.Item>
-          <Descriptions.Item label="合同所属公司">{personData?.contract || '-'}</Descriptions.Item>
-          <Descriptions.Item label="闽政通所属公司">{personData?.mzt || '-'}</Descriptions.Item>
-          <Descriptions.Item label="医保所属公司">{personData?.medical_insurance || '-'}</Descriptions.Item>
-          <Descriptions.Item label="社保所属公司">{personData?.social_security || '-'}</Descriptions.Item>
-          <Descriptions.Item label="公积金所属公司">{personData?.prov_fund_company || '-'}</Descriptions.Item>
-          <Descriptions.Item label="继续教育情况">{personData?.continuing_edu || '-'}</Descriptions.Item>
-          <Descriptions.Item label="创建人">{personData?.create_user}</Descriptions.Item>
-          <Descriptions.Item label="修改人">{personData?.update_user}</Descriptions.Item>
+          <Descriptions.Item label="企业名称">{companyData?.name || '-'}</Descriptions.Item>
+          <Descriptions.Item label="企业曾用名">{companyData?.former_name || '-'}</Descriptions.Item>
+          <Descriptions.Item label="企业注册地址">{companyData?.reg_address || '-'}</Descriptions.Item>
+          <Descriptions.Item label="企业详细地址">{companyData?.address || '-'}</Descriptions.Item>
+          <Descriptions.Item label="统一社会信用编码">{companyData?.credit_code || '-'}</Descriptions.Item>
+          <Descriptions.Item label="成立时间">{companyData?.established_date || '-'}</Descriptions.Item>
+          <Descriptions.Item label="法定代表人">{companyData?.leg_representative || '-'}</Descriptions.Item>
+          <Descriptions.Item label="注册资本(万元)">{companyData?.reg_capital || '-'}</Descriptions.Item>
+          <Descriptions.Item label="创建人">{companyData?.create_user || '-'}</Descriptions.Item>
+          <Descriptions.Item label="修改人">{companyData?.update_user || '-'}</Descriptions.Item>
           <Descriptions.Item label="创建时间">
-            {moment.unix(personData?.ctime || 0).format('YYYY-MM-DD HH:mm:ss')}
+            {moment.unix(companyData?.ctime || 0).format('YYYY-MM-DD HH:mm:ss') || '-'}
           </Descriptions.Item>
           <Descriptions.Item label="修改时间">
-            {moment.unix(personData?.mtime || 0).format('YYYY-MM-DD HH:mm:ss')}
+            {moment.unix(companyData?.mtime || 0).format('YYYY-MM-DD HH:mm:ss') || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="备注">{personData?.remark || '-'}</Descriptions.Item>
         </Descriptions>
       </Card>
-      <Card title={'证书详情'} bordered={false}>
+      <Card title={'企业证书详情'} bordered={false}>
         <ProTable<CertificateItem, TableListPagination>
           actionRef={actionRef}
           rowKey="id"
@@ -428,7 +414,7 @@ const CertificatePersonDetail = () => {
               新建
             </Button>,
           ]}
-          request={getCertificateListApi}
+          request={getCompanyCertificateListApi}
           columns={tableColumns}
           pagination={{ pageSize: 10 }}
           columnsState={{
@@ -456,7 +442,7 @@ const CertificatePersonDetail = () => {
         <ModalForm<CertificateData>
           formRef={modalFormRef}
           modalProps={{ centered: true, confirmLoading }}
-          title={isDdd ? '新建证书' : '修改证书'}
+          title={isDdd ? '新建企业证书' : '修改企业证书'}
           width="800px"
           visible={modalVisible}
           onVisibleChange={setModalVisible}
@@ -475,8 +461,28 @@ const CertificatePersonDetail = () => {
           className={styles.modalCon}
         >
           <ProFormText
-            label={'证书编号'}
+            label={'企业证书编号'}
             name="cert_code"
+            rules={[
+              {
+                required: true,
+                message: '企业证书编号不能为空',
+              },
+            ]}
+            placeholder={'请输入企业证书编号'}
+          />
+          <ProFormSelect
+            name="cert_id"
+            disabled
+            label="证书所属企业"
+            placeholder={'请选择证书所属企业'}
+            rules={[{ required: true, message: '请选择证书所属企业' }]}
+            options={certificatetCompany.map(item => ({ label: item.name, value: item.id }))}
+          />
+          <ProFormText name="category" label="资质类别" placeholder={'请输入资质类别'} />
+          <ProFormText
+            label={'发证机关'}
+            name="issue_authority"
             rules={[
               {
                 required: true,
@@ -484,36 +490,6 @@ const CertificatePersonDetail = () => {
               },
             ]}
             placeholder={'请输入证书编号'}
-          />
-          <ProFormSelect
-            name="cert_id"
-            label="证书人员"
-            disabled
-            placeholder={'请选择证书人员'}
-            rules={[{ required: true, message: '请选择证书人员' }]}
-            options={certificatetPersons.map(item => ({ label: item.name, value: item.id }))}
-          />
-          <ProFormText
-            name="category"
-            label="岗位类别"
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: '岗位类别不能为空',
-            //   },
-            // ]}
-            placeholder={'请输入岗位类别'}
-          />
-          <ProFormText
-            name="major"
-            label="专业"
-            rules={[
-              {
-                required: true,
-                message: '专业',
-              },
-            ]}
-            placeholder={'请输入专业'}
           />
           <ProFormDatePicker
             name="cert_data"
@@ -536,7 +512,7 @@ const CertificatePersonDetail = () => {
             label="证书类型"
             placeholder={'请选择证书类型'}
             rules={[{ required: true, message: '请选择证书类型' }]}
-            options={certificatetTypes.map(item => ({ label: item.name, value: item.id }))}
+            options={companyCertificatetTypes.map(item => ({ label: item.name, value: item.id }))}
           />
           <ProFormSelect
             name="has_fail_date"
@@ -636,6 +612,7 @@ const CertificatePersonDetail = () => {
               return <></>;
             }}
           </ProFormDependency>
+
           <Spin spinning={uploading}>
             <ProFormUploadDragger
               max={4}
@@ -656,7 +633,7 @@ const CertificatePersonDetail = () => {
           setShowDetail(false);
         }}
         closable={true}
-        title={'证书详情'}
+        title={'企业证书详情'}
       >
         <ProDescriptions<CertificateItem>
           column={2}
@@ -678,4 +655,4 @@ const CertificatePersonDetail = () => {
   );
 };
 
-export default CertificatePersonDetail;
+export default CertificateCompanyDetail;
