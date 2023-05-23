@@ -98,19 +98,19 @@ const NoticeIconView = () => {
   );
 
   const openNotificationWithIcon = (data: Array<NoticeInfoItem>) => {
-    const certCodes = data.map(item => item.cert_code);
-    const list = Array.from(new Set(certCodes));
+    const certNames = data.map(item => {
+      if (item.cert_type === 1) {
+        return item.person_name;
+      }
+      return item.firm_name;
+    });
+    const list = Array.from(new Set(certNames));
 
     api.warning({
       message: '通知',
       description: (
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          证书编号为:
-          {list.map(item => (
-            <Paragraph copyable key={item}>
-              {item}
-            </Paragraph>
-          ))}
+          {list.join('、')}
           的证书即将过期，请及时处理
         </div>
       ),

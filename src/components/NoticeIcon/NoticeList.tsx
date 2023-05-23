@@ -57,6 +57,10 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
           //     <span className={styles.iconElement}>{item.avatar}</span>
           //   )
           // ) : null;
+          // cert_type 1人员，2企业
+          // type 1失效时期，2使用有效期
+          // firm_name 企业名
+          // person_name 人员名
 
           return (
             <List.Item
@@ -71,9 +75,12 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
                 avatar={<Avatar className={styles.avatar} src={'/notice.png'} />}
                 title={
                   <div className={styles.title}>
-                    证书编码为：
+                    {`${item.cert_type === 1 ? item.person_name : item.firm_name}的证书(${item.cert_code})${
+                      item.type === 1 ? '有效期' : '使用有效期'
+                    }即将到期，请及时处理!`}
+                    {/* 证书编码为：
                     <Paragraph copyable>{item.cert_code}</Paragraph> 的证书将于{item.expire_time}
-                    {item.type === 2 ? '使用期' : ''}过期
+                    {item.type === 2 ? '使用期' : ''}过期 */}
                   </div>
                 }
                 // description={
