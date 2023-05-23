@@ -74,11 +74,13 @@ const routes = [
         name: '企业证书类型列表',
         path: '/certificate/companyTypeList',
         component: './companyCertificateTypeList',
+        access: 'isCompanyCertificateTypeList',
       },
       {
         name: '企业列表',
         path: '/certificate/companyList',
         component: './companyList',
+        access: 'isCompanyList',
       },
       {
         name: '企业详情',
@@ -90,6 +92,7 @@ const routes = [
         name: '企业证书列表',
         path: '/certificate/companyCertificateList',
         component: './companyCertificateList',
+        access: 'isCompanyCertificateList',
       },
     ],
   },
@@ -139,6 +142,7 @@ const routes = [
     name: '秘钥管理',
     icon: 'SkypeOutlined',
     path: '/secret',
+    access: 'isSecret',
     routes: [
       {
         path: '/secret',
@@ -148,6 +152,7 @@ const routes = [
         name: '客户列表',
         path: '/secret/customsList',
         component: './customsList',
+        access: 'isCustomerList',
       },
     ],
   },
