@@ -11,13 +11,13 @@ export default defineConfig({
   electronBuilder: {
     buildType: 'webpack',
     mainSrc: 'src/main',
-    externals: ['knex', 'sqlite3'],
+    // externals: ['knex', 'sqlite3'],
     preloadEntry: {
       'index.ts': 'preload.js',
     },
     rendererTarget: 'web',
     builderOptions: {
-      appId: 'com.nanxu.desktop-oa',
+      appId: 'com.xuda.desktop-oa',
       productName: '旭达共享',
       nsis: {
         oneClick: false, // 是否一键安装
