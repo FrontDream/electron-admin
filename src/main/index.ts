@@ -1,13 +1,12 @@
-import 'reflect-metadata';
-import type { MessageBoxOptions } from 'electron';
-import { app, BrowserWindow, protocol, Menu, ipcMain, dialog } from 'electron';
+// import 'reflect-metadata';
+import { app, BrowserWindow, protocol, Menu, ipcMain, dialog, MessageBoxOptions } from 'electron';
 import path from 'path';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { ioc } from './ioc';
-import { LocalDB } from './db/db';
-import { NotebooksController } from './db/controllers/notebooks.controller';
-import logger from './utils/log';
+// import { ioc } from './ioc';
+// import { LocalDB } from './db/db';
+// import { NotebooksController } from './db/controllers/notebooks.controller';
+// import logger from './utils/log';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
@@ -48,7 +47,7 @@ app.whenReady().then(async () => {
       console.error('React Devtools failed to install:', e.toString());
     }
   }
-  await ioc.get(LocalDB).init();
+  // await ioc.get(LocalDB).init();
   createWindow();
 
   app.on('activate', () => {
@@ -64,25 +63,25 @@ app.on('window-all-closed', () => {
   }
 });
 
-ipcMain.handle('log', async (event, arg) => {
-  // 与渲染进程通信
-  return new Promise((resolve, reject) => {
-    logger.info(arg);
-  });
-});
+// ipcMain.handle('log', async (event, arg) => {
+//   // 与渲染进程通信
+//   return new Promise((resolve, reject) => {
+//     logger.info(arg);
+//   });
+// });
 
-ipcMain.handle('showMessage', (e, options: MessageBoxOptions) => {
-  const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
+// ipcMain.handle('showMessage', (e, options: MessageBoxOptions) => {
+//   const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
 
-  if (!win) return;
-  dialog.showMessageBox(win, options);
-});
+//   if (!win) return;
+//   dialog.showMessageBox(win, options);
+// });
 
-ipcMain.handle('createNotebook', async (e, name: string) => {
-  logger.info(['main中测试一下']);
-  return await ioc.get(NotebooksController).create(name);
-});
+// ipcMain.handle('createNotebook', async (e, name: string) => {
+//   logger.info(['main中测试一下']);
+//   return await ioc.get(NotebooksController).create(name);
+// });
 
-ipcMain.handle('getNotebooks', async () => {
-  return await ioc.get(NotebooksController).getAll();
-});
+// ipcMain.handle('getNotebooks', async () => {
+//   return await ioc.get(NotebooksController).getAll();
+// });

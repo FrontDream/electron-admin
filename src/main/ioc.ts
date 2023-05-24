@@ -1,6 +1,6 @@
-import { Container } from "inversify";
+// import { Container } from "inversify";
 
-export const ioc = new Container({
-  defaultScope: "Singleton",
-  autoBindInjectable: true,
-});
+// export const ioc = new Container({
+//   defaultScope: "Singleton",
+//   autoBindInjectable: true,
+// });
