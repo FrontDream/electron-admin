@@ -104,6 +104,7 @@ export const useCertificatetTypes = () => {
     const { data = [] } = await getCertificateTypeListApi({
       current: 1,
       pageSize: 99999,
+      type: 1,
     });
 
     return { data };

@@ -5,7 +5,7 @@ import { Resp, CertificateRes, CertificateReqData, CertificateItem } from '@/uti
 export async function getCertificateListApi(params: any, options?: { [key: string]: any }) {
   const res = await request<Resp<CertificateRes>>('/api/certs/certPersonRel', {
     method: 'GET',
-    params,
+    params: { ...params, cert_type: 1 },
     ...(options || {}),
   });
   const { data } = res;
