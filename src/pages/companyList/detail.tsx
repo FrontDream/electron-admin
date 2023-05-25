@@ -71,7 +71,7 @@ const CertificateCompanyDetail = () => {
       valueEnum: certificateCompanyEnum,
     },
     {
-      title: '资质类别',
+      title: '资质等级',
       dataIndex: 'category',
       hideInSearch: true,
     },
@@ -184,7 +184,7 @@ const CertificateCompanyDetail = () => {
       valueEnum: certificateCompanyEnum,
     },
     {
-      title: '资质类别',
+      title: '资质等级',
       dataIndex: 'category',
     },
     {
@@ -479,17 +479,17 @@ const CertificateCompanyDetail = () => {
             rules={[{ required: true, message: '请选择证书所属企业' }]}
             options={certificatetCompany.map(item => ({ label: item.name, value: item.id }))}
           />
-          <ProFormText name="category" label="资质类别" placeholder={'请输入资质类别'} />
+          <ProFormText name="category" label="资质等级" placeholder={'请输入资质等级'} />
           <ProFormText
             label={'发证机关'}
             name="issue_authority"
             rules={[
               {
                 required: true,
-                message: '证书编号不能为空',
+                message: '发证机关不能为空',
               },
             ]}
-            placeholder={'请输入证书编号'}
+            placeholder={'请输入发证机关'}
           />
           <ProFormDatePicker
             name="cert_data"
