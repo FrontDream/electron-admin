@@ -132,11 +132,11 @@ const authHeaderInterceptor = (url: string, options: RequestConfig) => {
 
     if (!whiteList.includes(url)) {
       return {
-        url: isDev ? url : `http://43.142.36.238${url}`,
+        url: isDev ? url : `http://www.gxrj.com${url}`,
         options: { ...options, interceptors: true, headers: authHeader },
       };
     }
-    return { url: isDev ? url : `http://43.142.36.238${url}`, options };
+    return { url: isDev ? url : `http://www.gxrj.com${url}`, options };
   }
   return { url, options };
 };
