@@ -125,6 +125,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 const authHeaderInterceptor = (url: string, options: RequestConfig) => {
   const jwt = getItem('jwt');
   const authHeader = { Authorization: `JWT ${jwt}` };
+  const baseUrl = 'http://192.168.0.48';
 
   if (url.includes('/api')) {
     // 不添加jwt
@@ -132,11 +133,11 @@ const authHeaderInterceptor = (url: string, options: RequestConfig) => {
 
     if (!whiteList.includes(url)) {
       return {
-        url: isDev ? url : `http://www.gxrj.com${url}`,
+        url: isDev ? url : `${baseUrl}${url}`,
         options: { ...options, interceptors: true, headers: authHeader },
       };
     }
-    return { url: isDev ? url : `http://www.gxrj.com${url}`, options };
+    return { url: isDev ? url : `${baseUrl}${url}`, options };
   }
   return { url, options };
 };
