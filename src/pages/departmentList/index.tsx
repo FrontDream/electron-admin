@@ -187,7 +187,7 @@ const DepartmentList: React.FC = () => {
       {modalVisible && (
         <ModalForm<DepartmentData>
           formRef={modalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建部门' : '修改部门'}
           width="400px"
           visible={modalVisible}

@@ -150,7 +150,7 @@ const CustomsList: React.FC = () => {
       {modalVisible && (
         <ModalForm<CustomsData>
           formRef={modalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建客户' : '修改客户'}
           width="400px"
           visible={modalVisible}
@@ -170,7 +170,7 @@ const CustomsList: React.FC = () => {
           />
         </ModalForm>
       )}
-      <Modal title="秘钥详情" open={secretVisible} onOk={handleCancel} onCancel={handleCancel}>
+      <Modal title="秘钥详情" open={secretVisible} onOk={handleCancel} onCancel={handleCancel} maskClosable={false}>
         {secretList.map((item, index) => {
           return (
             <Row key={item.md5}>

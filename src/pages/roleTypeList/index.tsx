@@ -190,7 +190,7 @@ const RoleTypeList: React.FC = () => {
       {modalVisible && (
         <ModalForm<RoleTypeData>
           formRef={modalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建角色类型' : '修改角色类型'}
           width="400px"
           visible={modalVisible}

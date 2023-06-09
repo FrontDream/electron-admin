@@ -158,7 +158,7 @@ const Login: React.FC = () => {
       {secretModalVisible && (
         <ModalForm<any>
           formRef={secretModalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={'有效期已到，请输入秘钥'}
           width="400px"
           visible={secretModalVisible}

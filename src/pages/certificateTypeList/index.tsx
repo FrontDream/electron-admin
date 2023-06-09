@@ -197,7 +197,7 @@ const CertificateTypeList: React.FC = () => {
       {modalVisible && (
         <ModalForm<DepartmentData>
           formRef={modalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建证书类型' : '修改证书类型'}
           width="400px"
           visible={modalVisible}

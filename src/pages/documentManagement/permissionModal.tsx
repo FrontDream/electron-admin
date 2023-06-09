@@ -138,6 +138,7 @@ const PermissionModal = (props: IProps) => {
       open={visible}
       onOk={handleConfirmPermission}
       onCancel={onCancel}
+      maskClosable={false}
     >
       <Card loading={userDocPermissionLoading || departmentUserLoading} bordered={false} className={styles.cardCon}>
         <Row>

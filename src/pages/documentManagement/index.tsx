@@ -625,7 +625,7 @@ const DocumentManagement = () => {
         {modalVisible && (
           <ModalForm<{ name: string }>
             formRef={modalFormRef}
-            modalProps={{ centered: true, confirmLoading }}
+            modalProps={{ centered: true, confirmLoading, maskClosable: false }}
             title={`${isEdit ? '重命名' : '新建文件夹'}`}
             width="400px"
             visible={modalVisible}

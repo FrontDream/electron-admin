@@ -218,7 +218,7 @@ const CompanyList: React.FC = () => {
       {modalVisible && (
         <ModalForm<CompanyCertificateData>
           formRef={modalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建企业' : '修改企业'}
           width="600px"
           visible={modalVisible}

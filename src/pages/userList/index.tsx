@@ -316,7 +316,7 @@ const userManagement: React.FC = () => {
       {modalVisible && (
         <ModalForm<UserData>
           formRef={modalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建用户' : '修改用户'}
           width="600px"
           visible={modalVisible}
@@ -438,7 +438,7 @@ const userManagement: React.FC = () => {
       {passwordModalVisible && (
         <ModalForm<PasswordFormData>
           formRef={passwordModalFormRef}
-          modalProps={{ centered: true, confirmLoading: passwordConfirmLoading }}
+          modalProps={{ centered: true, confirmLoading: passwordConfirmLoading, maskClosable: false }}
           title={'修改密码'}
           width="400px"
           visible={passwordModalVisible}

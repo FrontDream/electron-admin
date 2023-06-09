@@ -352,7 +352,7 @@ const RoleManagementList: React.FC = () => {
       {modalVisible && (
         <ModalForm<RoleData>
           formRef={modalFormRef}
-          modalProps={{ centered: true, confirmLoading }}
+          modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建角色' : '修改角色'}
           width="800px"
           visible={modalVisible}
