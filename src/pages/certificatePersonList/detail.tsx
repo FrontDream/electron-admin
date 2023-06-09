@@ -491,7 +491,7 @@ const CertificatePersonDetail = () => {
             disabled
             placeholder={'请选择证书人员'}
             rules={[{ required: true, message: '请选择证书人员' }]}
-            options={certificatetPersons.map(item => ({ label: item.name, value: item.id }))}
+            options={certificatetPersons.map(item => ({ label: `${item.name}${item.id_number}`, value: item.id }))}
           />
           <ProFormText
             name="category"
