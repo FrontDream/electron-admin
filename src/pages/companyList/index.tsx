@@ -243,12 +243,62 @@ const CompanyList: React.FC = () => {
             placeholder={'请输入企业名称'}
           />
           <ProFormText label={'企业曾用名'} name="former_name" placeholder={'请输入企业曾用名'} />
-          <ProFormText label={'企业注册地址'} name="reg_address" placeholder={'请输入企业注册地址'} />
+          <ProFormText
+            label={'企业注册地址'}
+            name="reg_address"
+            rules={[
+              {
+                required: true,
+                message: '企业注册地址不能为空',
+              },
+            ]}
+            placeholder={'请输入企业注册地址'}
+          />
           <ProFormText label={'企业详情地址'} name="address" placeholder={'请输入企业详情地址'} />
-          <ProFormText label={'统一社会信用编码'} name="credit_code" placeholder={'请输入一社会信用编码'} />
-          <ProFormDatePicker name="established_date" label="成立时间" placeholder={'请选择成立时间'} />
-          <ProFormText label={'法定代表人'} name="leg_representative" placeholder={'请输入法定代表人'} />
-          <ProFormMoney label="注册资本(万元)" name="reg_capital" />
+          <ProFormText
+            label={'统一社会信用编码'}
+            name="credit_code"
+            rules={[
+              {
+                required: true,
+                message: '统一社会信用编码不能为空',
+              },
+            ]}
+            placeholder={'请输入一社会信用编码'}
+          />
+          <ProFormDatePicker
+            name="established_date"
+            label="成立时间"
+            rules={[
+              {
+                required: true,
+                message: '成立时间不能为空',
+              },
+            ]}
+            placeholder={'请选择成立时间'}
+          />
+          <ProFormText
+            label={'法定代表人'}
+            name="leg_representative"
+            rules={[
+              {
+                required: true,
+                message: '法定代表人不能为空',
+              },
+            ]}
+            placeholder={'请输入法定代表人'}
+          />
+          <ProFormMoney
+            label="注册资本(万元)"
+            name="reg_capital"
+            rules={[
+              {
+                required: true,
+                message: '注册资本不能为空',
+              },
+            ]}
+            placeholder={'请输入注册资本(万元)'}
+          />
         </ModalForm>
       )}
     </PageContainer>
