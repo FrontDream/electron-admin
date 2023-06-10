@@ -192,6 +192,11 @@ const CertificateList: React.FC = () => {
       valueEnum: certificateTypeEnum,
     },
     {
+      title: '证书所属公司',
+      dataIndex: 'company',
+      hideInTable: true,
+    },
+    {
       title: '创建人',
       dataIndex: 'create_user',
       hideInSearch: true,

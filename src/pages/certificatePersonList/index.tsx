@@ -45,7 +45,6 @@ const CertificatePersonList: React.FC = () => {
     {
       title: '姓名',
       dataIndex: 'name',
-      valueType: 'option',
       render: (_, record) => [
         <a key={'name'} onClick={() => history.push(`/certificate/person/${record.id}`)}>
           {record.name}
@@ -76,6 +75,7 @@ const CertificatePersonList: React.FC = () => {
     {
       title: '联系号码',
       dataIndex: 'phone',
+      hideInSearch: true,
     },
     {
       title: '入职时间',
