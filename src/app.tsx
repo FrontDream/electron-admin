@@ -125,7 +125,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 const authHeaderInterceptor = (url: string, options: RequestConfig) => {
   const jwt = getItem('jwt');
   const authHeader = { Authorization: `JWT ${jwt}` };
-  const baseUrl = 'http://192.168.0.48';
+  // nanxu 服务器
+  // const baseUrl = 'http://192.168.0.48';
+  // 自己服务器
+  const baseUrl = 'http://43.142.36.238';
 
   if (url.includes('/api')) {
     // 不添加jwt
