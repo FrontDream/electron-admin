@@ -494,9 +494,9 @@ const CompanyCertificateList: React.FC = () => {
                     />
                     <ProFormDependency name={['expire_time']}>
                       {({ expire_time }) => {
-                        const month = moment(expire_time).subtract(6, 'months');
+                        const day = moment(expire_time).subtract(1, 'days');
                         const disabledDate: RangePickerProps['disabledDate'] = current => {
-                          return current && current > month.endOf('date');
+                          return current && current > day.endOf('date');
                         };
 
                         return (

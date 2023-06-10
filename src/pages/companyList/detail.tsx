@@ -587,9 +587,9 @@ const CertificateCompanyDetail = () => {
 
                     <ProFormDependency name={['validity_period']}>
                       {({ validity_period }) => {
-                        const month = moment(validity_period).subtract(6, 'months');
+                        const day = moment(validity_period).subtract(1, 'days');
                         const disabledDate: RangePickerProps['disabledDate'] = current => {
-                          return current && current > month.endOf('date');
+                          return current && current > day.endOf('date');
                         };
 
                         return (
