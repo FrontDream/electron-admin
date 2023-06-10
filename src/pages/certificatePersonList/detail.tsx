@@ -240,6 +240,10 @@ const CertificatePersonDetail = () => {
       renderText: (val: string, record: CertificateItem) => (record?.has_use_date === 1 ? val : '-'),
     },
     {
+      title: '继续教育情况',
+      dataIndex: 'continuing_edu',
+    },
+    {
       title: '创建人',
       dataIndex: 'create_user',
     },
@@ -343,6 +347,9 @@ const CertificatePersonDetail = () => {
 
     modalFormRef.current?.setFieldValue('reminder_time', reminder_time);
   };
+  const handleChangeRange = () => {
+    modalFormRef.current?.resetFields(['use_date_reminder']);
+  };
   const onRemove = (file: any) => {
     const { uid } = file;
     const files = fileList.filter(item => item.uid !== uid);
@@ -396,7 +403,7 @@ const CertificatePersonDetail = () => {
           <Descriptions.Item label="医保所属公司">{personData?.medical_insurance || '-'}</Descriptions.Item>
           <Descriptions.Item label="社保所属公司">{personData?.social_security || '-'}</Descriptions.Item>
           <Descriptions.Item label="公积金所属公司">{personData?.prov_fund_company || '-'}</Descriptions.Item>
-          <Descriptions.Item label="继续教育情况">{personData?.continuing_edu || '-'}</Descriptions.Item>
+          {/* <Descriptions.Item label="继续教育情况">{personData?.continuing_edu || '-'}</Descriptions.Item> */}
           <Descriptions.Item label="创建人">{personData?.create_user}</Descriptions.Item>
           <Descriptions.Item label="修改人">{personData?.update_user}</Descriptions.Item>
           <Descriptions.Item label="创建时间">
@@ -607,20 +614,26 @@ const CertificatePersonDetail = () => {
                       label="有效期范围"
                       placeholder={'请选择有效期范围'}
                       rules={[{ required: true, message: '请选择有效期范围' }]}
+                      fieldProps={{ onChange: handleChangeRange }}
                     />
 
                     <ProFormDependency name={['validity_period']}>
-                      {({ validity_period }) => {
-                        const month = moment(validity_period).subtract(6, 'months');
+                      {({ validity_period = [] }) => {
                         const disabledDate: RangePickerProps['disabledDate'] = current => {
-                          return current && current > month.endOf('date');
+                          if (validity_period?.length === 2) {
+                            const endDate = validity_period[1];
+                            const day = moment(endDate).subtract(1, 'days');
+
+                            return current && current > day.endOf('date');
+                          }
+                          return false;
                         };
 
                         return (
                           <ProFormDatePicker
                             dependencies={['validity_period']}
                             name="use_date_reminder"
-                            label="失效提示时间"
+                            label="使用有效期过期提示时间"
                             placeholder={'请选择失效提示时间'}
                             rules={[{ required: true, message: '请选择失效提示时间' }]}
                             fieldProps={{
@@ -636,6 +649,7 @@ const CertificatePersonDetail = () => {
               return <></>;
             }}
           </ProFormDependency>
+          <ProFormText label={'继续教育情况'} name="continuing_edu" placeholder={'请输入继续教育情况'} />
           <Spin spinning={uploading}>
             <ProFormUploadDragger
               max={4}

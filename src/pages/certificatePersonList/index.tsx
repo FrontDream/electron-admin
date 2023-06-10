@@ -371,7 +371,6 @@ const CertificatePersonList: React.FC = () => {
           <ProFormText label={'医保所属公司'} name="medical_insurance" placeholder={'请输入医保所属公司'} />
           <ProFormText label={'社保所属公司'} name="social_security" placeholder={'请输入社保所属公司'} />
           <ProFormText label={'公积金所属公司'} name="prov_fund_company" placeholder={'请输入公积金所属公司'} />
-          <ProFormText label={'继续教育情况'} name="continuing_edu" placeholder={'请输入继续教育情况'} />
           <ProFormTextArea
             label="备注"
             name="remark"

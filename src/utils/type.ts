@@ -434,6 +434,7 @@ export interface CertificateItem {
   use_date_start: string;
   use_date_end: string;
   use_date_reminder: string;
+  continuing_edu?: string;
 }
 
 export interface AppendixList {
@@ -470,6 +471,7 @@ export interface CertificateData {
   use_date_start: string;
   use_date_end: string;
   use_date_reminder: string;
+  continuing_edu: string;
 }
 export interface CertificateReqData {
   cert_id: number;
