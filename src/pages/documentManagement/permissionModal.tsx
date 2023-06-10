@@ -17,10 +17,12 @@ const PermissionModal = (props: IProps) => {
   const { visible, focusItem, onCancel } = props;
   const [permissionConfirmLoading, setPermissionConfirmLoading] = useState(false);
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+  // 所有人员
   const [persons, setPersons] = useState<Array<any>>([]);
   // 右侧元数据
   const [rightOptions, setRightOptions] = useState<Array<any>>([]);
 
+  // 获取已经赋权的人
   const { loading: userDocPermissionLoading, data: docPermissionData = [] } = useRequest(
     async () => {
       if (focusItem && focusItem.id) {
@@ -53,7 +55,7 @@ const PermissionModal = (props: IProps) => {
         }));
 
         persons.push(...childrenUpdate);
-        return { disabled: !can_edit, title, key, children: childrenUpdate };
+        return { disabled: !can_edit, title, key: `d_${key}`, children: childrenUpdate };
       });
 
       setPersons(persons);
@@ -72,7 +74,7 @@ const PermissionModal = (props: IProps) => {
         return { ...item, key: item.user_id, disabled: person?.disabled || false };
       }),
     );
-  }, [docPermissionData, docUser, persons]);
+  }, [docPermissionData, persons]);
 
   const handleConfirmPermission = async () => {
     try {
@@ -125,9 +127,6 @@ const PermissionModal = (props: IProps) => {
 
     setRightOptions(updateRightOptions);
   };
-
-  console.log('persons:', persons);
-  console.log('rightOptions:', rightOptions);
 
   return (
     <Modal
