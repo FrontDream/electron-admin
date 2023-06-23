@@ -74,11 +74,6 @@ const CertificatePersonList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '学历',
-      dataIndex: 'edu_background_name',
-      hideInSearch: true,
-    },
-    {
       title: '联系方式',
       dataIndex: 'phone',
       hideInSearch: true,
@@ -305,6 +300,7 @@ const CertificatePersonList: React.FC = () => {
           />
           <ProFormText label={'人员归属'} name="person_belong" placeholder={'请输入人员编号'} />
           <ProFormText label={'注册单位'} name="company" placeholder={'请输入注册单位'} />
+          <ProFormText label={'合同所属公司'} name="contract" placeholder={'请输入合同所属公司'} />
           <ProFormText label={'闽政通所在单位'} name="mzt" placeholder={'请输入闽政通所属公司'} />
           <ProFormText label={'社保所在公司'} name="social_security" placeholder={'请输入社保所在公司'} />
           <ProFormText label={'医保保所在公司'} name="medical_insurance" placeholder={'请输入社保所在公司'} />
@@ -331,7 +327,6 @@ const CertificatePersonList: React.FC = () => {
             ]}
             fieldProps={{ controls: false }}
           />
-          <ProFormSelect name="edu_background" label="学历" placeholder={'请选择学历'} options={educationOptions} />
           <ProFormDatePicker name="entry_time" label="入职日期" placeholder={'请选择入职日期'} />
           <ProFormDependency name={['job_status']}>
             {({ job_status }) => {
@@ -349,7 +344,7 @@ const CertificatePersonList: React.FC = () => {
             }}
           </ProFormDependency>
           <ProFormDatePicker name="expire_time" label="证件失效日期" placeholder={'请选择证书失效日期'} />
-          <ProFormText label={'合同所属公司'} name="contract" placeholder={'请输入合同所属公司'} />
+
           <ProFormTextArea
             label="备注"
             name="remark"

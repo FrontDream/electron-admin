@@ -405,7 +405,6 @@ const CertificatePersonDetail = () => {
           <Descriptions.Item label="性别">{personData?.gender === 1 ? '男' : '女'}</Descriptions.Item>
           <Descriptions.Item label="家庭住址">{personData?.address || '-'}</Descriptions.Item>
           <Descriptions.Item label="联系方式">{personData?.phone}</Descriptions.Item>
-          <Descriptions.Item label="学历">{personData?.edu_background_name}</Descriptions.Item>
           <Descriptions.Item label="入职日期">{personData?.entry_time}</Descriptions.Item>
           {personData?.job_status === 1 && (
             <Descriptions.Item label="离职时间">{personData?.resign_time || '-'}</Descriptions.Item>
