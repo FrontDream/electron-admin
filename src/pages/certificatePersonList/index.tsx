@@ -52,16 +52,22 @@ const CertificatePersonList: React.FC = () => {
       ],
     },
     {
+      title: '身份证号',
+      dataIndex: 'id_number',
+      copyable: true,
+    },
+    {
+      title: '人员编号',
+      dataIndex: 'id_no',
+      copyable: true,
+    },
+    {
       title: '性别',
       dataIndex: 'gender',
       hideInSearch: true,
       renderText: val => (val === 1 ? '男' : '女'),
     },
-    {
-      title: '证件号码',
-      dataIndex: 'id_number',
-      copyable: true,
-    },
+
     {
       title: '证件失效时间',
       dataIndex: 'expire_time',
@@ -73,7 +79,7 @@ const CertificatePersonList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '联系号码',
+      title: '联系方式',
       dataIndex: 'phone',
       hideInSearch: true,
     },
@@ -88,7 +94,7 @@ const CertificatePersonList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '所属公司',
+      title: '注册单位',
       dataIndex: 'company',
     },
     {
@@ -275,18 +281,8 @@ const CertificatePersonList: React.FC = () => {
             ]}
             placeholder={'请输入姓名'}
           />
-          <ProFormSelect
-            name="gender"
-            label="性别"
-            placeholder={'请选择性别'}
-            rules={[{ required: true, message: '请选择性别' }]}
-            options={[
-              { label: '男', value: 1 },
-              { label: '女', value: 2 },
-            ]}
-          />
           <ProFormText
-            label={'证件号码'}
+            label={'身份证号'}
             name="id_number"
             rules={[
               {
@@ -296,54 +292,47 @@ const CertificatePersonList: React.FC = () => {
             ]}
             placeholder={'请输入证件号'}
           />
-          <ProFormText
-            label={'所属公司'}
-            name="company"
-            rules={[
-              {
-                required: true,
-                message: '所属公司不能为空',
-              },
-            ]}
-            placeholder={'请输入所属公司'}
-          />
-
+          <ProFormText label={'人员编号'} name="id_no" placeholder={'请输入人员编号'} />
           <ProFormSelect
-            name="edu_background"
-            label="学历"
-            placeholder={'请选择学历'}
-            rules={[{ required: true, message: '请选择学历' }]}
-            options={educationOptions}
+            name="job_status"
+            label="在职状态"
+            placeholder={'请选择在职状态'}
+            options={[
+              { label: '离职', value: 1 },
+              { label: '在职', value: 2 },
+              { label: '兼职', value: 3 },
+            ]}
           />
+          <ProFormText label={'人员归属'} name="person_belong" placeholder={'请输入人员编号'} />
+          <ProFormText label={'注册单位'} name="company" placeholder={'请输入注册单位'} />
+          <ProFormText label={'闽政通所在单位'} name="mzt" placeholder={'请输入闽政通所属公司'} />
+          <ProFormText label={'社保所在公司'} name="social_security" placeholder={'请输入社保所在公司'} />
+          <ProFormText label={'医保保所在公司'} name="medical_insurance" placeholder={'请输入社保所在公司'} />
+          <ProFormText label={'住房公积金所在公司'} name="prov_fund_company" placeholder={'请输入住房公积金所在公司'} />
+          <ProFormSelect
+            name="gender"
+            label="性别"
+            placeholder={'请选择性别'}
+            options={[
+              { label: '男', value: 1 },
+              { label: '女', value: 2 },
+            ]}
+          />
+          <ProFormText label={'家庭住址'} name="address" placeholder={'请输入家庭住址'} />
           <ProFormDigit
             name="phone"
-            label="联系号码"
-            placeholder={'请输入联系号码'}
+            label="联系方式"
+            placeholder={'请输入联系方式'}
             rules={[
-              { required: true, message: '请输入联系号码' },
               {
                 pattern: /^1[3|4|5|7|8][0-9]\d{8}$/,
-                message: '请输入联系号码',
+                message: '请输入联系方式',
               },
             ]}
             fieldProps={{ controls: false }}
           />
-          <ProFormDatePicker
-            name="entry_time"
-            label="入职日期"
-            placeholder={'请选择入职日期'}
-            rules={[{ required: true, message: '请选择入职日期' }]}
-          />
-          <ProFormSelect
-            name="job_status"
-            label="是否离职"
-            placeholder={'请选择是否离职'}
-            rules={[{ required: true, message: '请选择是否离职' }]}
-            options={[
-              { label: '离职', value: 1 },
-              { label: '在职', value: 2 },
-            ]}
-          />
+          <ProFormSelect name="edu_background" label="学历" placeholder={'请选择学历'} options={educationOptions} />
+          <ProFormDatePicker name="entry_time" label="入职日期" placeholder={'请选择入职日期'} />
           <ProFormDependency name={['job_status']}>
             {({ job_status }) => {
               if (job_status === 1) {
@@ -359,18 +348,8 @@ const CertificatePersonList: React.FC = () => {
               return <></>;
             }}
           </ProFormDependency>
-
-          <ProFormDatePicker
-            name="expire_time"
-            label="证件失效日期"
-            placeholder={'请选择证书失效日期'}
-            rules={[{ required: true, message: '请选择证书失效日期' }]}
-          />
+          <ProFormDatePicker name="expire_time" label="证件失效日期" placeholder={'请选择证书失效日期'} />
           <ProFormText label={'合同所属公司'} name="contract" placeholder={'请输入合同所属公司'} />
-          <ProFormText label={'闽政通所属公司'} name="mzt" placeholder={'请输入闽政通所属公司'} />
-          <ProFormText label={'医保所属公司'} name="medical_insurance" placeholder={'请输入医保所属公司'} />
-          <ProFormText label={'社保所属公司'} name="social_security" placeholder={'请输入社保所属公司'} />
-          <ProFormText label={'公积金所属公司'} name="prov_fund_company" placeholder={'请输入公积金所属公司'} />
           <ProFormTextArea
             label="备注"
             name="remark"

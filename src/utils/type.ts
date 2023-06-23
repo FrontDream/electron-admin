@@ -345,6 +345,9 @@ export interface CertificatePersonItem {
   prov_fund_company: string;
   continuing_edu: string;
   remark: string;
+  id_no: string;
+  person_belong: string;
+  address: string;
 }
 
 export interface CertificatetPersonData {

@@ -40,6 +40,12 @@ import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-descr
 import styles from './index.less';
 
 import create from 'zustand';
+const jobStatusMap = {
+  1: '离职',
+  2: '在职',
+  3: '兼职',
+  undefined: '-',
+};
 
 const useStore = create(set => ({
   fileList: [] as AppendixList[],
@@ -386,24 +392,26 @@ const CertificatePersonDetail = () => {
     <PageContainer>
       <Card bordered={false} title={'人员详情'} loading={personDetailLoading}>
         <Descriptions style={{ marginBottom: 32 }}>
-          <Descriptions.Item label="姓名">{personData?.name}</Descriptions.Item>
+          <Descriptions.Item label="姓名">{personData?.name || '-'}</Descriptions.Item>
+          <Descriptions.Item label="身份证号">{personData?.id_number || '-'}</Descriptions.Item>
+          <Descriptions.Item label="人员编号">{personData?.id_no || '-'}</Descriptions.Item>
+          <Descriptions.Item label="在职状态">{jobStatusMap[personData?.job_status || ''] || '-'}</Descriptions.Item>
+          <Descriptions.Item label="人员归属">{personData?.person_belong || '-'}</Descriptions.Item>
+          <Descriptions.Item label="注册单位">{personData?.company || '-'}</Descriptions.Item>
+          <Descriptions.Item label="闽政通所在单位">{personData?.mzt || '-'}</Descriptions.Item>
+          <Descriptions.Item label="社保所在公司">{personData?.social_security || '-'}</Descriptions.Item>
+          <Descriptions.Item label="医保所在公司">{personData?.medical_insurance || '-'}</Descriptions.Item>
+          <Descriptions.Item label="住房公积金所在公司">{personData?.prov_fund_company || '-'}</Descriptions.Item>
           <Descriptions.Item label="性别">{personData?.gender === 1 ? '男' : '女'}</Descriptions.Item>
-          <Descriptions.Item label="证件号码">{personData?.id_number}</Descriptions.Item>
-          <Descriptions.Item label="证件失效日期">{personData?.expire_time}</Descriptions.Item>
+          <Descriptions.Item label="家庭住址">{personData?.address || '-'}</Descriptions.Item>
+          <Descriptions.Item label="联系方式">{personData?.phone}</Descriptions.Item>
           <Descriptions.Item label="学历">{personData?.edu_background_name}</Descriptions.Item>
-          <Descriptions.Item label="联系号码">{personData?.phone}</Descriptions.Item>
-          <Descriptions.Item label="入职时间">{personData?.entry_time}</Descriptions.Item>
-          <Descriptions.Item label="是否离职">{personData?.job_status === 1 ? '离职' : '在职'}</Descriptions.Item>
+          <Descriptions.Item label="入职日期">{personData?.entry_time}</Descriptions.Item>
           {personData?.job_status === 1 && (
             <Descriptions.Item label="离职时间">{personData?.resign_time || '-'}</Descriptions.Item>
           )}
-          <Descriptions.Item label="所属公司">{personData?.company}</Descriptions.Item>
+          <Descriptions.Item label="证件失效日期">{personData?.expire_time}</Descriptions.Item>
           <Descriptions.Item label="合同所属公司">{personData?.contract || '-'}</Descriptions.Item>
-          <Descriptions.Item label="闽政通所属公司">{personData?.mzt || '-'}</Descriptions.Item>
-          <Descriptions.Item label="医保所属公司">{personData?.medical_insurance || '-'}</Descriptions.Item>
-          <Descriptions.Item label="社保所属公司">{personData?.social_security || '-'}</Descriptions.Item>
-          <Descriptions.Item label="公积金所属公司">{personData?.prov_fund_company || '-'}</Descriptions.Item>
-          {/* <Descriptions.Item label="继续教育情况">{personData?.continuing_edu || '-'}</Descriptions.Item> */}
           <Descriptions.Item label="创建人">{personData?.create_user}</Descriptions.Item>
           <Descriptions.Item label="修改人">{personData?.update_user}</Descriptions.Item>
           <Descriptions.Item label="创建时间">
