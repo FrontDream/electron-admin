@@ -8,12 +8,10 @@ import {
   ProFormSelect,
   ProFormDatePicker,
   FormInstance,
-  ProFormDependency,
   ProFormUploadDragger,
-  ProFormDateRangePicker,
+  ProFormTextArea,
 } from '@ant-design/pro-form';
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
-import type { RangePickerProps } from 'antd/es/date-picker';
 import {
   CertificateItem,
   isSuccess,
@@ -61,6 +59,16 @@ const CompanyCertificateList: React.FC = () => {
   const certificateCompanyEnum = listToEnum(certificatetCompany);
   const descriptionColumns: ProDescriptionsItemProps<CertificateItem>[] = [
     {
+      title: '证照目录号',
+      dataIndex: 'license_no',
+      copyable: true,
+    },
+    {
+      title: '证书类型',
+      dataIndex: 'type',
+      valueEnum: companyCertificateTypeEnum,
+    },
+    {
       title: '企业证书编号',
       dataIndex: 'cert_code',
       copyable: true,
@@ -83,45 +91,16 @@ const CompanyCertificateList: React.FC = () => {
       dataIndex: 'cert_data',
     },
     {
-      title: '代码标注',
-      dataIndex: 'code_label',
-      renderText: (val: number) => (val === 1 ? '是' : '否'),
+      title: '年检日期',
+      dataIndex: 'annual_date',
     },
     {
-      title: '企业证书类型',
-      dataIndex: 'type',
-      valueEnum: companyCertificateTypeEnum,
+      title: '摘要',
+      dataIndex: 'summary',
     },
     {
-      title: '是否有失效日期',
-      dataIndex: 'has_fail_date',
-      renderText: (val: number) => (val === 1 ? '是' : '否'),
-    },
-    {
-      title: '失效日期',
-      dataIndex: 'expire_time',
-      renderText: (val: string, record: CertificateItem) => (record?.has_fail_date === 1 ? val : '-'),
-    },
-    {
-      title: '失效提示日期',
-      dataIndex: 'reminder_time',
-      renderText: (val: string, record: CertificateItem) => (record?.has_fail_date === 1 ? val : '-'),
-    },
-    {
-      title: '是否有使用有效期',
-      dataIndex: 'has_use_date',
-      renderText: (val: number) => (val === 1 ? '是' : '否'),
-    },
-    {
-      title: '使用有效期',
-      dataIndex: 'use_date_start',
-      renderText: (val: string, record: CertificateItem) =>
-        record?.has_use_date === 1 ? `${record?.use_date_start}至${record?.use_date_end}` : '-',
-    },
-    {
-      title: '使用有效期提示日期',
-      dataIndex: 'use_date_reminder',
-      renderText: (val: string, record: CertificateItem) => (record?.has_use_date === 1 ? val : '-'),
+      title: '备注',
+      dataIndex: 'remark',
     },
     {
       title: '创建人',
@@ -170,12 +149,6 @@ const CompanyCertificateList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '代码标注',
-      dataIndex: 'code_label',
-      hideInSearch: true,
-      render: val => (val === 1 ? '是' : '否'),
-    },
-    {
       title: '失效日期',
       dataIndex: 'expire_time',
       hideInSearch: true,
@@ -217,14 +190,15 @@ const CompanyCertificateList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="update"
           onClick={() => {
-            const { appendix_list = [], use_date_start, use_date_end, has_use_date } = record;
+            const { appendix_list = [] } = record;
 
             setModalVisible(true);
-            setCurrentRow({ ...record, validity_period: has_use_date === 1 ? [use_date_start, use_date_end] : [] });
+            setCurrentRow({ ...record });
             setIsDdd(false);
 
             setFileList(appendix_list);
@@ -250,8 +224,7 @@ const CompanyCertificateList: React.FC = () => {
   ];
 
   const onFinish = async (values: CertificateData) => {
-    const { validity_period = [], has_use_date, ...rest } = values;
-    let body = { ...rest, has_use_date, appendix_list: fileList };
+    const body = { ...values, appendix_list: fileList };
 
     try {
       if (uploading) {
@@ -260,10 +233,6 @@ const CompanyCertificateList: React.FC = () => {
       }
       setConfirmLoading(true);
       let res = {};
-
-      if (has_use_date === 1 && validity_period?.length > 0) {
-        body = { ...body, use_date_start: validity_period[0], use_date_end: validity_period[1] };
-      }
 
       if (isDdd) {
         res = await addCompanyCertificateApi({ ...body });
@@ -319,12 +288,6 @@ const CompanyCertificateList: React.FC = () => {
     });
   };
 
-  const handleChangeExpireTime = val => {
-    const expire_time = moment(val);
-    const reminder_time = moment(expire_time).subtract(6, 'months');
-
-    modalFormRef.current?.setFieldValue('reminder_time', reminder_time);
-  };
   const onRemove = (file: any) => {
     const { uid } = file;
     const files = fileList.filter(item => item.uid !== uid);
@@ -360,6 +323,7 @@ const CompanyCertificateList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<CertificateItem, TableListPagination>
+        scroll={{ x: 2000 }}
         headerTitle="企业证书列表"
         actionRef={actionRef}
         rowKey="id"
@@ -396,7 +360,7 @@ const CompanyCertificateList: React.FC = () => {
               show: false,
             },
           },
-          persistenceKey: 'certificateList',
+          persistenceKey: 'companyCertificateList',
           persistenceType: 'localStorage',
         }}
       />
@@ -418,6 +382,24 @@ const CompanyCertificateList: React.FC = () => {
           className={styles.modalCon}
         >
           <ProFormText
+            label={'证照目录号'}
+            name="license_no"
+            rules={[
+              {
+                required: true,
+                message: '证照目录号不能为空',
+              },
+            ]}
+            placeholder={'请输入证照目录号'}
+          />
+          <ProFormSelect
+            name="type"
+            label="证书类型"
+            placeholder={'请选择证书类型'}
+            rules={[{ required: true, message: '请选择证书类型' }]}
+            options={companyCertificatetTypes.map(item => ({ label: item.name, value: item.id }))}
+          />
+          <ProFormText
             label={'企业证书编号'}
             name="cert_code"
             rules={[
@@ -436,6 +418,7 @@ const CompanyCertificateList: React.FC = () => {
             options={certificatetCompany.map(item => ({ label: item.name, value: item.id }))}
           />
           <ProFormText name="category" label="资质等级" placeholder={'请输入资质等级'} />
+          <ProFormText label={'摘要'} name="summary" placeholder={'请输入摘要'} />
           <ProFormText
             label={'发证机关'}
             name="issue_authority"
@@ -453,122 +436,15 @@ const CompanyCertificateList: React.FC = () => {
             placeholder={'请选择发证日期'}
             rules={[{ required: true, message: '请选择发证日期' }]}
           />
-          <ProFormSelect
-            name="code_label"
-            label="证书代码标注"
-            placeholder={'请选择证书代码标注'}
-            rules={[{ required: true, message: '请选择证书代码标注' }]}
-            options={[
-              { label: '是', value: 1 },
-              { label: '否', value: 2 },
-            ]}
-          />
-          <ProFormSelect
-            name="type"
-            label="证书类型"
-            placeholder={'请选择证书类型'}
-            rules={[{ required: true, message: '请选择证书类型' }]}
-            options={companyCertificatetTypes.map(item => ({ label: item.name, value: item.id }))}
-          />
-          <ProFormSelect
-            name="has_fail_date"
-            label="是否有失效日期"
-            placeholder={'请选择是否有失效日期'}
-            rules={[{ required: true, message: '请选择是否有失效日期' }]}
-            options={[
-              { label: '是', value: 1 },
-              { label: '否', value: 2 },
-            ]}
-          />
-          <ProFormDependency name={['has_fail_date']}>
-            {({ has_fail_date }) => {
-              if (has_fail_date === 1) {
-                return (
-                  <>
-                    <ProFormDatePicker
-                      name="expire_time"
-                      label="失效日期"
-                      placeholder={'请选择失效日期'}
-                      rules={[{ required: true, message: '请选择失效日期' }]}
-                      fieldProps={{ onChange: handleChangeExpireTime }}
-                    />
-                    <ProFormDependency name={['expire_time']}>
-                      {({ expire_time }) => {
-                        const day = moment(expire_time).subtract(1, 'days');
-                        const disabledDate: RangePickerProps['disabledDate'] = current => {
-                          return current && current > day.endOf('date');
-                        };
-
-                        return (
-                          <ProFormDatePicker
-                            dependencies={['expire_time']}
-                            name="reminder_time"
-                            label="失效提示时间"
-                            placeholder={'请选择失效提示时间'}
-                            rules={[{ required: true, message: '请选择失效提示时间' }]}
-                            fieldProps={{
-                              disabledDate: disabledDate,
-                            }}
-                          />
-                        );
-                      }}
-                    </ProFormDependency>
-                  </>
-                );
-              }
-              return <></>;
+          <ProFormDatePicker name="use_date_end" label="有效日期(止)" placeholder={'请选择有效日期(止)'} />
+          <ProFormDatePicker name="annual_date" label="年检日期" placeholder={'请选择年检日期'} />
+          <ProFormTextArea
+            label="备注"
+            name="remark"
+            colProps={{
+              span: 24,
             }}
-          </ProFormDependency>
-          <ProFormSelect
-            name="has_use_date"
-            label="是否有使用有效期"
-            placeholder={'请选择是否有使用有效期'}
-            rules={[{ required: true, message: '请选择是否有使用有效期' }]}
-            options={[
-              { label: '是', value: 1 },
-              { label: '否', value: 2 },
-            ]}
           />
-          <ProFormDependency name={['has_use_date']}>
-            {({ has_use_date }) => {
-              if (has_use_date === 1) {
-                return (
-                  <>
-                    <ProFormDateRangePicker
-                      name="validity_period"
-                      label="有效期范围"
-                      placeholder={'请选择有效期范围'}
-                      rules={[{ required: true, message: '请选择有效期范围' }]}
-                    />
-
-                    <ProFormDependency name={['validity_period']}>
-                      {({ validity_period }) => {
-                        const month = moment(validity_period).subtract(6, 'months');
-                        const disabledDate: RangePickerProps['disabledDate'] = current => {
-                          return current && current > month.endOf('date');
-                        };
-
-                        return (
-                          <ProFormDatePicker
-                            dependencies={['validity_period']}
-                            name="use_date_reminder"
-                            label="失效提示时间"
-                            placeholder={'请选择失效提示时间'}
-                            rules={[{ required: true, message: '请选择失效提示时间' }]}
-                            fieldProps={{
-                              disabledDate: disabledDate,
-                            }}
-                          />
-                        );
-                      }}
-                    </ProFormDependency>
-                  </>
-                );
-              }
-              return <></>;
-            }}
-          </ProFormDependency>
-
           <Spin spinning={uploading}>
             <ProFormUploadDragger
               max={4}

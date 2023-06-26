@@ -12,13 +12,7 @@ import {
   ProFormDependency,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import {
-  CertificatePersonItem,
-  educationOptions,
-  isSuccess,
-  CertificatetPersonData,
-  TableListPagination,
-} from '@/utils';
+import { CertificatePersonItem, isSuccess, CertificatetPersonData, TableListPagination } from '@/utils';
 import {
   getCertificatePersonListApi,
   addCertificatePersonApi,
@@ -55,6 +49,7 @@ const CertificatePersonList: React.FC = () => {
       title: '身份证号',
       dataIndex: 'id_number',
       copyable: true,
+      width: 200,
     },
     {
       title: '人员编号',
@@ -118,6 +113,7 @@ const CertificatePersonList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="update"
@@ -208,6 +204,7 @@ const CertificatePersonList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<CertificatePersonItem, TableListPagination>
+        scroll={{ x: 2000 }}
         headerTitle="人员列表"
         actionRef={actionRef}
         rowKey="id"
@@ -244,7 +241,7 @@ const CertificatePersonList: React.FC = () => {
               show: false,
             },
           },
-          persistenceKey: 'certificatetPerson',
+          persistenceKey: 'certificatetPersonList',
           persistenceType: 'localStorage',
         }}
       />
@@ -287,6 +284,7 @@ const CertificatePersonList: React.FC = () => {
             ]}
             placeholder={'请输入证件号'}
           />
+          <ProFormDatePicker name="expire_time" label="证件失效日期" placeholder={'请选择证书失效日期'} />
           <ProFormText label={'人员编号'} name="id_no" placeholder={'请输入人员编号'} />
           <ProFormSelect
             name="job_status"
@@ -303,7 +301,7 @@ const CertificatePersonList: React.FC = () => {
           <ProFormText label={'合同所属公司'} name="contract" placeholder={'请输入合同所属公司'} />
           <ProFormText label={'闽政通所在单位'} name="mzt" placeholder={'请输入闽政通所属公司'} />
           <ProFormText label={'社保所在公司'} name="social_security" placeholder={'请输入社保所在公司'} />
-          <ProFormText label={'医保保所在公司'} name="medical_insurance" placeholder={'请输入社保所在公司'} />
+          <ProFormText label={'医保所在公司'} name="medical_insurance" placeholder={'请输入社保所在公司'} />
           <ProFormText label={'住房公积金所在公司'} name="prov_fund_company" placeholder={'请输入住房公积金所在公司'} />
           <ProFormSelect
             name="gender"
@@ -343,8 +341,8 @@ const CertificatePersonList: React.FC = () => {
               return <></>;
             }}
           </ProFormDependency>
-          <ProFormDatePicker name="expire_time" label="证件失效日期" placeholder={'请选择证书失效日期'} />
-
+          <ProFormText label={'项目备案名称'} name="project_record_name" placeholder={'请输入项目备案名称'} />
+          <ProFormText label={'项目备案职务'} name="project_record_job" placeholder={'请输入项目备案职务'} />
           <ProFormTextArea
             label="备注"
             name="remark"

@@ -348,6 +348,8 @@ export interface CertificatePersonItem {
   id_no: string;
   person_belong: string;
   address: string;
+  project_record_name: string;
+  project_record_job: string;
 }
 
 export interface CertificatetPersonData {
@@ -369,6 +371,11 @@ export interface CertificatetPersonData {
   prov_fund_company: string;
   continuing_edu: string;
   remark: string;
+  id_no: string;
+  person_belong: string;
+  address: string;
+  project_record_name: string;
+  project_record_job: string;
 }
 export interface CertificateRes extends TableListPagination {
   data: Array<CertificateItem>;
@@ -431,13 +438,16 @@ export interface CertificateItem {
   type_name: string;
   update_by?: number;
   update_user?: string;
-  validity_period?: Array<string>;
+  sign_date?: Array<string>;
   has_fail_date: number;
   has_use_date: number;
   use_date_start: string;
   use_date_end: string;
   use_date_reminder: string;
   continuing_edu?: string;
+  sign_start?: string;
+  sign_end?: string;
+  continue_date?: string;
 }
 
 export interface AppendixList {
@@ -475,6 +485,9 @@ export interface CertificateData {
   use_date_end: string;
   use_date_reminder: string;
   continuing_edu: string;
+  sign_date: Array<string>;
+  sign_start: string;
+  sign_end: string;
 }
 export interface CertificateReqData {
   cert_id: number;
@@ -489,6 +502,9 @@ export interface CertificateReqData {
   issue_authority: string;
   appendix_list: Array<FileType>;
   id?: number;
+  sign_date?: Array<string>;
+  sign_start?: string;
+  sign_end?: string;
 }
 
 export interface FileType {

@@ -84,6 +84,7 @@ const CompanyList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="update"
@@ -95,7 +96,6 @@ const CompanyList: React.FC = () => {
         >
           修改
         </a>,
-
         <a key="del" onClick={() => handleRemove(record)}>
           删除
         </a>,
@@ -174,6 +174,7 @@ const CompanyList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<CompanyCertificateListItem, TableListPagination>
+        scroll={{ x: 2000 }}
         headerTitle="企业列表"
         actionRef={actionRef}
         rowKey="id"
@@ -210,7 +211,7 @@ const CompanyList: React.FC = () => {
               show: false,
             },
           },
-          persistenceKey: 'companyCertificatet',
+          persistenceKey: 'companyList',
           persistenceType: 'localStorage',
         }}
       />

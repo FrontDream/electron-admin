@@ -45,36 +45,39 @@ export const isSuccess = (res: any, msg?: string) => {
   return false;
 };
 
-export const educationOptions = [
-  {
-    label: '初中',
-    value: EducationType.MiddleSchool,
-  },
-  {
-    label: '高中',
-    value: EducationType.HightSchool,
-  },
-  {
-    label: '中专',
-    value: EducationType.SecondarySchool,
-  },
-  {
-    label: '大专',
-    value: EducationType.JuniorCollege,
-  },
-  {
-    label: '本科',
-    value: EducationType.Undergraduate,
-  },
-  {
-    label: '硕士',
-    value: EducationType.Master,
-  },
+// 毕业证 证书等级
+export const educationOptions = ['小学', '初中', '高中', '中专', '大专', '本科', '硕士', '博士'];
+
+// 职称证 证书等级
+export const jobTitleOptions = [
+  '初级会计师',
+  '中级会计师',
+  '高级会计师',
+  '技术员',
+  '助理工程师',
+  '工程师',
+  '高级工程师',
 ];
+
+// 技工证 证书等级
+export const techOptions = ['初级', '中级', '高级'];
 interface BasicType {
   name: string;
   id: number;
 }
+// 技工证 岗位类别
+export const techCategoryOptions = ['特殊工种', '一般工种'];
+// 三类证 岗位类别
+export const thirdCategoryOptions = ['建安类', '水安类', '交安类'];
+// 三类证 证书等级
+export const thirdGradeOptions = ['A证', 'B证', 'C证'];
+// 岗位证 岗位类别
+export const jobCategoryOptions = ['建筑类', '公路类', '水利类'];
+// 注册证 证书等级
+export const registryGradeOptions = ['一级', '二级', '不分等级'];
+// 注册证 岗位类别
+export const registryJobCategory = ['注册建造师', '注册造价师', '注册监理工程师', '监理员'];
+
 export const listToEnum = function <T extends BasicType>(list: Array<T>) {
   const res = list.reduce((pre, cur: T) => {
     pre[cur.id] = {
