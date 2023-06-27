@@ -136,6 +136,10 @@ const Certificate = (props: IProps) => {
       renderText: (val: string, record: CertificateItem) => record?.continue_date || '-',
     },
     {
+      title: '证书所属公司',
+      dataIndex: 'company',
+    },
+    {
       title: '备注',
       dataIndex: 'remark',
     },
@@ -206,7 +210,6 @@ const Certificate = (props: IProps) => {
     {
       title: '证书所属公司',
       dataIndex: 'company',
-      hideInTable: true,
     },
     {
       title: '创建人',
