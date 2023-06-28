@@ -416,9 +416,10 @@ export interface CertificateItem {
   expire_time?: string;
   id?: number;
   /**
-   * 发证机关
+   * 发证机构
    */
-  issue_authority?: string;
+  // issue_authority?: string;
+  agency?: string;
   /**
    * 专业
    */
@@ -475,7 +476,7 @@ export interface CertificateData {
   expire_time: string;
   code_label: number;
   reminder_time: string;
-  issue_authority: string;
+  agency: string;
   appendix_list: Array<UploadFile>;
 
   validity_period?: Array<string>;
@@ -499,7 +500,7 @@ export interface CertificateReqData {
   expire_time: string;
   code_label: number;
   reminder_time: string;
-  issue_authority: string;
+  agency: string;
   appendix_list: Array<FileType>;
   id?: number;
   sign_date?: Array<string>;

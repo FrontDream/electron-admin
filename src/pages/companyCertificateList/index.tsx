@@ -83,8 +83,8 @@ const CompanyCertificateList: React.FC = () => {
       dataIndex: 'category',
     },
     {
-      title: '发证机关',
-      dataIndex: 'issue_authority',
+      title: '发证机构',
+      dataIndex: 'agency',
     },
     {
       title: '发证日期',
@@ -139,8 +139,8 @@ const CompanyCertificateList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '发证机关',
-      dataIndex: 'issue_authority',
+      title: '发证机构',
+      dataIndex: 'agency',
       hideInSearch: true,
     },
     {
@@ -420,15 +420,15 @@ const CompanyCertificateList: React.FC = () => {
           <ProFormText name="category" label="资质等级" placeholder={'请输入资质等级'} />
           <ProFormText label={'摘要'} name="summary" placeholder={'请输入摘要'} />
           <ProFormText
-            label={'发证机关'}
-            name="issue_authority"
+            label={'发证机构'}
+            name="agency"
             rules={[
               {
                 required: true,
-                message: '发证机关不能为空',
+                message: '发证机构不能为空',
               },
             ]}
-            placeholder={'请输入发证机关'}
+            placeholder={'请输入发证机构'}
           />
           <ProFormDatePicker
             name="cert_data"

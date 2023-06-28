@@ -200,6 +200,7 @@ const CertificatePersonList: React.FC = () => {
       },
     });
   };
+  const handleImport = async (params: type) => {};
 
   return (
     <PageContainer>
@@ -214,13 +215,16 @@ const CertificatePersonList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            key="primary"
+            key="add"
             onClick={() => {
               setModalVisible(true);
               setIsDdd(true);
             }}
           >
             新建
+          </Button>,
+          <Button type="primary" key="import" onClick={handleImport}>
+            导入
           </Button>,
         ]}
         request={getCertificatePersonListApi}
