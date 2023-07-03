@@ -1,4 +1,4 @@
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Upload, UploadProps } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -18,6 +18,8 @@ import {
   addCertificatePersonApi,
   deleteCertificatePersonApi,
   updateCertificatePersonApi,
+  importPersonValidateExcelApi,
+  importPersonFromExcelApi,
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -200,7 +202,56 @@ const CertificatePersonList: React.FC = () => {
       },
     });
   };
-  const handleImport = async (params: type) => {};
+
+  const uploadExcelProps: UploadProps = {
+    name: 'file',
+    customRequest: async ({ file }) => {
+      const formData = new FormData();
+
+      formData.append('filename', file as any);
+      try {
+        const validateRes = await importPersonValidateExcelApi({ file: formData });
+
+        if (isSuccess(validateRes, '上传失败，请重试')) {
+          const { data = { is_exist: false } } = validateRes;
+          const updateExcel = async () => {
+            try {
+              const uploadRes = await importPersonFromExcelApi({ file: formData });
+
+              if (isSuccess(uploadRes, '上传失败，请重试')) {
+                message.success('上传成功');
+                actionRef.current?.reload();
+              }
+            } catch (error) {
+              console.log('error:', error);
+            }
+          };
+
+          if (data.is_exist) {
+            confirm({
+              title: '存在覆盖的数据，确定覆盖吗？',
+              icon: <ExclamationCircleFilled />,
+              content: '覆盖后，无法恢复！请谨慎覆盖！',
+              async onOk() {
+                await updateExcel();
+              },
+              onCancel() {
+                console.log('Cancel');
+              },
+            });
+            return;
+          }
+          await updateExcel();
+          return;
+        }
+      } catch (error) {
+        console.log('error:', error);
+      }
+    },
+    maxCount: 1,
+    accept: '.xlsx,.xls',
+    showUploadList: false,
+  };
 
   return (
     <PageContainer>
@@ -213,6 +264,11 @@ const CertificatePersonList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
+          <Upload {...uploadExcelProps} key="upload">
+            <Button type="primary" key="import">
+              导入
+            </Button>
+          </Upload>,
           <Button
             type="primary"
             key="add"
@@ -222,9 +278,6 @@ const CertificatePersonList: React.FC = () => {
             }}
           >
             新建
-          </Button>,
-          <Button type="primary" key="import" onClick={handleImport}>
-            导入
           </Button>,
         ]}
         request={getCertificatePersonListApi}

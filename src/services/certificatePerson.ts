@@ -53,3 +53,26 @@ export async function updateCertificatePersonApi(data: CertificatetPersonData, o
     ...(options || {}),
   });
 }
+
+// 导入校验
+export async function importPersonValidateExcelApi(data: { file: FormData }) {
+  const { file } = data;
+  const res = await request<Resp<{ is_exist: boolean }>>('/api/certs/personImportValidate', {
+    method: 'POST',
+    body: file,
+    requestType: 'form',
+  });
+
+  return res;
+}
+// 导入
+export async function importPersonFromExcelApi(data: { file: FormData }) {
+  const { file } = data;
+  const res = await request<null>('/api/certs/personImport', {
+    method: 'POST',
+    body: file,
+    requestType: 'form',
+  });
+
+  return res;
+}
