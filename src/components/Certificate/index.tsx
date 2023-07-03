@@ -1,4 +1,4 @@
-import { Button, message, Modal, Drawer, Card, UploadProps, Spin } from 'antd';
+import { Button, message, Modal, Drawer, Card, UploadProps, Spin, Upload } from 'antd';
 import { useState, useRef, useMemo } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import {
@@ -34,7 +34,14 @@ import {
   registryGradeOptions,
   registryJobCategory,
 } from '@/utils';
-import { getCertificateListApi, addCertificateApi, deleteCertificateApi, updateCertificateApi } from '@/services';
+import {
+  getCertificateListApi,
+  addCertificateApi,
+  deleteCertificateApi,
+  updateCertificateApi,
+  importFromExcelApi,
+  importValidateExcelApi,
+} from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
@@ -421,6 +428,56 @@ const Certificate = (props: IProps) => {
     };
   };
 
+  const uploadExcelProps: UploadProps = {
+    name: 'file',
+    customRequest: async ({ file }) => {
+      const formData = new FormData();
+
+      formData.append('filename', file as any);
+      try {
+        const validateRes = await importValidateExcelApi({ file: formData });
+
+        if (isSuccess(validateRes, '上传失败，请重试')) {
+          const { data = { is_cert_exist: false } } = validateRes;
+          const updateExcel = async () => {
+            try {
+              const uploadRes = await importFromExcelApi({ file: formData });
+
+              if (isSuccess(uploadRes, '上传失败，请重试')) {
+                message.success('上传成功');
+                actionRef.current?.reload();
+              }
+            } catch (error) {
+              console.log('error:', error);
+            }
+          };
+
+          if (data.is_cert_exist) {
+            confirm({
+              title: '存在覆盖的数据，确定覆盖吗？',
+              icon: <ExclamationCircleFilled />,
+              content: '覆盖后，无法恢复！请谨慎覆盖！',
+              async onOk() {
+                await updateExcel();
+              },
+              onCancel() {
+                console.log('Cancel');
+              },
+            });
+            return;
+          }
+          await updateExcel();
+          return;
+        }
+      } catch (error) {
+        console.log('error:', error);
+      }
+    },
+    maxCount: 1,
+    accept: '.xlsx,.xls',
+    showUploadList: false,
+  };
+
   return (
     <>
       <ProTable<CertificateItem, TableListPagination>
@@ -432,6 +489,11 @@ const Certificate = (props: IProps) => {
         }}
         params={isDetail ? { cert_id: id } : {}}
         toolBarRender={() => [
+          <Upload {...uploadExcelProps} key="upload">
+            <Button type="primary" key="import">
+              导入
+            </Button>
+          </Upload>,
           <Button
             type="primary"
             key="primary"
