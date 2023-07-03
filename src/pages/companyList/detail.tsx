@@ -86,12 +86,6 @@ const CertificateCompanyDetail = () => {
       hideInSearch: true,
     },
     {
-      title: '代码标注',
-      dataIndex: 'code_label',
-      hideInSearch: true,
-      render: val => (val === 1 ? '是' : '否'),
-    },
-    {
       title: '失效日期',
       dataIndex: 'expire_time',
       hideInSearch: true,
