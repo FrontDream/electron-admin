@@ -53,3 +53,25 @@ export async function getCompanyCertificateDetailApi(id: number, options?: { [ke
 
   return res;
 }
+// 导入校验
+export async function importCompanyValidateExcelApi(data: { file: FormData }) {
+  const { file } = data;
+  const res = await request<Resp<{ is_cert_exist: boolean }>>('/api/certs/firmCertImportVal', {
+    method: 'POST',
+    body: file,
+    requestType: 'form',
+  });
+
+  return res;
+}
+// 导入
+export async function importCompanyFromExcelApi(data: { file: FormData }) {
+  const { file } = data;
+  const res = await request<null>('/api/certs/firmCertImport', {
+    method: 'POST',
+    body: file,
+    requestType: 'form',
+  });
+
+  return res;
+}
