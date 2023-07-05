@@ -41,6 +41,7 @@ import {
   updateCertificateApi,
   importFromExcelApi,
   importValidateExcelApi,
+  downCertificateListApi,
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -62,6 +63,7 @@ interface IProps {
 const Certificate = (props: IProps) => {
   const { from, id } = props;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [downVisible, setDownVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<CertificateItem>();
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -69,6 +71,7 @@ const Certificate = (props: IProps) => {
   const [showDetail, setShowDetail] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
+  const downModalFormRef = useRef<FormInstance>();
   // const [fileList, setFileList] = useState<AppendixList[]>([]);
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
@@ -478,6 +481,33 @@ const Certificate = (props: IProps) => {
     showUploadList: false,
   };
 
+  const handleDown = () => {
+    setDownVisible(true);
+  };
+
+  const onDownFinish = async (values: { cert_type: number }) => {
+    const { cert_type } = values;
+
+    try {
+      const res = await downCertificateListApi({ cert_type });
+
+      if (isSuccess(res)) {
+        const { url } = res?.data;
+        const day = moment().format('YYYY-MM-DD HH:mm:ss');
+        let name = `${day}_台账.xlsx`;
+
+        if (cert_type in certificateTypeEnum) {
+          name = `${day}_${certificateTypeEnum[cert_type].text}类台账.xlsx`;
+        }
+
+        downLoad(url, name);
+        message.success('下载成功');
+      }
+    } catch (e) {
+      console.log('error:', e);
+    }
+  };
+
   return (
     <>
       <ProTable<CertificateItem, TableListPagination>
@@ -489,6 +519,9 @@ const Certificate = (props: IProps) => {
         }}
         params={isDetail ? { cert_id: id } : {}}
         toolBarRender={() => [
+          <Button type="primary" key="down" onClick={handleDown}>
+            下载
+          </Button>,
           <Upload {...uploadExcelProps} key="upload">
             <Button type="primary" key="import">
               导入
@@ -780,6 +813,25 @@ const Certificate = (props: IProps) => {
           })}
         </Card>
       </Drawer>
+
+      <ModalForm<{ cert_type: number }>
+        formRef={downModalFormRef}
+        modalProps={{ centered: true, confirmLoading, maskClosable: false }}
+        title={'证书下载'}
+        width="400px"
+        visible={downVisible}
+        onVisibleChange={setDownVisible}
+        onFinish={onDownFinish}
+        className={styles.modalCon}
+      >
+        <ProFormSelect
+          name="cert_type"
+          label="证书类型"
+          placeholder={'请选择证书类型'}
+          rules={[{ required: true, message: '请选择证书类型' }]}
+          options={certificatetTypes.map(item => ({ label: item.name, value: item.id }))}
+        />
+      </ModalForm>
     </>
   );
 };
