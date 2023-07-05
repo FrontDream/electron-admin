@@ -76,3 +76,11 @@ export async function importPersonFromExcelApi(data: { file: FormData }) {
 
   return res;
 }
+
+// 下载
+export async function downPersonListApi(options?: { [key: string]: any }) {
+  return request<Resp<any>>('/api/certs/personExport', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

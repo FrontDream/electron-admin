@@ -12,7 +12,7 @@ import {
   ProFormDependency,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { CertificatePersonItem, isSuccess, CertificatetPersonData, TableListPagination } from '@/utils';
+import { CertificatePersonItem, isSuccess, CertificatetPersonData, TableListPagination, downLoad } from '@/utils';
 import {
   getCertificatePersonListApi,
   addCertificatePersonApi,
@@ -20,6 +20,7 @@ import {
   updateCertificatePersonApi,
   importPersonValidateExcelApi,
   importPersonFromExcelApi,
+  downPersonListApi,
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -253,6 +254,22 @@ const CertificatePersonList: React.FC = () => {
     showUploadList: false,
   };
 
+  const handleDown = async () => {
+    try {
+      const res = await downPersonListApi();
+
+      if (isSuccess(res)) {
+        const { url } = res?.data;
+        const day = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        downLoad(url, `${day}人员台账.xlsx`);
+        message.success('下载成功');
+      }
+    } catch (e) {
+      console.log('error:', e);
+    }
+  };
+
   return (
     <PageContainer>
       <ProTable<CertificatePersonItem, TableListPagination>
@@ -264,6 +281,9 @@ const CertificatePersonList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
+          <Button type="primary" key="down" onClick={handleDown}>
+            下载
+          </Button>,
           <Upload {...uploadExcelProps} key="upload">
             <Button type="primary" key="import">
               导入
