@@ -26,6 +26,7 @@ import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import styles from './index.less';
+import { jobStatusMap } from '@/utils';
 
 const { warning, confirm } = Modal;
 
@@ -69,14 +70,7 @@ const CertificatePersonList: React.FC = () => {
       dataIndex: 'job_status',
       hideInSearch: true,
       renderText: val => {
-        if (val === 1) {
-          return '离职';
-        } else if (val === 2) {
-          return '在职';
-        } else if (val === 3) {
-          return '兼职';
-        }
-        return '-';
+        return jobStatusMap[val] || '-';
       },
     },
     {
@@ -428,8 +422,8 @@ const CertificatePersonList: React.FC = () => {
             label="在职状态"
             placeholder={'请选择在职状态'}
             options={[
-              { label: '离职', value: 1 },
-              { label: '在职', value: 2 },
+              { label: '在职', value: 1 },
+              { label: '离职', value: 2 },
               { label: '兼职', value: 3 },
             ]}
           />

@@ -441,14 +441,14 @@ const Certificate = (props: IProps) => {
       try {
         const validateRes = await importValidateExcelApi({ file: formData });
 
-        if (isSuccess(validateRes, '上传失败，请重试')) {
-          const { data = { is_cert_exist: false } } = validateRes;
+        if (isSuccess(validateRes, '导入失败，请重试')) {
+          const { data = {} } = validateRes;
           const updateExcel = async () => {
             try {
               const uploadRes = await importFromExcelApi({ file: formData });
 
-              if (isSuccess(uploadRes, '上传失败，请重试')) {
-                message.success('上传成功');
+              if (isSuccess(uploadRes, '导入失败，请重试')) {
+                message.success('导入成功');
                 actionRef.current?.reload();
               }
             } catch (error) {
@@ -456,6 +456,13 @@ const Certificate = (props: IProps) => {
             }
           };
 
+          if (data.has_new_person) {
+            Modal.error({
+              title: '证书中存在新人员，请先完善人员！',
+              content: `涉及的人员身份证号号:${data?.id_list?.join(',')}`,
+            });
+            return;
+          }
           if (data.is_cert_exist) {
             confirm({
               title: '存在覆盖的数据，确定覆盖吗？',

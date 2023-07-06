@@ -57,11 +57,14 @@ export async function getCertificateDetailApi(id: number, options?: { [key: stri
 // 导入校验
 export async function importValidateExcelApi(data: { file: FormData }) {
   const { file } = data;
-  const res = await request<Resp<{ is_cert_exist: boolean }>>('/api/certs/perCertImportVal', {
-    method: 'POST',
-    body: file,
-    requestType: 'form',
-  });
+  const res = await request<Resp<{ is_cert_exist?: boolean; has_new_person?: boolean; id_list?: Array<string> }>>(
+    '/api/certs/perCertImportVal',
+    {
+      method: 'POST',
+      body: file,
+      requestType: 'form',
+    },
+  );
 
   return res;
 }

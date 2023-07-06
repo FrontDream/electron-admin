@@ -5,13 +5,8 @@ import { useParams } from 'react-router-dom';
 import { getCertificatePersonDetailApi } from '@/services';
 import moment from 'moment';
 import Certificate from '@/components/Certificate';
+import { jobStatusMap } from '@/utils';
 
-const jobStatusMap = {
-  1: '离职',
-  2: '在职',
-  3: '兼职',
-  undefined: '-',
-};
 const CertificatePersonDetail = () => {
   const { id = '' } = useParams<{ id: string }>();
   const { data: personData, loading: personDetailLoading } = useRequest(

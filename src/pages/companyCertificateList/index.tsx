@@ -345,7 +345,7 @@ const CompanyCertificateList: React.FC = () => {
         const validateRes = await importCompanyValidateExcelApi({ file: formData });
 
         if (isSuccess(validateRes, '上传失败，请重试')) {
-          const { data = { is_cert_exist: false } } = validateRes;
+          const { data = {} } = validateRes;
           const updateExcel = async () => {
             try {
               const uploadRes = await importCompanyFromExcelApi({ file: formData });
@@ -358,6 +358,14 @@ const CompanyCertificateList: React.FC = () => {
               console.log('error:', error);
             }
           };
+
+          if (data.has_new_firm) {
+            Modal.error({
+              title: '证书中存在新企业，请先完善企业！',
+              content: `涉及的企业:${data?.company_list?.join(',')}`,
+            });
+            return;
+          }
 
           if (data.is_cert_exist) {
             confirm({

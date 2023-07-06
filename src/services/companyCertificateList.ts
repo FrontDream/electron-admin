@@ -56,11 +56,14 @@ export async function getCompanyCertificateDetailApi(id: number, options?: { [ke
 // 导入校验
 export async function importCompanyValidateExcelApi(data: { file: FormData }) {
   const { file } = data;
-  const res = await request<Resp<{ is_cert_exist: boolean }>>('/api/certs/firmCertImportVal', {
-    method: 'POST',
-    body: file,
-    requestType: 'form',
-  });
+  const res = await request<Resp<{ is_cert_exist?: boolean; has_new_firm?: boolean; company_list?: Array<string> }>>(
+    '/api/certs/firmCertImportVal',
+    {
+      method: 'POST',
+      body: file,
+      requestType: 'form',
+    },
+  );
 
   return res;
 }

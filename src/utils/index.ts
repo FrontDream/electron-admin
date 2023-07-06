@@ -316,3 +316,10 @@ export async function downloadFiles2ZipWithFolder(listData: any, zip: any) {
 
   await Promise.all(outPromises);
 }
+
+export const jobStatusMap = {
+  1: '在职',
+  2: '离职',
+  3: '兼职',
+  undefined: '-',
+};
