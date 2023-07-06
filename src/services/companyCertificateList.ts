@@ -75,3 +75,12 @@ export async function importCompanyFromExcelApi(data: { file: FormData }) {
 
   return res;
 }
+
+// 下载
+export async function downCompanyCertificateListApi(params: { cert_type: number }, options?: { [key: string]: any }) {
+  return request<Resp<{ url: string }>>('/api/certs/firmCertExport', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+}

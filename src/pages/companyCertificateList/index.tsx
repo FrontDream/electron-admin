@@ -31,6 +31,7 @@ import {
   updateCompanyCertificateApi,
   importCompanyValidateExcelApi,
   importCompanyFromExcelApi,
+  downCompanyCertificateListApi,
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -53,6 +54,8 @@ const CompanyCertificateList: React.FC = () => {
   const [showDetail, setShowDetail] = useState(false);
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
+  const downModalFormRef = useRef<FormInstance>();
+  const [downVisible, setDownVisible] = useState<boolean>(false);
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
   const certificatetCompany = useCertificatetCompany();
@@ -97,6 +100,10 @@ const CompanyCertificateList: React.FC = () => {
       dataIndex: 'annual_date',
     },
     {
+      title: '有效日期(止)',
+      dataIndex: 'use_date_end',
+    },
+    {
       title: '摘要',
       dataIndex: 'summary',
     },
@@ -125,6 +132,18 @@ const CompanyCertificateList: React.FC = () => {
   ];
   const tableColumns: ProColumns<CertificateItem>[] = [
     {
+      title: '证照目录号',
+      dataIndex: 'license_no',
+      copyable: true,
+      hideInSearch: true,
+    },
+    {
+      title: '证书类型',
+      dataIndex: 'type',
+      valueType: 'select',
+      valueEnum: companyCertificateTypeEnum,
+    },
+    {
       title: '企业证书编号',
       dataIndex: 'cert_code',
       copyable: true,
@@ -151,20 +170,14 @@ const CompanyCertificateList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '失效日期',
-      dataIndex: 'expire_time',
+      title: '年检日期',
+      dataIndex: 'annual_date',
       hideInSearch: true,
     },
     {
-      title: '失效提示时间',
-      dataIndex: 'reminder_time',
+      title: '有效日期(止)',
+      dataIndex: 'use_date_end',
       hideInSearch: true,
-    },
-    {
-      title: '企业证书类型',
-      dataIndex: 'type',
-      valueType: 'select',
-      valueEnum: companyCertificateTypeEnum,
     },
     {
       title: '创建人',
@@ -372,6 +385,35 @@ const CompanyCertificateList: React.FC = () => {
     showUploadList: false,
   };
 
+  const onDownFinish = async (values: { cert_type: number }) => {
+    const { cert_type } = values;
+
+    try {
+      const res = await downCompanyCertificateListApi({ cert_type });
+
+      console.log('res:', res);
+
+      if (isSuccess(res)) {
+        const { url } = res?.data;
+        const day = moment().format('YYYY-MM-DD HH:mm:ss');
+        let name = `${day}_台账.xlsx`;
+
+        if (cert_type in companyCertificateTypeEnum) {
+          name = `${day}_${companyCertificateTypeEnum[cert_type].text}类台账.xlsx`;
+        }
+
+        downLoad(url, name);
+        message.success('下载成功');
+      }
+    } catch (e) {
+      console.log('error:', e);
+    }
+  };
+
+  const handleDown = () => {
+    setDownVisible(true);
+  };
+
   return (
     <PageContainer>
       <ProTable<CertificateItem, TableListPagination>
@@ -383,6 +425,9 @@ const CompanyCertificateList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
+          <Button type="primary" key="down" onClick={handleDown}>
+            下载
+          </Button>,
           <Upload {...uploadExcelProps} key="upload">
             <Button type="primary" key="import">
               导入
@@ -540,6 +585,24 @@ const CompanyCertificateList: React.FC = () => {
           })}
         </Card>
       </Drawer>
+      <ModalForm<{ cert_type: number }>
+        formRef={downModalFormRef}
+        modalProps={{ centered: true, confirmLoading, maskClosable: false }}
+        title={'证书下载'}
+        width="400px"
+        visible={downVisible}
+        onVisibleChange={setDownVisible}
+        onFinish={onDownFinish}
+        className={styles.modalCon}
+      >
+        <ProFormSelect
+          name="cert_type"
+          label="证书类型"
+          placeholder={'请选择证书类型'}
+          rules={[{ required: true, message: '请选择证书类型' }]}
+          options={companyCertificatetTypes.map(item => ({ label: item.name, value: item.id }))}
+        />
+      </ModalForm>
     </PageContainer>
   );
 };
