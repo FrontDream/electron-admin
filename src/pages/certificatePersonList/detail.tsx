@@ -46,6 +46,8 @@ const CertificatePersonDetail = () => {
           {personData?.job_status === 1 && (
             <Descriptions.Item label="离职时间">{personData?.resign_time || '-'}</Descriptions.Item>
           )}
+          <Descriptions.Item label="项目备案名称">{personData?.project_record_name || '-'}</Descriptions.Item>
+          <Descriptions.Item label="项目备案职务">{personData?.project_record_job || '-'}</Descriptions.Item>
           <Descriptions.Item label="创建人">{personData?.create_user}</Descriptions.Item>
           <Descriptions.Item label="修改人">{personData?.update_user}</Descriptions.Item>
           <Descriptions.Item label="创建时间">
@@ -54,8 +56,7 @@ const CertificatePersonDetail = () => {
           <Descriptions.Item label="修改时间">
             {moment.unix(personData?.mtime || 0).format('YYYY-MM-DD HH:mm:ss')}
           </Descriptions.Item>
-          <Descriptions.Item label="项目备案名称">{personData?.project_record_name || '-'}</Descriptions.Item>
-          <Descriptions.Item label="项目备案职务">{personData?.project_record_job || '-'}</Descriptions.Item>
+
           <Descriptions.Item label="备注">{personData?.remark || '-'}</Descriptions.Item>
         </Descriptions>
       </Card>

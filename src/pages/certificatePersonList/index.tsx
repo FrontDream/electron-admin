@@ -55,9 +55,64 @@ const CertificatePersonList: React.FC = () => {
       width: 200,
     },
     {
+      title: '证件失效时间',
+      dataIndex: 'expire_time',
+      hideInSearch: true,
+    },
+    {
       title: '人员编号',
       dataIndex: 'id_no',
       copyable: true,
+    },
+    {
+      title: '在职状态',
+      dataIndex: 'job_status',
+      hideInSearch: true,
+      renderText: val => {
+        if (val === 1) {
+          return '离职';
+        } else if (val === 2) {
+          return '在职';
+        } else if (val === 3) {
+          return '兼职';
+        }
+        return '-';
+      },
+    },
+    {
+      title: '人员归属',
+      dataIndex: 'person_belong',
+      hideInSearch: true,
+    },
+    {
+      title: '注册单位',
+      dataIndex: 'company',
+      hideInSearch: true,
+    },
+    {
+      title: '合同所属公司',
+      dataIndex: 'contract',
+      hideInSearch: true,
+    },
+    {
+      title: '闽政通所在单位',
+      dataIndex: 'mzt',
+      hideInSearch: true,
+    },
+    {
+      title: '社保所在公司',
+      dataIndex: 'social_security',
+      hideInSearch: true,
+    },
+    {
+      title: '医保所在公司',
+      dataIndex: 'medical_insurance',
+      hideInSearch: true,
+    },
+    {
+      title: '住房公积金所在公司',
+      dataIndex: 'prov_fund_company',
+      hideInSearch: true,
     },
     {
       title: '性别',
@@ -65,10 +120,9 @@ const CertificatePersonList: React.FC = () => {
       hideInSearch: true,
       renderText: val => (val === 1 ? '男' : '女'),
     },
-
     {
-      title: '证件失效时间',
-      dataIndex: 'expire_time',
+      title: '家庭住址',
+      dataIndex: 'address',
       hideInSearch: true,
     },
     {
@@ -77,7 +131,7 @@ const CertificatePersonList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '入职时间',
+      title: '入职日期',
       dataIndex: 'entry_time',
       hideInSearch: true,
     },
@@ -87,8 +141,14 @@ const CertificatePersonList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '注册单位',
-      dataIndex: 'company',
+      title: '项目备案名称',
+      dataIndex: 'project_record_name',
+      hideInSearch: true,
+    },
+    {
+      title: '项目备案职务',
+      dataIndex: 'project_record_job',
+      hideInSearch: true,
     },
     {
       title: '创建人',
@@ -273,7 +333,7 @@ const CertificatePersonList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<CertificatePersonItem, TableListPagination>
-        scroll={{ x: 2000 }}
+        scroll={{ x: 4000 }}
         headerTitle="人员列表"
         actionRef={actionRef}
         rowKey="id"
@@ -376,9 +436,9 @@ const CertificatePersonList: React.FC = () => {
           <ProFormText label={'人员归属'} name="person_belong" placeholder={'请输入人员编号'} />
           <ProFormText label={'注册单位'} name="company" placeholder={'请输入注册单位'} />
           <ProFormText label={'合同所属公司'} name="contract" placeholder={'请输入合同所属公司'} />
-          <ProFormText label={'闽政通所在单位'} name="mzt" placeholder={'请输入闽政通所属公司'} />
+          <ProFormText label={'闽政通所在单位'} name="mzt" placeholder={'请输入闽政通所在单位'} />
           <ProFormText label={'社保所在公司'} name="social_security" placeholder={'请输入社保所在公司'} />
-          <ProFormText label={'医保所在公司'} name="medical_insurance" placeholder={'请输入社保所在公司'} />
+          <ProFormText label={'医保所在公司'} name="medical_insurance" placeholder={'请输入医保所在公司'} />
           <ProFormText label={'住房公积金所在公司'} name="prov_fund_company" placeholder={'请输入住房公积金所在公司'} />
           <ProFormSelect
             name="gender"

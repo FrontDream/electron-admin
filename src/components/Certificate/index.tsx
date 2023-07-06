@@ -247,6 +247,7 @@ const Certificate = (props: IProps) => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="update"
@@ -511,6 +512,7 @@ const Certificate = (props: IProps) => {
   return (
     <>
       <ProTable<CertificateItem, TableListPagination>
+        scroll={{ x: 2000 }}
         headerTitle="证书列表"
         actionRef={actionRef}
         rowKey="id"
