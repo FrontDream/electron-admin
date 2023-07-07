@@ -22,10 +22,10 @@ const CertificatePersonDetail = () => {
     <PageContainer>
       <Card bordered={false} title={'人员详情'} loading={personDetailLoading}>
         <Descriptions style={{ marginBottom: 32 }}>
+          <Descriptions.Item label="人员编号">{personData?.id_no || '-'}</Descriptions.Item>
           <Descriptions.Item label="姓名">{personData?.name || '-'}</Descriptions.Item>
           <Descriptions.Item label="身份证号">{personData?.id_number || '-'}</Descriptions.Item>
           <Descriptions.Item label="证件失效日期">{personData?.expire_time}</Descriptions.Item>
-          <Descriptions.Item label="人员编号">{personData?.id_no || '-'}</Descriptions.Item>
           <Descriptions.Item label="在职状态">{jobStatusMap[personData?.job_status || ''] || '-'}</Descriptions.Item>
           <Descriptions.Item label="人员归属">{personData?.person_belong || '-'}</Descriptions.Item>
           <Descriptions.Item label="注册单位">{personData?.company || '-'}</Descriptions.Item>

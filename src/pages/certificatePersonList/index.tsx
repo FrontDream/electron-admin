@@ -41,6 +41,11 @@ const CertificatePersonList: React.FC = () => {
 
   const columns: ProColumns<CertificatePersonItem>[] = [
     {
+      title: '人员编号',
+      dataIndex: 'id_no',
+      copyable: true,
+    },
+    {
       title: '姓名',
       dataIndex: 'name',
       render: (_, record) => [
@@ -59,11 +64,6 @@ const CertificatePersonList: React.FC = () => {
       title: '证件失效时间',
       dataIndex: 'expire_time',
       hideInSearch: true,
-    },
-    {
-      title: '人员编号',
-      dataIndex: 'id_no',
-      copyable: true,
     },
     {
       title: '在职状态',
@@ -393,6 +393,7 @@ const CertificatePersonList: React.FC = () => {
           }}
           className={styles.modalCon}
         >
+          <ProFormText label={'人员编号'} name="id_no" placeholder={'请输入人员编号'} />
           <ProFormText
             label={'姓名'}
             name="name"
@@ -416,7 +417,6 @@ const CertificatePersonList: React.FC = () => {
             placeholder={'请输入证件号'}
           />
           <ProFormDatePicker name="expire_time" label="证件失效日期" placeholder={'请选择证书失效日期'} />
-          <ProFormText label={'人员编号'} name="id_no" placeholder={'请输入人员编号'} />
           <ProFormSelect
             name="job_status"
             label="在职状态"
@@ -427,7 +427,7 @@ const CertificatePersonList: React.FC = () => {
               { label: '兼职', value: 3 },
             ]}
           />
-          <ProFormText label={'人员归属'} name="person_belong" placeholder={'请输入人员编号'} />
+          <ProFormText label={'人员归属'} name="person_belong" placeholder={'请输入人员归属'} />
           <ProFormText label={'注册单位'} name="company" placeholder={'请输入注册单位'} />
           <ProFormText label={'合同所属公司'} name="contract" placeholder={'请输入合同所属公司'} />
           <ProFormText label={'闽政通所在单位'} name="mzt" placeholder={'请输入闽政通所在单位'} />
