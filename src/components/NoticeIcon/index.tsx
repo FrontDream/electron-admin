@@ -98,19 +98,20 @@ const NoticeIconView = () => {
   );
 
   const openNotificationWithIcon = (data: Array<NoticeInfoItem>) => {
-    const certNames = data.map(item => {
-      if (item.cert_type === 1) {
-        return item.person_name;
-      }
-      return item.firm_name;
-    });
-    const list = Array.from(new Set(certNames));
+    // const certNames = data.map(item => {
+    //   if (item.cert_type === 1) {
+    //     return item.person_name;
+    //   }
+    //   return item.firm_name;
+    // });
+    // const list = Array.from(new Set(certNames));
+    const list = data.map(item => item.id_number);
 
     api.warning({
       message: '通知',
       description: (
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {list.join('、')}
+          身份证号为:{list.join('、')}
           的证书即将过期，请及时处理
         </div>
       ),
