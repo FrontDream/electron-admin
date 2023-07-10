@@ -180,13 +180,6 @@ const Certificate = (props: IProps) => {
       dataIndex: 'cert_code',
       copyable: true,
     },
-    // 搜索框
-    {
-      title: '证书人员',
-      dataIndex: 'cert_person',
-      hideInTable: true,
-      hideInSearch: isDetail,
-    },
     // 表格中
     {
       title: '证书人员',
