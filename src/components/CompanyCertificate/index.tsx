@@ -92,6 +92,14 @@ const CompanyCertificate = (props: IProps) => {
       valueEnum: certificateCompanyEnum,
     },
     {
+      title: '证件版本',
+      dataIndex: 'cert_version',
+    },
+    {
+      title: '法定代表人/主要负责人',
+      dataIndex: 'legal_person',
+    },
+    {
       title: '资质等级',
       dataIndex: 'category',
     },
@@ -106,6 +114,10 @@ const CompanyCertificate = (props: IProps) => {
     {
       title: '发证日期',
       dataIndex: 'cert_data',
+    },
+    {
+      title: '有效日期(起)',
+      dataIndex: 'use_date_start',
     },
     {
       title: '年检日期',
@@ -165,6 +177,16 @@ const CompanyCertificate = (props: IProps) => {
       hideInSearch: isDetail,
     },
     {
+      title: '证件版本',
+      dataIndex: 'cert_version',
+      hideInSearch: true,
+    },
+    {
+      title: '法定代表人/主要负责人',
+      dataIndex: 'legal_person',
+      hideInSearch: true,
+    },
+    {
       title: '资质等级',
       dataIndex: 'category',
       hideInSearch: true,
@@ -177,6 +199,11 @@ const CompanyCertificate = (props: IProps) => {
     {
       title: '发证日期',
       dataIndex: 'cert_data',
+      hideInSearch: true,
+    },
+    {
+      title: '有效日期(起)',
+      dataIndex: 'use_date_start',
       hideInSearch: true,
     },
     {
@@ -547,6 +574,8 @@ const CompanyCertificate = (props: IProps) => {
             rules={[{ required: true, message: '请选择证书所属企业' }]}
             options={certificatetCompany.map(item => ({ label: item.name, value: item.id }))}
           />
+          <ProFormText name="cert_version" label="证件版本" placeholder={'请输入证件版本'} />
+          <ProFormText name="legal_person" label="法定代表人/主要负责人" placeholder={'请输入法定代表人/主要负责人'} />
           <ProFormText name="category" label="资质等级" placeholder={'请输入资质等级'} />
           <ProFormText label={'摘要'} name="summary" placeholder={'请输入摘要'} />
           <ProFormText
@@ -566,6 +595,7 @@ const CompanyCertificate = (props: IProps) => {
             placeholder={'请选择发证日期'}
             rules={[{ required: true, message: '请选择发证日期' }]}
           />
+          <ProFormDatePicker name="use_date_start" label="有效日期(起)" placeholder={'请选择有效日期(起)'} />
           <ProFormDatePicker name="annual_date" label="年检日期" placeholder={'请选择年检日期'} />
           <ProFormDatePicker name="use_date_end" label="有效日期(止)" placeholder={'请选择有效日期(止)'} />
           <ProFormTextArea

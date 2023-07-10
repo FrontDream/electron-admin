@@ -30,6 +30,7 @@ const CertificateCompanyDetail = () => {
           <Descriptions.Item label="成立时间">{companyData?.established_date || '-'}</Descriptions.Item>
           <Descriptions.Item label="法定代表人">{companyData?.leg_representative || '-'}</Descriptions.Item>
           <Descriptions.Item label="注册资本(万元)">{companyData?.reg_capital || '-'}</Descriptions.Item>
+          <Descriptions.Item label="类型/经济性质">{companyData?.economy_type || '-'}</Descriptions.Item>
           <Descriptions.Item label="创建人">{companyData?.create_user || '-'}</Descriptions.Item>
           <Descriptions.Item label="修改人">{companyData?.update_user || '-'}</Descriptions.Item>
           <Descriptions.Item label="创建时间">

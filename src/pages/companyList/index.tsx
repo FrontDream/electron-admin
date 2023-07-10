@@ -59,6 +59,11 @@ const CompanyList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '类型/经济性质',
+      dataIndex: 'economy_type',
+      hideInSearch: true,
+    },
+    {
       title: '创建人',
       dataIndex: 'create_user',
       hideInSearch: true,
@@ -300,6 +305,7 @@ const CompanyList: React.FC = () => {
             ]}
             placeholder={'请输入注册资本(万元)'}
           />
+          <ProFormText label="类型/经济性质" name="economy_type" placeholder={'请输入类型/经济性质'} />
         </ModalForm>
       )}
     </PageContainer>
