@@ -622,36 +622,39 @@ const Certificate = (props: IProps) => {
                 showFields = [],
                 requiredFields = [],
                 gradeOptions = [],
-                // categoryOptions,
+                categoryOptions,
               } = getShowFields(typeName);
 
               return (
                 <>
-                  {showFields.includes('category') && (
-                    <ProFormText
-                      name="category"
-                      label="岗位类别"
-                      placeholder={'请输入岗位类别'}
-                      rules={[
-                        {
-                          required: requiredFields.includes('category'),
-                          message: '岗位类别不能为空',
-                        },
-                      ]}
-                    />
-                    // <ProFormSelect
-                    //   name="category"
-                    //   label="岗位类别"
-                    //   placeholder={'请输入岗位类别'}
-                    //   rules={[
-                    //     {
-                    //       required: requiredFields.includes('category'),
-                    //       message: '岗位类别不能为空',
-                    //     },
-                    //   ]}
-                    //   options={categoryOptions}
-                    // />
-                  )}
+                  {showFields.includes('category') ? (
+                    typeName === '注册证' ? (
+                      <ProFormText
+                        name="category"
+                        label="岗位类别"
+                        placeholder={'请输入岗位类别'}
+                        rules={[
+                          {
+                            required: requiredFields.includes('category'),
+                            message: '岗位类别不能为空',
+                          },
+                        ]}
+                      />
+                    ) : (
+                      <ProFormSelect
+                        name="category"
+                        label="岗位类别"
+                        placeholder={'请输入岗位类别'}
+                        rules={[
+                          {
+                            required: requiredFields.includes('category'),
+                            message: '岗位类别不能为空',
+                          },
+                        ]}
+                        options={categoryOptions}
+                      />
+                    )
+                  ) : null}
                   {showFields.includes('grade') && (
                     <ProFormSelect
                       name="grade"
