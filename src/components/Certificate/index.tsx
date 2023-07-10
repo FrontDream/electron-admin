@@ -631,13 +631,13 @@ const Certificate = (props: IProps) => {
                 showFields = [],
                 requiredFields = [],
                 gradeOptions = [],
-                categoryOptions,
+                // categoryOptions,
               } = getShowFields(typeName);
 
               return (
                 <>
                   {showFields.includes('category') && (
-                    <ProFormSelect
+                    <ProFormText
                       name="category"
                       label="岗位类别"
                       placeholder={'请输入岗位类别'}
@@ -647,18 +647,18 @@ const Certificate = (props: IProps) => {
                           message: '岗位类别不能为空',
                         },
                       ]}
-                      options={categoryOptions}
                     />
-                    // <ProFormText
+                    // <ProFormSelect
                     //   name="category"
                     //   label="岗位类别"
+                    //   placeholder={'请输入岗位类别'}
                     //   rules={[
                     //     {
                     //       required: requiredFields.includes('category'),
                     //       message: '岗位类别不能为空',
                     //     },
                     //   ]}
-                    //   placeholder={'请输入岗位类别'}
+                    //   options={categoryOptions}
                     // />
                   )}
                   {showFields.includes('grade') && (
