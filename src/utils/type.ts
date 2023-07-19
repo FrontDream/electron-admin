@@ -350,6 +350,7 @@ export interface CertificatePersonItem {
   address: string;
   project_record_name: string;
   project_record_job: string;
+  appendix_list: Array<AppendixList>;
 }
 
 export interface CertificatetPersonData {
@@ -376,6 +377,7 @@ export interface CertificatetPersonData {
   address: string;
   project_record_name: string;
   project_record_job: string;
+  appendix_list: Array<AppendixList>;
 }
 export interface CertificateRes extends TableListPagination {
   data: Array<CertificateItem>;

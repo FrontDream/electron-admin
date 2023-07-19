@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { getCertificatePersonDetailApi } from '@/services';
 import moment from 'moment';
 import Certificate from '@/components/Certificate';
-import { jobStatusMap } from '@/utils';
+import { jobStatusMap, downLoad } from '@/utils';
 
 const CertificatePersonDetail = () => {
   const { id = '' } = useParams<{ id: string }>();
@@ -51,6 +51,15 @@ const CertificatePersonDetail = () => {
 
           <Descriptions.Item label="备注">{personData?.remark || '-'}</Descriptions.Item>
         </Descriptions>
+      </Card>
+      <Card title={'人员附件'} bordered={false}>
+        {personData?.appendix_list?.map(item => {
+          return (
+            <div key={item.uid}>
+              <a onClick={() => downLoad(item.url, item.name)}>{item.name}</a>
+            </div>
+          );
+        })}
       </Card>
       <Card title={'证书详情'} bordered={false}></Card>
       <Certificate from="certificatePersonDetail" id={id} />

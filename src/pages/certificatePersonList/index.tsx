@@ -1,4 +1,4 @@
-import { Button, message, Modal, Upload, UploadProps } from 'antd';
+import { Button, message, Modal, Upload, UploadProps, Spin } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -11,8 +11,17 @@ import {
   FormInstance,
   ProFormDependency,
   ProFormTextArea,
+  ProFormUploadDragger,
 } from '@ant-design/pro-form';
-import { CertificatePersonItem, isSuccess, CertificatetPersonData, TableListPagination, downLoad } from '@/utils';
+import {
+  CertificatePersonItem,
+  isSuccess,
+  CertificatetPersonData,
+  TableListPagination,
+  downLoad,
+  uploadFiles,
+  jobStatusMap,
+} from '@/utils';
 import {
   getCertificatePersonListApi,
   addCertificatePersonApi,
@@ -26,9 +35,14 @@ import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import styles from './index.less';
-import { jobStatusMap } from '@/utils';
+import create from 'zustand';
 
 const { warning, confirm } = Modal;
+
+const useStore = create(set => ({
+  fileList: [] as AppendixList[],
+  addFileList: list => set(state => ({ fileList: list })),
+}));
 
 const CertificatePersonList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -38,6 +52,9 @@ const CertificatePersonList: React.FC = () => {
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
   const history = useHistory();
+  const [uploading, setUploading] = useState(false);
+  const fileList = useStore(state => state.fileList);
+  const setFileList = useStore(state => state.addFileList);
 
   const columns: ProColumns<CertificatePersonItem>[] = [
     {
@@ -170,9 +187,12 @@ const CertificatePersonList: React.FC = () => {
         <a
           key="update"
           onClick={() => {
+            const { appendix_list = [] } = record;
+
             setModalVisible(true);
             setCurrentRow(record);
             setIsDdd(false);
+            setFileList(appendix_list);
           }}
         >
           修改
@@ -191,9 +211,9 @@ const CertificatePersonList: React.FC = () => {
       let res = {};
 
       if (isDdd) {
-        res = await addCertificatePersonApi({ ...values });
+        res = await addCertificatePersonApi({ ...values, appendix_list: fileList });
       } else {
-        res = await updateCertificatePersonApi({ ...values, id: currentRow?.id || 0 });
+        res = await updateCertificatePersonApi({ ...values, appendix_list: fileList, id: currentRow?.id || 0 });
       }
 
       if (isSuccess(res, `${isDdd ? '新增' : '修改'}人员失败，请重试！`)) {
@@ -319,6 +339,38 @@ const CertificatePersonList: React.FC = () => {
     }
   };
 
+  const onRemove = (file: any) => {
+    const { uid } = file;
+    const files = fileList.filter(item => item.uid !== uid);
+
+    setFileList(files);
+  };
+
+  const uploadProps: UploadProps = {
+    name: 'file',
+    multiple: true,
+    fileList: fileList,
+    onRemove: onRemove,
+    customRequest: async ({ file, onSuccess, onError }) => {
+      const { name, uid } = file;
+
+      try {
+        setUploading(true);
+
+        const res = await uploadFiles([{ name, file, uid }]);
+        const fileListUpdate = useStore.getState().fileList;
+
+        setUploading(false);
+        onSuccess?.(res, file);
+
+        setFileList([...fileListUpdate, ...res]);
+      } catch (error) {
+        onError?.(error);
+      }
+      return;
+    },
+  };
+
   return (
     <PageContainer>
       <ProTable<CertificatePersonItem, TableListPagination>
@@ -377,14 +429,14 @@ const CertificatePersonList: React.FC = () => {
           formRef={modalFormRef}
           modalProps={{ centered: true, confirmLoading, maskClosable: false }}
           title={isDdd ? '新建人员' : '修改人员'}
-          width="800px"
+          width="1200px"
           visible={modalVisible}
           onVisibleChange={setModalVisible}
           onFinish={onFinish}
           initialValues={isDdd ? {} : { ...currentRow }}
           grid
           colProps={{
-            span: 6,
+            span: 4,
           }}
           className={styles.modalCon}
         >
@@ -476,6 +528,16 @@ const CertificatePersonList: React.FC = () => {
               span: 24,
             }}
           />
+          <Spin spinning={uploading}>
+            <ProFormUploadDragger
+              max={4}
+              label="证书附件"
+              colProps={{
+                span: 24,
+              }}
+              fieldProps={{ ...uploadProps }}
+            />
+          </Spin>
         </ModalForm>
       )}
     </PageContainer>
