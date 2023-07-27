@@ -19,7 +19,6 @@ import {
   CertificateData,
   TableListPagination,
   listToEnum,
-  useCertificatetPersons,
   useCertificatetTypes,
   uploadFiles,
   AppendixList,
@@ -42,6 +41,7 @@ import {
   importFromExcelApi,
   importValidateExcelApi,
   downCertificateListApi,
+  getCertificatePersonListApi,
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -75,10 +75,8 @@ const Certificate = (props: IProps) => {
   // const [fileList, setFileList] = useState<AppendixList[]>([]);
   const fileList = useStore(state => state.fileList);
   const setFileList = useStore(state => state.addFileList);
-  const certificatetPersons = useCertificatetPersons();
   const certificatetTypes = useCertificatetTypes();
   const certificateTypeEnum = listToEnum(certificatetTypes);
-  const certificatePersonEnum = listToEnum(certificatetPersons);
   const isDetail = useMemo(() => {
     return from === 'certificatePersonDetail';
   }, [from]);
@@ -95,8 +93,7 @@ const Certificate = (props: IProps) => {
     },
     {
       title: '证书人员',
-      dataIndex: 'cert_id',
-      valueEnum: certificatePersonEnum,
+      dataIndex: 'username',
     },
     {
       title: '岗位类别',
@@ -180,12 +177,24 @@ const Certificate = (props: IProps) => {
       dataIndex: 'cert_code',
       copyable: true,
     },
-    // 表格中
     {
       title: '证书人员',
-      dataIndex: 'cert_id',
-      valueEnum: certificatePersonEnum,
-      hideInSearch: true,
+      dataIndex: 'username',
+    },
+    {
+      title: '身份证号',
+      dataIndex: 'id_number',
+      hideInTable: true,
+    },
+    {
+      title: '闽政通所属公司',
+      dataIndex: 'mzt',
+      hideInTable: true,
+    },
+    {
+      title: ' 社保所属公司',
+      dataIndex: 'social_security',
+      hideInTable: true,
     },
     {
       title: '岗位类别',
@@ -610,7 +619,30 @@ const Certificate = (props: IProps) => {
             label="证书人员"
             placeholder={'请选择证书人员'}
             rules={[{ required: true, message: '请选择证书人员' }]}
-            options={certificatetPersons.map(item => ({ label: `${item.name}${item.id_number}`, value: item.id }))}
+            showSearch
+            debounceTime={300}
+            request={async ({ keyWords }) => {
+              const res = await getCertificatePersonListApi({
+                current: 1,
+                pageSize: 20,
+                name: keyWords,
+              });
+              const { data = [] } = res;
+
+              return data.map(item => ({ label: `${item.name}${item.id_number}`, value: item.id }));
+            }}
+            fieldProps={{
+              filterOption: () => {
+                return true;
+              },
+            }}
+            // options={certificatetPersons.map(item => ({ label: `${item.name}${item.id_number}`, value: item.id }))}
+            // fieldProps={{
+            //   showSearch: true,
+            //   filterOption: false,
+            //   onSearch: handleSearchPerson,
+            //   // filterOption: (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase()),
+            // }}
           />
           <ProFormDependency name={['type']}>
             {({ type }) => {

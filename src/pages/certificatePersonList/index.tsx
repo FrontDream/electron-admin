@@ -78,6 +78,14 @@ const CertificatePersonList: React.FC = () => {
       width: 200,
     },
     {
+      title: '闽政通所属公司',
+      dataIndex: 'mzt',
+    },
+    {
+      title: '社保所属公司',
+      dataIndex: 'social_security',
+    },
+    {
       title: '证件失效时间',
       dataIndex: 'expire_time',
       hideInSearch: true,
