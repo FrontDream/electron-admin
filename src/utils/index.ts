@@ -174,6 +174,7 @@ export const getNameById = function <T extends BasicType>(list: Array<T>, id: nu
   return item.name;
 };
 
+export const pictures = ['jpg', 'jpeg', 'png', 'bmp', 'gif'];
 export const getFileExtension = (fileName: string) => fileName.split('.').pop().toLowerCase();
 
 export const typeMap = {

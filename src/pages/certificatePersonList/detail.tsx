@@ -1,11 +1,11 @@
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Descriptions } from 'antd';
+import { Card, Descriptions, Image } from 'antd';
 import { useRequest } from 'umi';
 import { useParams } from 'react-router-dom';
 import { getCertificatePersonDetailApi } from '@/services';
 import moment from 'moment';
 import Certificate from '@/components/Certificate';
-import { jobStatusMap, downLoad } from '@/utils';
+import { jobStatusMap, downLoad, getFileExtension, pictures } from '@/utils';
 
 const CertificatePersonDetail = () => {
   const { id = '' } = useParams<{ id: string }>();
@@ -54,9 +54,13 @@ const CertificatePersonDetail = () => {
       </Card>
       <Card title={'人员附件'} bordered={false}>
         {personData?.appendix_list?.map(item => {
+          const extension = getFileExtension(item.url);
+          const isPicture = pictures.includes(extension);
+
           return (
             <div key={item.uid}>
               <a onClick={() => downLoad(item.url, item.name)}>{item.name}</a>
+              {isPicture && <Image width={20} src={item.url} preview />}
             </div>
           );
         })}

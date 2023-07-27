@@ -1,4 +1,4 @@
-import { Button, message, Modal, Drawer, Card, UploadProps, Spin, Upload } from 'antd';
+import { Button, message, Modal, Drawer, Card, UploadProps, Image, Spin, Upload } from 'antd';
 import { useState, useRef, useMemo } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import {
@@ -32,6 +32,8 @@ import {
   jobCategoryOptions,
   registryGradeOptions,
   registryJobCategory,
+  getFileExtension,
+  pictures,
 } from '@/utils';
 import {
   getCertificateListApi,
@@ -282,7 +284,8 @@ const Certificate = (props: IProps) => {
 
   const onFinish = async (values: CertificateData) => {
     const { sign_date = [], ...rest } = values;
-    let body = { ...rest, appendix_list: fileList };
+    // 手动加一下证照目录号
+    let body = { ...rest, license_no: null, appendix_list: fileList };
 
     try {
       if (uploading) {
@@ -840,9 +843,13 @@ const Certificate = (props: IProps) => {
         />
         <Card title={'附件'} bordered={false} className={styles.appendixListCard}>
           {currentRow?.appendix_list?.map(item => {
+            const extension = getFileExtension(item.url);
+            const isPicture = pictures.includes(extension);
+
             return (
               <div key={item.uid}>
                 <a onClick={() => downLoad(item.url, item.name)}>{item.name}</a>
+                {isPicture && <Image width={20} src={item.url} preview />}
               </div>
             );
           })}
