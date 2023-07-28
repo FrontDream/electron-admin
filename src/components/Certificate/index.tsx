@@ -98,6 +98,19 @@ const Certificate = (props: IProps) => {
       dataIndex: 'username',
     },
     {
+      title: '身份证号',
+      dataIndex: 'id_number',
+      copyable: true,
+    },
+    {
+      title: '闽政通所属公司',
+      dataIndex: 'mzt',
+    },
+    {
+      title: ' 社保所属公司',
+      dataIndex: 'social_security',
+    },
+    {
       title: '岗位类别',
       dataIndex: 'category',
     },
@@ -186,17 +199,15 @@ const Certificate = (props: IProps) => {
     {
       title: '身份证号',
       dataIndex: 'id_number',
-      hideInTable: true,
+      copyable: true,
     },
     {
       title: '闽政通所属公司',
       dataIndex: 'mzt',
-      hideInTable: true,
     },
     {
       title: ' 社保所属公司',
       dataIndex: 'social_security',
-      hideInTable: true,
     },
     {
       title: '岗位类别',
@@ -522,7 +533,7 @@ const Certificate = (props: IProps) => {
   return (
     <>
       <ProTable<CertificateItem, TableListPagination>
-        scroll={{ x: 2000 }}
+        scroll={{ x: 2500 }}
         headerTitle="证书列表"
         actionRef={actionRef}
         rowKey="id"

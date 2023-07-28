@@ -25,6 +25,8 @@ const CertificatePersonDetail = () => {
           <Descriptions.Item label="人员编号">{personData?.id_no || '-'}</Descriptions.Item>
           <Descriptions.Item label="姓名">{personData?.name || '-'}</Descriptions.Item>
           <Descriptions.Item label="身份证号">{personData?.id_number || '-'}</Descriptions.Item>
+          <Descriptions.Item label="闽政通所属公司">{personData?.mzt || '-'}</Descriptions.Item>
+          <Descriptions.Item label="社保所属公司">{personData?.social_security || '-'}</Descriptions.Item>
           <Descriptions.Item label="证件失效日期">{personData?.expire_time}</Descriptions.Item>
           <Descriptions.Item label="在职状态">{jobStatusMap[personData?.job_status || ''] || '-'}</Descriptions.Item>
           <Descriptions.Item label="人员归属">{personData?.person_belong || '-'}</Descriptions.Item>
