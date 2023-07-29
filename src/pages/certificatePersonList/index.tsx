@@ -514,7 +514,7 @@ const CertificatePersonList: React.FC = () => {
           <ProFormDatePicker name="entry_time" label="入职日期" placeholder={'请选择入职日期'} />
           <ProFormDependency name={['job_status']}>
             {({ job_status }) => {
-              if (job_status === 1) {
+              if (job_status === 2) {
                 return (
                   <ProFormDatePicker
                     name="resign_time"
