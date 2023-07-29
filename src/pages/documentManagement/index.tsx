@@ -11,6 +11,7 @@ import {
   MenuProps,
   message,
   Typography,
+  Image,
 } from 'antd';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
@@ -23,6 +24,7 @@ import {
   AppendixList,
   multiDownZip,
   DocumentPermissionAction,
+  pictures,
 } from '@/utils';
 import { PageContainer } from '@ant-design/pro-layout';
 import { getDocumentListApi, deleteDocumentApi, addDocumentApi, updateDocumentApi } from '@/services';
@@ -34,6 +36,7 @@ import {
   EditOutlined,
   ExclamationCircleFilled,
   ShareAltOutlined,
+  EyeOutlined,
 } from '@ant-design/icons';
 import { ModalForm, ProFormText, FormInstance, ProFormUploadDragger } from '@ant-design/pro-form';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
@@ -74,6 +77,10 @@ const DocumentManagement = () => {
   const [permissionAction, setPermissionAction] = useState({} as DocumentPermissionAction);
   const [isEdit, setIsEdit] = useState(false);
   const [fileAndFolderList, setFileAndFolderList] = useState<Array<DocumentListItem>>([]);
+  const [previewData, setPreviewData] = useState({
+    visible: false,
+    url: '',
+  });
   // 全选框的显隐 ,1 文件夹，2文件
 
   const currentId = useMemo(() => {
@@ -600,6 +607,17 @@ const DocumentManagement = () => {
                         className={styles.operation}
                         style={{ display: focusItem?.id === item.id || item.isSelected ? 'flex' : 'none' }}
                       >
+                        {pictures.includes(item.format) && (
+                          <EyeOutlined
+                            style={{ color: '#C8793E', cursor: 'pointer' }}
+                            onClick={() => {
+                              setPreviewData({
+                                url: item.url,
+                                visible: true,
+                              });
+                            }}
+                          />
+                        )}
                         <DownloadOutlined
                           style={{ color: '#C8793E', cursor: 'pointer' }}
                           onClick={() => handleDownSingle(item)}
@@ -669,6 +687,19 @@ const DocumentManagement = () => {
         {permissionModalVisible && (
           <PermissionModal visible={permissionModalVisible} focusItem={editItem} onCancel={hanldeCancelPermission} />
         )}
+        <Image
+          width={200}
+          style={{ display: 'none' }}
+          src={previewData.url}
+          preview={{
+            visible: previewData.visible,
+            scaleStep: 0.5,
+            src: previewData.url,
+            onVisibleChange: value => {
+              setPreviewData({ ...previewData, visible: value });
+            },
+          }}
+        />
       </Card>
     </PageContainer>
   );
