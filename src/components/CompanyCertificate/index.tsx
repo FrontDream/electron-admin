@@ -595,7 +595,7 @@ const CompanyCertificate = (props: IProps) => {
             name="cert_data"
             label="发证日期"
             placeholder={'请选择发证日期'}
-            rules={[{ required: true, message: '请选择发证日期' }]}
+            // rules={[{ required: true, message: '请选择发证日期' }]}
           />
           <ProFormDatePicker name="use_date_start" label="有效日期(起)" placeholder={'请选择有效日期(起)'} />
           <ProFormDatePicker name="annual_date" label="年检日期" placeholder={'请选择年检日期'} />

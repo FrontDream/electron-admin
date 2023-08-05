@@ -53,3 +53,33 @@ export async function updateCertificateCompanynApi(data: CompanyCertificateData,
     ...(options || {}),
   });
 }
+// 导入校验
+export async function importCompanyValidateExcelApi(data: { file: FormData }) {
+  const { file } = data;
+  const res = await request<Resp<{ is_exist: boolean }>>('/api/certs/firmImportValidate', {
+    method: 'POST',
+    body: file,
+    requestType: 'form',
+  });
+
+  return res;
+}
+// 导入
+export async function importCompanyFromExcelApi(data: { file: FormData }) {
+  const { file } = data;
+  const res = await request<null>('/api/certs/firmImport', {
+    method: 'POST',
+    body: file,
+    requestType: 'form',
+  });
+
+  return res;
+}
+
+// 下载
+export async function downCompanyListApi(options?: { [key: string]: any }) {
+  return request<Resp<any>>('/api/certs/firmExport', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}

@@ -1,21 +1,37 @@
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Upload, UploadProps } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormDatePicker, FormInstance, ProFormMoney } from '@ant-design/pro-form';
-import { CompanyCertificateListItem, isSuccess, CompanyCertificateData, TableListPagination } from '@/utils';
+import {
+  CompanyCertificateListItem,
+  isSuccess,
+  AppendixList,
+  CompanyCertificateData,
+  TableListPagination,
+  downLoad,
+} from '@/utils';
 import {
   getCertificateCompanyListApi,
   addCertificateCompanyApi,
   deleteCertificateCompanyApi,
   updateCertificateCompanynApi,
+  importCompanyValidateExcelApi,
+  importCompanyFromExcelApi,
+  downCompanyListApi,
 } from '@/services';
 import moment from 'moment';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import styles from './index.less';
+import create from 'zustand';
 
 const { warning, confirm } = Modal;
+
+const useStore = create(set => ({
+  fileList: [] as AppendixList[],
+  addFileList: list => set(state => ({ fileList: list })),
+}));
 
 const CompanyList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -25,6 +41,9 @@ const CompanyList: React.FC = () => {
   const [isDdd, setIsDdd] = useState(true);
   const modalFormRef = useRef<FormInstance>();
   const history = useHistory();
+  const [uploading, setUploading] = useState(false);
+  const fileList = useStore(state => state.fileList);
+  const setFileList = useStore(state => state.addFileList);
 
   const columns: ProColumns<CompanyCertificateListItem>[] = [
     {
@@ -175,6 +194,78 @@ const CompanyList: React.FC = () => {
       },
     });
   };
+  const handleDown = async () => {
+    try {
+      const res = await downCompanyListApi();
+
+      if (isSuccess(res)) {
+        const { url } = res?.data;
+        const day = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        downLoad(url, `${day}公司台账.xlsx`);
+        message.success('下载成功');
+      }
+    } catch (e) {
+      console.log('error:', e);
+    }
+  };
+
+  const onRemove = (file: any) => {
+    const { uid } = file;
+    const files = fileList.filter(item => item.uid !== uid);
+
+    setFileList(files);
+  };
+
+  const uploadExcelProps: UploadProps = {
+    name: 'file',
+    customRequest: async ({ file }) => {
+      const formData = new FormData();
+
+      formData.append('filename', file as any);
+      try {
+        const validateRes = await importCompanyValidateExcelApi({ file: formData });
+
+        if (isSuccess(validateRes, '上传失败，请重试')) {
+          const { data = { is_exist: false } } = validateRes;
+          const updateExcel = async () => {
+            try {
+              const uploadRes = await importCompanyFromExcelApi({ file: formData });
+
+              if (isSuccess(uploadRes, '上传失败，请重试')) {
+                message.success('上传成功');
+                actionRef.current?.reload();
+              }
+            } catch (error) {
+              console.log('error:', error);
+            }
+          };
+
+          if (data.is_exist) {
+            confirm({
+              title: '存在覆盖的数据，确定覆盖吗？',
+              icon: <ExclamationCircleFilled />,
+              content: '覆盖后，无法恢复！请谨慎覆盖！',
+              async onOk() {
+                await updateExcel();
+              },
+              onCancel() {
+                console.log('Cancel');
+              },
+            });
+            return;
+          }
+          await updateExcel();
+          return;
+        }
+      } catch (error) {
+        console.log('error:', error);
+      }
+    },
+    maxCount: 1,
+    accept: '.xlsx,.xls',
+    showUploadList: false,
+  };
 
   return (
     <PageContainer>
@@ -187,6 +278,14 @@ const CompanyList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
+          <Button type="primary" key="down" onClick={handleDown}>
+            下载
+          </Button>,
+          <Upload {...uploadExcelProps} key="upload">
+            <Button type="primary" key="import">
+              导入
+            </Button>
+          </Upload>,
           <Button
             type="primary"
             key="primary"
