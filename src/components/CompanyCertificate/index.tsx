@@ -30,8 +30,8 @@ import {
   addCompanyCertificateApi,
   deleteCompanyCertificateApi,
   updateCompanyCertificateApi,
-  importCompanyValidateExcelApi,
-  importCompanyFromExcelApi,
+  importCompanyCertificateValidateExcelApi,
+  importCompanyCertificateFromExcelApi,
   downCompanyCertificateListApi,
 } from '@/services';
 import moment from 'moment';
@@ -381,13 +381,13 @@ const CompanyCertificate = (props: IProps) => {
 
       formData.append('filename', file as any);
       try {
-        const validateRes = await importCompanyValidateExcelApi({ file: formData });
+        const validateRes = await importCompanyCertificateValidateExcelApi({ file: formData });
 
         if (isSuccess(validateRes, '上传失败，请重试')) {
           const { data = {} } = validateRes;
           const updateExcel = async () => {
             try {
-              const uploadRes = await importCompanyFromExcelApi({ file: formData });
+              const uploadRes = await importCompanyCertificateFromExcelApi({ file: formData });
 
               if (isSuccess(uploadRes, '上传失败，请重试')) {
                 message.success('上传成功');
