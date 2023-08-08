@@ -63,7 +63,7 @@ const DurationList: React.FC = () => {
         }}
         request={getDurationListApi}
         columns={columns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           persistenceKey: 'durationList',
           persistenceType: 'localStorage',

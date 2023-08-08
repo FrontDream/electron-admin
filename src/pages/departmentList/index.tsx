@@ -164,7 +164,7 @@ const DepartmentList: React.FC = () => {
         ]}
         request={getDepartmentListApi}
         columns={columns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           defaultValue: {
             ctime: {

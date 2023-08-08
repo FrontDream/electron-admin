@@ -494,7 +494,7 @@ const CompanyCertificate = (props: IProps) => {
         ]}
         request={getCompanyCertificateListApi}
         columns={tableColumns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           defaultValue: {
             ctime: {

@@ -67,7 +67,7 @@ const RecordList: React.FC = () => {
         options={{ setting: false, density: false, reload: false }}
         request={getRecordListApi}
         columns={columns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           persistenceKey: 'recordList',
           persistenceType: 'localStorage',

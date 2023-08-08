@@ -564,7 +564,7 @@ const Certificate = (props: IProps) => {
         ]}
         request={getCertificateListApi}
         columns={tableColumns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           defaultValue: {
             ctime: {

@@ -329,7 +329,7 @@ const RoleManagementList: React.FC = () => {
         ]}
         request={getRoleManagementListApi}
         columns={columns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           defaultValue: {
             ctime: {

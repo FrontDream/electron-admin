@@ -167,7 +167,7 @@ const RoleTypeList: React.FC = () => {
         ]}
         request={getRoleTypeListApi}
         columns={columns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           defaultValue: {
             ctime: {

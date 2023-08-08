@@ -174,7 +174,7 @@ const CertificateTypeList: React.FC = () => {
         ]}
         request={getCertificateTypeListApi}
         columns={columns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ defaultPageSize: 10 }}
         columnsState={{
           defaultValue: {
             ctime: {
