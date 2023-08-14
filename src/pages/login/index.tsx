@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { message } from 'antd';
+import { message, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProFormCheckbox, ProFormText, LoginForm, ModalForm, FormInstance } from '@ant-design/pro-form';
 import { history, FormattedMessage, useModel } from 'umi';
@@ -144,13 +144,15 @@ const Login: React.FC = () => {
               <ProFormCheckbox noStyle name="rememberMe">
                 <FormattedMessage id="pages.login.rememberMe" defaultMessage="记住密码" />
               </ProFormCheckbox>
-              <a
-                style={{
-                  float: 'right',
-                }}
-              >
-                <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
-              </a>
+              <Tooltip placement="topLeft" title={'请联系主管找回密码'}>
+                <a
+                  style={{
+                    float: 'right',
+                  }}
+                >
+                  <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
+                </a>
+              </Tooltip>
             </div>
           </LoginForm>
         </div>
