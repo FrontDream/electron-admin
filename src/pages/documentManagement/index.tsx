@@ -448,7 +448,7 @@ const DocumentManagement = () => {
     multiple: true,
     fileList: fileList,
     onRemove: onRemove,
-    accept: '.doc,.docx,.ppt,.pptx,.xls,.xlsx,.pdf,.jpg,.png,.mp4,.zip,.7z,.rar,.dwg,.iso,.txt',
+    accept: '.doc,.docx,.ppt,.pptx,.xls,.xlsx,.pdf,.jpg,.png,.mp4,.zip,.7z,.rar,.dwg,.iso,.txt,.psd,.bmp',
     customRequest: async ({ file, onSuccess, onError }) => {
       const { name, uid } = file;
 

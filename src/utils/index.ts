@@ -267,6 +267,8 @@ export const fileImagesMap = {
   iso: '/images/iso.png',
   txt: '/images/txt.png',
   AAA: '/images/文件夹.png',
+  bmp: '/images/bmp.png',
+  psd: '/images/ps.png',
 };
 
 const getEachFile = (url: string) => {
