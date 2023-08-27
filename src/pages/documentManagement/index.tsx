@@ -649,7 +649,7 @@ const DocumentManagement = () => {
             visible={modalVisible}
             onVisibleChange={setModalVisible}
             onFinish={createFolderFinish}
-            initialValues={{ name: isEdit ? editItem?.name : '新建文件夹' }}
+            initialValues={{ name: isEdit ? editItem?.name : '' }}
           >
             <ProFormText
               label={'名称'}
